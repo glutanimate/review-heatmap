@@ -65,15 +65,7 @@ css_heat = """
 .cal-heatmap-container{display:block}.cal-heatmap-container .cal-heatmap-container .graph-label{fill:#999;font-size:10px}.cal-heatmap-container .graph,.cal-heatmap-container .graph-legend rect{shape-rendering:crispedges}.cal-heatmap-container .graph-rect{fill:#ededed}.cal-heatmap-container .graph-subdomain-group rect:hover{stroke:#000;stroke-width:1px}.cal-heatmap-container .subdomain-text{font-size:8px;fill:#999;pointer-events:none}.cal-heatmap-container .hover_cursor:hover{cursor:pointer}.cal-heatmap-container .qi{background-color:#999;fill:#999}.cal-heatmap-container .q1{background-color:#dae289;fill:#dae289}.cal-heatmap-container .q2{background-color:#cedb9c;fill:#9cc069}.cal-heatmap-container .q3{background-color:#b5cf6b;fill:#669d45}.cal-heatmap-container .q4{background-color:#637939;fill:#637939}.cal-heatmap-container .q5{background-color:#3b6427;fill:#3b6427}.cal-heatmap-container rect.highlight{stroke:#444;stroke-width:1}.cal-heatmap-container text.highlight{fill:#444}.cal-heatmap-container rect.highlight-now{stroke:red}.cal-heatmap-container text.highlight-now{fill:red;font-weight:800}.cal-heatmap-container .domain-background{fill:none;shape-rendering:crispedges}.ch-tooltip{padding:10px;background:#222;color:#bbb;font-size:12px;line-height:1.4;width:140px;position:absolute;z-index:99999;text-align:center;border-radius:2px;box-shadow:2px 2px 2px rgba(0,0,0,.2);display:none;box-sizing:border-box}.ch-tooltip::after{position:absolute;width:0;height:0;border-color:#222 transparent transparent;border-style:solid;content:"";padding:0;display:block;bottom:-6px;left:50%;margin-left:-6px;border-width:6px 6px 0}
 """
 
-heatmap_boilerplate = r"""
-<script type="text/javascript">%s</script>
-<script type="text/javascript">%s</script>
-<style>%s</style>
-<style>
-.graph-label {
-    /* fill because its an svg element */
-    fill: #808080;
-}
+css_custom = """
 .hm-btn {
     cursor: pointer;
     background: #e6e6e6;
@@ -86,13 +78,12 @@ heatmap_boilerplate = r"""
     background: #808080;
     color: #fff}
 .hm-btn:active {background: #000}
-
+.graph-label {fill: #808080;}
 .heatmap {margin-top: 2em;}
-.streak-info {margin-left: 1em;}
 .heatmap-controls {margin-bottom: 1em;}
+.streak-info {margin-left: 1em;}
 .sdata {font-weight: bold;}
 .streak{margin-top: 1em;}
-
 .cal-heatmap-container rect.highlight-now {
     stroke: black;}
 .cal-heatmap-container rect.highlight {
@@ -119,8 +110,13 @@ heatmap_boilerplate = r"""
 .cal-heatmap-container .q18{fill: #637939}
 .cal-heatmap-container .q19{fill: #4F6E30}
 .cal-heatmap-container .q20{fill: #3B6427}
-</style>
+"""
 
+heatmap_boilerplate = r"""
+<script type="text/javascript">%s</script>
+<script type="text/javascript">%s</script>
+<style>%s</style>
+<style>%s</style>
 <div class="heatmap">
     <div class="heatmap-controls">
         <span title="Got to previous year" onclick="cal.previous();" class="hm-btn">&lt;</i></span>
@@ -128,7 +124,58 @@ heatmap_boilerplate = r"""
         <span title="Go to next year" onclick="cal.next();" class="hm-btn">&gt;</span>
     </div>
     <div id="cal-heatmap"></div>
-</div>""" % (js_d3, js_heat, css_heat)
+</div>""" % (js_d3, js_heat, css_heat, css_custom)
+
+heatmap_script = r"""
+<script type="text/javascript">
+    var cal = new CalHeatMap();
+    cal.init({
+        domain: "year",
+        subDomain: "day",
+        minDate: new Date(%s, 01),
+        maxDate: new Date(%s, 01),
+        range: 1,
+        cellSize: 10,
+        domainMargin: [1, 1, 1, 1],
+        itemName: ["review", "reviews"],
+        domainLabelFormat: "Reviews in %%Y",
+        highlight: "now",
+        legend: %s,
+        displayLegend: false,
+        subDomainTitleFormat: {
+                empty: "No reviews on {date}",
+                filled: "{count} {name} {connector} {date}"
+            },
+        onClick: function(date, nb){
+            // call link handler
+            if (nb === null || nb == 0){
+                cal.highlight("now"); return;
+            }
+            today = new Date();
+            other = new Date(date);
+            if (nb >= 0) {
+                diff = today.getTime() - other.getTime();
+                cmd = "showseen:"
+            } else {
+                diff = other.getTime() - today.getTime();
+                cmd = "showdue:"
+            }
+            cal.highlight(["now", date])
+            diffdays = Math.ceil(diff / (1000 * 60 * 60 * 24))
+            py.link(cmd + diffdays)
+        },
+        data: %s
+    });
+</script>"""
+
+streak_div = r"""
+<div class="streak">
+    <span class="streak-info">Longest streak:</span>
+    <span title="All types of reviews included" style="color: %s;" class="smax sdata">%s</span>
+    <span class="streak-info">Current streak:</span>
+    <span title="All types of reviews included" style="color: %s;" class="scur sdata">%s</span>
+</div>
+"""
 
 ov_body = """
 <center>
@@ -201,6 +248,12 @@ def report_activity(self):
     if not revlog:
         return ""
 
+    # set up attributes
+    try:
+        self.col.hm_avg
+    except AttributeError: # avg for col not set yet
+        self.col.hm_avg = None
+
     # reviews and streaks:
     today = int(time.time())
     revs_by_day = {}
@@ -213,6 +266,7 @@ def report_activity(self):
         diff = item[0] # days ago
         try:
             if diff + 1 != revlog[idx+1][0]: # days+1 ago
+                # streak over
                 streaks.append(cur)
                 cur = 0
         except IndexError: # last item
@@ -230,28 +284,19 @@ def report_activity(self):
     if avg < 20:
         avg = 20 # set a default average if avg too low
 
-    try:
-        self.col.hm_avg
-    except AttributeError: # avg for col not set yet
-        self.col.hm_avg = None
-        self.col.hm_leg = [-80, -40, -30, -25, -20, -15, -10, -5, -2,
-                            0, 2, 5, 10, 15, 20, 25, 30, 40, 80] # leg for avg=20
-
-    if self.wholeCollection: # only adjust leg when data comes from full col
-        if avg != self.col.hm_avg: # avg changed, new leg necessary
-            legpos = [0.125*avg, 0.25*avg, 0.5*avg, 0.75*avg,
-                            avg, 1.25*avg, 1.5*avg, 2*avg, 4*avg]
-            legneg = [-i for i in legpos[::-1]]
-            leg = legneg + [0] + legpos
-            self.col.hm_leg = leg
-            self.col.hm_avg = avg
+    if (self.wholeCollection and avg != self.col.hm_avg) or not self.col.hm_avg:
+        legpos = [0.125*avg, 0.25*avg, 0.5*avg, 0.75*avg,
+                  avg, 1.25*avg, 1.5*avg, 2*avg, 4*avg]
+        leg = [-i for i in legpos[::-1]] + [0] + legpos
+        self.col.hm_leg = leg
+        self.col.hm_avg = avg
 
     # forecast of due cards
     forecast = self._due(1, HEATMAP_FORECAST_LIMIT)
     for item in forecast:
         day = today + item[0] * 86400
         due = sum(item[1:3])
-        revs_by_day[day] = -due
+        revs_by_day[day] = -due # negative in order to apply colorscheme
     last_day = day
 
     first_year = time.gmtime(first_day).tm_year
@@ -264,62 +309,15 @@ def report_activity(self):
     else:
         scur = 0
 
-    return compose_heatmap(revs_by_day, self.col.hm_leg, first_year, last_year,
-                            scur, smax)
+    return gen_heatmap(revs_by_day, self.col.hm_leg, first_year, last_year,
+                       scur, smax)
 
-def compose_heatmap(data, legend, start, stop, scur, smax):
-    heatmap = """<script type="text/javascript">
-        var cal = new CalHeatMap();
-        cal.init({
-            domain: "year",
-            subDomain: "day",
-            minDate: new Date(%s, 01),
-            maxDate: new Date(%s, 01),
-            range: 1,
-            cellSize: 10,
-            domainMargin: [1, 1, 1, 1],
-            itemName: ["review", "reviews"],
-            domainLabelFormat: "Reviews in %%Y",
-            highlight: "now",
-            legend: %s,
-            displayLegend: false,
-            subDomainTitleFormat: {
-                    empty: "No reviews on {date}",
-                    filled: "{count} {name} {connector} {date}"
-                },
-            onClick: function(date, nb){
-                // call link handler
-                if (nb === null || nb == 0){
-                    cal.highlight("now"); return;
-                }
-                today = new Date();
-                other = new Date(date);
-                if (nb >= 0) {
-                    diff = today.getTime() - other.getTime();
-                    cmd = "showseen:"
-                } else {
-                    diff = other.getTime() - today.getTime();
-                    cmd = "showdue:"
-                }
-                cal.highlight(["now", date])
-                diffdays = Math.ceil(diff / (1000 * 60 * 60 * 24))
-                py.link(cmd + diffdays)
-            },
-            data: %s
-        });
-    </script>""" % (start, stop, legend, data)
-
+def gen_heatmap(data, legend, start, stop, scur, smax):
+    """Create heatmap script and markup"""
+    heatmap = heatmap_script % (start, stop, legend, data)
     col_cur, str_cur = dayS(scur)
     col_max, str_max = dayS(smax)
-
-    streakinfo = r"""
-    <div class="streak">
-        <span class="streak-info">Longest streak:</span>
-        <span title="All types of reviews included" style="color: %s;" class="smax sdata">%s</span>
-        <span class="streak-info">Current streak:</span>
-        <span title="All types of reviews included" style="color: %s;" class="scur sdata">%s</span>
-    </div>
-    """ % (col_max, str_max, col_cur, str_cur)
+    streakinfo =  streak_div % (col_max, str_max, col_cur, str_cur)
 
     return heatmap_boilerplate + heatmap + streakinfo
 
