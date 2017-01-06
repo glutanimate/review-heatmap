@@ -191,9 +191,11 @@ ov_body = """
 """
 
 def render_page_ov(self):
-    """Replace original _renderPage() in order to stay compatible
-    with add-ons like More Overview Stats that overwrite _body()"""
+    """Replace original _renderPage()
+    We use this instead of _body() in order to stay compatible 
+    with other add-ons"""
     # self is overview
+    load_config()
     self._body = ov_body # modified body with stats section
     stats = self.mw.col.stats()
     stats.wholeCollection = False
@@ -218,6 +220,7 @@ def render_page_ov(self):
 def add_heatmap_db(self, _old):
     """Add heatmap to _renderStats() return"""
     #self is deckbrowser
+    load_config()
     ret = _old(self)
     stats = self.mw.col.stats()
     stats.wholeCollection = True
@@ -246,7 +249,7 @@ def dayS(n, colors):
 def report_activity(self):
     """Calculate stats and generate report"""
     #self is anki.stats.CollectionStats
-    # set up configured limits
+    # set up limits
     limhist = mw.col.conf['heatmap']['limhist']
     limfcst = mw.col.conf['heatmap']['limfcst']
     limhist = limhist if limhist != 0 else None
@@ -256,10 +259,10 @@ def report_activity(self):
     if not revlog:
         return ""
 
-    # set up  attributes
+    # set up reused attributes
     try:
         self.col.hm_avg
-    except AttributeError: # avg for col not set yet
+    except AttributeError: # avg for col not set
         self.col.hm_avg = None
 
     # reviews and streaks:
@@ -287,6 +290,13 @@ def report_activity(self):
         tot += reviews
         revs_by_day[day] = reviews
 
+    smax = max(streaks)
+    if revlog[-1][0] in (0, -1):
+        # is last recorded date today or yesterday?
+        scur = streaks[-1]
+    else:
+        scur = 0
+
     # adapt legend to number of average reviews across entire collection
     avg = tot / (idx+1)
     if avg < 20:
@@ -309,13 +319,6 @@ def report_activity(self):
 
     first_year = time.gmtime(first_day).tm_year
     last_year = max(time.gmtime(last_day).tm_year, time.gmtime().tm_year)
-
-    smax = max(streaks)
-    if revlog[-1][0] in (0, -1):
-        # is last recorded date today or yesterday?
-        scur = streaks[-1]
-    else:
-        scur = 0
 
     return gen_heatmap(revs_by_day, self.col.hm_leg, first_year, last_year,
                        scur, smax)
@@ -374,8 +377,7 @@ def add_finder(self, col):
     """Add custom finder to search dictionary"""
     self.search["seen"] = self.find_seen_on
 
-
-# Options dialog
+# Add-on configuration
 
 default_conf = {
     "colors": "lime",
@@ -386,7 +388,7 @@ default_conf = {
 }
 
 def load_config():
-    """load and/or create add-on preferences"""
+    """Load and/or create add-on preferences"""
     # Synced preferences
     if not 'heatmap' in mw.col.conf:
         # create initial configuration
@@ -441,7 +443,6 @@ class HeatmapOpts(QDialog):
 
         grid = QGridLayout()
         grid.setSpacing(10)
-
         grid.addWidget(col_l, 1, 0, 1, 1)
         grid.addWidget(self.col_sel, 1, 1, 1, 2)
         grid.addWidget(mode_l, 2, 0, 1, 1)
@@ -470,9 +471,7 @@ class HeatmapOpts(QDialog):
         self.setWindowTitle('Review Heatmap Options')
 
     def create_horizontal_rule(self):
-        """
-        Returns a QFrame that is a sunken, horizontal rule.
-        """
+        """Returns a QFrame that is a sunken, horizontal rule."""
         frame = QFrame()
         frame.setFrameShape(QFrame.HLine)
         frame.setFrameShadow(QFrame.Sunken)
@@ -497,12 +496,9 @@ class HeatmapOpts(QDialog):
         self.close()
 
 def on_heatmap_settings(mw):
-    """Call settings dialog if Editor not active"""
+    """Call settings dialog"""
     dialog = HeatmapOpts(mw)
     dialog.exec_()
-
-# Set up configuration
-addHook("profileLoaded", load_config)
 
 # Set up menus and hooks
 options_action = QAction("Review &Heatmap Options...", mw)
