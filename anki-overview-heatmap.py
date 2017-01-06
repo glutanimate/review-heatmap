@@ -26,6 +26,8 @@ License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 
 ### USER CONFIGURATION START ###
 
+# Data configuration
+
 # The following values control the number of days calculated
 # and displayed by the add-on. Limiting these can improve performance
 # on slower systems.
@@ -34,6 +36,11 @@ License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 HEATMAP_HISTORY_LIMIT = None # default: None, i.e. no limit
 # Nr of days to to limit review forecast to
 HEATMAP_FORECAST_LIMIT = None # default: None, i.e. no limit
+
+# Color scheme configuration
+
+# valid options: olive, lime, anki
+HEATMAP_COLOR_SCHEME = "lime"
 
 ### USER CONFIGURATION END ###
 
@@ -46,6 +53,14 @@ from anki.stats import CollectionStats
 from anki.find import Finder
 from anki.hooks import wrap
 
+heatmap_colors = {
+    "olive": ("#DAE289", "#BBD179", "#9CC069", "#8AB45D", "#78A851", 
+              "#669D45", "#648B3F", "#637939", "#4F6E30", "#3B6427"),
+    "lime":  ("#D6E685", "#BDDB7A", "#A4D06F", "#8CC665", "#74BA58", 
+              "#5CAE4C", "#44A340", "#378F36", "#2A7B2C", "#1E6823"),
+    "anki":  ("#0075CA", "#0068B8", "#005BA6", "#004E94", "#004182",
+              "#003470", "#00275E", "#001A4C", "#000D3A", "#000029")
+}
 
 # need to use raw strings due to non-escaped newlines in minified JS
 js_d3 = r'''
@@ -100,17 +115,17 @@ css_custom = """
 .cal-heatmap-container .q9{fill: #CACACA}
 .cal-heatmap-container .q10{fill: #D9D9D9}
 /* past reviews (shades of green): */
-.cal-heatmap-container .q11{fill: #DAE289}
-.cal-heatmap-container .q12{fill: #BBD179}
-.cal-heatmap-container .q13{fill: #9CC069}
-.cal-heatmap-container .q14{fill: #8AB45D}
-.cal-heatmap-container .q15{fill: #78A851}
-.cal-heatmap-container .q16{fill: #669D45}
-.cal-heatmap-container .q17{fill: #648B3F}
-.cal-heatmap-container .q18{fill: #637939}
-.cal-heatmap-container .q19{fill: #4F6E30}
-.cal-heatmap-container .q20{fill: #3B6427}
-"""
+.cal-heatmap-container .q11{fill: %s}
+.cal-heatmap-container .q12{fill: %s}
+.cal-heatmap-container .q13{fill: %s}
+.cal-heatmap-container .q14{fill: %s}
+.cal-heatmap-container .q15{fill: %s}
+.cal-heatmap-container .q16{fill: %s}
+.cal-heatmap-container .q17{fill: %s}
+.cal-heatmap-container .q18{fill: %s}
+.cal-heatmap-container .q19{fill: %s}
+.cal-heatmap-container .q20{fill: %s}
+""" % heatmap_colors[HEATMAP_COLOR_SCHEME]
 
 heatmap_boilerplate = r"""
 <script type="text/javascript">%s</script>
