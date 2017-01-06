@@ -176,11 +176,14 @@ streak_div = r"""
     <span class="streak-info">Daily average:</span>
     <span title="Average reviews on learning days" class="dstats">%s</span>
     <span class="streak-info">Days learned:</span>
-    <span title="Percentage of days spent learning over entire review history" class="dstats">%s%%</span>
+    <span title="Percentage of days with review activity over entire review history"
+        class="dstats">%s%%</span>
     <span class="streak-info">Longest streak:</span>
-    <span title="All types of reviews included" style="color: %s;" class="sstats">%s</span>
+    <span title="Longest continuous streak of review activity. All types of repetitions included."
+        style="color: %s;" class="sstats">%s</span>
     <span class="streak-info">Current streak:</span>
-    <span title="All types of reviews included" style="color: %s;" class="sstats">%s</span>
+    <span title="Current card review activity streak. All types of repetitions included."
+        style="color: %s;" class="sstats">%s</span>
 </div>
 """
 
