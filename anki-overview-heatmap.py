@@ -9,9 +9,6 @@ GitHub. Information on the current streak is displayed
 alongside the heatmap. Clicking on an item shows the
 cards reviewed on that day.
 
-Note: Needs to be loaded after add-ons like 'More Overview Stats'
-as these tend to overwrite the changes applied by this add-on.
-
 Inspired by "Forecast graph on Overview page" by Steve AW
 
 Ships with the following javascript libraries:
@@ -47,11 +44,13 @@ HEATMAP_COLOR_SCHEME = "lime"
 import time
 
 import aqt
+from aqt.qt import *
+from aqt import mw
 from aqt.overview import Overview
 from aqt.deckbrowser import DeckBrowser
 from anki.stats import CollectionStats
 from anki.find import Finder
-from anki.hooks import wrap
+from anki.hooks import wrap, addHook
 
 heatmap_colors = {
     "olive": ("#DAE289", "#BBD179", "#9CC069", "#8AB45D", "#78A851", 
@@ -60,6 +59,11 @@ heatmap_colors = {
               "#5CAE4C", "#44A340", "#378F36", "#2A7B2C", "#1E6823"),
     "ice":   ("#A8D5F6", "#95C8F3", "#82BBF0", "#70AFEE", "#5DA2EB",
               "#4A95E8", "#3889E6", "#257CE3", "#126FE0", "#0063DE")
+}
+
+heatmap_modes = {
+    "year": {"domain": 'year', "subDomain": 'day', "range": 1}, 
+    "months": {"domain": 'month', "subDomain": 'day', "range": 12}
 }
 
 # need to use raw strings due to non-escaped newlines in minified JS
@@ -80,7 +84,14 @@ css_heat = """
 .cal-heatmap-container{display:block}.cal-heatmap-container .cal-heatmap-container .graph-label{fill:#999;font-size:10px}.cal-heatmap-container .graph,.cal-heatmap-container .graph-legend rect{shape-rendering:crispedges}.cal-heatmap-container .graph-rect{fill:#ededed}.cal-heatmap-container .graph-subdomain-group rect:hover{stroke:#000;stroke-width:1px}.cal-heatmap-container .subdomain-text{font-size:8px;fill:#999;pointer-events:none}.cal-heatmap-container .hover_cursor:hover{cursor:pointer}.cal-heatmap-container .qi{background-color:#999;fill:#999}.cal-heatmap-container .q1{background-color:#dae289;fill:#dae289}.cal-heatmap-container .q2{background-color:#cedb9c;fill:#9cc069}.cal-heatmap-container .q3{background-color:#b5cf6b;fill:#669d45}.cal-heatmap-container .q4{background-color:#637939;fill:#637939}.cal-heatmap-container .q5{background-color:#3b6427;fill:#3b6427}.cal-heatmap-container rect.highlight{stroke:#444;stroke-width:1}.cal-heatmap-container text.highlight{fill:#444}.cal-heatmap-container rect.highlight-now{stroke:red}.cal-heatmap-container text.highlight-now{fill:red;font-weight:800}.cal-heatmap-container .domain-background{fill:none;shape-rendering:crispedges}.ch-tooltip{padding:10px;background:#222;color:#bbb;font-size:12px;line-height:1.4;width:140px;position:absolute;z-index:99999;text-align:center;border-radius:2px;box-shadow:2px 2px 2px rgba(0,0,0,.2);display:none;box-sizing:border-box}.ch-tooltip::after{position:absolute;width:0;height:0;border-color:#222 transparent transparent;border-style:solid;content:"";padding:0;display:block;bottom:-6px;left:50%;margin-left:-6px;border-width:6px 6px 0}
 """
 
-css_custom = """
+heatmap_boilerplate = r"""
+<script type="text/javascript">%s</script>
+<script type="text/javascript">%s</script>
+<style>%s</style>
+""" % (js_d3, js_heat, css_heat)
+
+heatmap_css = """
+<style>
 .hm-btn {
     cursor: pointer;
     background: #e6e6e6;
@@ -125,35 +136,31 @@ css_custom = """
 .cal-heatmap-container .q18{fill: %s}
 .cal-heatmap-container .q19{fill: %s}
 .cal-heatmap-container .q20{fill: %s}
-""" % heatmap_colors[HEATMAP_COLOR_SCHEME]
+</style>
+"""
 
-heatmap_boilerplate = r"""
-<script type="text/javascript">%s</script>
-<script type="text/javascript">%s</script>
-<style>%s</style>
-<style>%s</style>
+heatmap_div = r"""
 <div class="heatmap">
     <div class="heatmap-controls">
-        <span title="Got to previous year" onclick="cal.previous();" class="hm-btn">&lt;</i></span>
+        <span title="Go to previous year" onclick="cal.previous(%d);" class="hm-btn">&lt;</i></span>
         <span title="Today" onclick="cal.rewind();" class="hm-btn">T</i></span>
-        <span title="Go to next year" onclick="cal.next();" class="hm-btn">&gt;</span>
+        <span title="Go to next year" onclick="cal.next(%d);" class="hm-btn">&gt;</span>
     </div>
     <div id="cal-heatmap"></div>
-</div>""" % (js_d3, js_heat, css_heat, css_custom)
+</div>"""
 
 heatmap_script = r"""
 <script type="text/javascript">
     var cal = new CalHeatMap();
     cal.init({
-        domain: "year",
-        subDomain: "day",
+        domain: "%s",
+        subDomain: "%s",
+        range: %d,
         minDate: new Date(%s, 01),
         maxDate: new Date(%s, 01),
-        range: 1,
         cellSize: 10,
         domainMargin: [1, 1, 1, 1],
         itemName: ["review", "reviews"],
-        domainLabelFormat: "Reviews in %%Y",
         highlight: "now",
         legend: %s,
         displayLegend: false,
@@ -238,9 +245,8 @@ def add_heatmap_db(self, _old):
     html = ret + report
     return html
 
-def dayS(n):
+def dayS(n, colors):
     """Return color and string depending on number of items"""
-    colors = heatmap_colors[HEATMAP_COLOR_SCHEME]
     levels = [(0, colors[1]), (20, colors[3]), (40, colors[5]),
                 (60, colors[7]), (80, colors[9])]
     for l in levels:
@@ -260,11 +266,17 @@ def dayS(n):
 def report_activity(self):
     """Calculate stats and generate report"""
     #self is anki.stats.CollectionStats
-    revlog = self._done(HEATMAP_HISTORY_LIMIT, 1)
+    # set up configured limits
+    limhist = mw.col.conf['heatmap']['limhist']
+    limfcst = mw.col.conf['heatmap']['limfcst']
+    limhist = limhist if limhist != 0 else None
+    limfcst = limfcst if limfcst != 0 else None
+
+    revlog = self._done(limhist, 1)
     if not revlog:
         return ""
 
-    # set up attributes
+    # set up  attributes
     try:
         self.col.hm_avg
     except AttributeError: # avg for col not set yet
@@ -308,7 +320,7 @@ def report_activity(self):
         self.col.hm_avg = avg
 
     # forecast of due cards
-    forecast = self._due(1, HEATMAP_FORECAST_LIMIT)
+    forecast = self._due(1, limfcst)
     for item in forecast:
         day = today + item[0] * 86400
         due = sum(item[1:3])
@@ -330,12 +342,18 @@ def report_activity(self):
 
 def gen_heatmap(data, legend, start, stop, scur, smax):
     """Create heatmap script and markup"""
-    heatmap = heatmap_script % (start, stop, legend, data)
-    col_cur, str_cur = dayS(scur)
-    col_max, str_max = dayS(smax)
-    streakinfo =  streak_div % (col_max, str_max, col_cur, str_cur)
+    config = mw.col.conf["heatmap"]
+    mode = heatmap_modes[config["mode"]]
+    colors = heatmap_colors[config["colors"]]
+    rng = mode["range"]
+    heatmap = heatmap_div % (rng, rng)
+    script = heatmap_script % (mode["domain"], mode["subDomain"], rng, start, stop, legend, data)
+    css = heatmap_css % colors
+    col_cur, str_cur = dayS(scur, colors)
+    col_max, str_max = dayS(smax, colors)
+    streak =  streak_div % (col_max, str_max, col_cur, str_cur)
 
-    return heatmap_boilerplate + heatmap + streakinfo
+    return heatmap_boilerplate + css + heatmap + script + streak
 
 def my_link_handler(self, url, _old):
     """Launches Browser when clicking on a graph subdomain"""
@@ -376,6 +394,140 @@ def add_finder(self, col):
     """Add custom finder to search dictionary"""
     self.search["seen"] = self.find_seen_on
 
+
+# Options dialog
+
+default_conf = {
+    "colors": "lime",
+    "mode": "year",
+    "limhist": 0,
+    "limfcst": 0,
+    "version": 0.1
+}
+
+def load_config():
+    """load and/or create add-on preferences"""
+    # Synced preferences
+    if not 'heatmap' in mw.col.conf:
+        # create initial configuration
+        mw.col.conf['heatmap'] = default_conf
+        mw.col.setMod()
+
+    elif mw.col.conf['heatmap']['version'] < default_conf['version']:
+        print("Updating synced config DB from earlier IO release")
+        for key in list(default_conf.keys()):
+            if key not in mw.col.conf['heatmap']:
+                mw.col.conf['heatmap'][key] = default_conf_syncd[key]
+        mw.col.conf['heatmap']['version'] = default_conf_syncd['version']
+        # insert other update actions here:
+        mw.col.setMod()
+
+class HeatmapOpts(QDialog):
+    """Main Options dialog"""
+    def __init__(self, mw):
+        QDialog.__init__(self, parent=mw)
+        self.setup_ui()
+        self.setup_values(mw.col.conf["heatmap"])
+
+    def setup_values(self, config):
+        """Set up widget data based on provided config dict"""
+        colsel = heatmap_colors.keys()
+        idx = colsel.index(config["colors"])
+        self.col_sel.setCurrentIndex(idx)
+        modesel = heatmap_modes.keys()
+        idx = modesel.index(config["mode"])
+        self.mode_sel.setCurrentIndex(idx)
+        self.hist_sel.setValue(config["limhist"])
+        self.fcst_sel.setValue(config["limfcst"])
+
+    def setup_ui(self):
+        """Set up widgets and layouts"""
+        col_l = QLabel("Color Scheme")
+        mode_l = QLabel("Calendar Mode")
+        hist_l = QLabel("History Limit")
+        fcst_l = QLabel("Forecast Limit")
+        rule1 = self.create_horizontal_rule()
+
+        self.col_sel = QComboBox()
+        self.col_sel.addItems(heatmap_colors.keys())
+        self.mode_sel = QComboBox()
+        self.mode_sel.addItems(heatmap_modes.keys())
+        self.hist_sel = QSpinBox()
+        self.fcst_sel = QSpinBox()
+        for sel in (self.hist_sel, self.fcst_sel):
+            sel.setRange(0, 1000000)
+            sel.setSuffix(" days")
+            sel.setSpecialValueText("No limit")
+
+        grid = QGridLayout()
+        grid.setSpacing(10)
+
+        grid.addWidget(col_l, 1, 0, 1, 1)
+        grid.addWidget(self.col_sel, 1, 1, 1, 2)
+        grid.addWidget(mode_l, 2, 0, 1, 1)
+        grid.addWidget(self.mode_sel, 2, 1, 1, 2)
+        grid.addWidget(rule1, 3, 0, 1, 3)
+        grid.addWidget(hist_l, 4, 0, 1, 1)
+        grid.addWidget(self.hist_sel, 4, 1, 1, 2)
+        grid.addWidget(fcst_l, 5, 0, 1, 1)
+        grid.addWidget(self.fcst_sel, 5, 1, 1, 2)
+
+        # Main button box
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok
+                        | QDialogButtonBox.Cancel)
+        defaults_btn = button_box.addButton("Defaults",
+           QDialogButtonBox.ResetRole)
+        defaults_btn.clicked.connect(self.restore)
+        button_box.accepted.connect(self.on_accept)
+        button_box.rejected.connect(self.on_reject)
+
+        # Main layout
+        l_main = QVBoxLayout()
+        l_main.addLayout(grid)
+        l_main.addWidget(button_box)
+        self.setLayout(l_main)
+        self.setMinimumWidth(360)
+        self.setWindowTitle('Review Heatmap Options')
+
+    def create_horizontal_rule(self):
+        """
+        Returns a QFrame that is a sunken, horizontal rule.
+        """
+        frame = QFrame()
+        frame.setFrameShape(QFrame.HLine)
+        frame.setFrameShadow(QFrame.Sunken)
+        return frame
+
+    def restore(self):
+        """Restore colors and fields back to defaults"""
+        self.setup_values(default_conf)
+
+    def on_accept(self):
+        """Apply changes on OK button press"""
+        mw.col.conf['heatmap']['colors'] = self.col_sel.currentText()
+        mw.col.conf['heatmap']['mode'] = self.mode_sel.currentText()
+        mw.col.conf['heatmap']['limhist'] = self.hist_sel.value()
+        mw.col.conf['heatmap']['limfcst'] = self.fcst_sel.value()
+        mw.col.setMod()
+        mw.reset()
+        self.close()
+
+    def on_reject(self):
+        """Dismiss changes on Close button press"""
+        self.close()
+
+def on_heatmap_settings(mw):
+    """Call settings dialog if Editor not active"""
+    dialog = HeatmapOpts(mw)
+    dialog.exec_()
+
+# Set up configuration
+addHook("profileLoaded", load_config)
+
+# Set up menus and hooks
+options_action = QAction("Review &Heatmap Options...", mw)
+options_action.triggered.connect(lambda _, o=mw: on_heatmap_settings(o))
+mw.form.menuTools.addAction(options_action)
 
 # Stats calculation and rendering
 CollectionStats.report_activity = report_activity
