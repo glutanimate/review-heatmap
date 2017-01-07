@@ -90,7 +90,6 @@ heatmap_css = """
 .streak {margin-top: 1em;}
 .streak-info {margin-left: 1em;}
 .sstats {font-weight: bold;}
-.dstats {color: #808080;}
 .cal-heatmap-container rect.highlight-now {
     stroke: black;}
 .cal-heatmap-container rect.highlight {
@@ -174,10 +173,11 @@ heatmap_script = r"""
 streak_div = r"""
 <div class="streak">
     <span class="streak-info">Daily average:</span>
-    <span title="Average reviews on learning days" class="dstats">%s</span>
+    <span title="Average reviews on learning days"
+        style="color: %s;" class="sstats">%s</span>
     <span class="streak-info">Days learned:</span>
     <span title="Percentage of days with review activity over entire review history"
-        class="dstats">%s%%</span>
+        style="color: %s;" class="sstats">%s%%</span>
     <span class="streak-info">Longest streak:</span>
     <span title="Longest continuous streak of review activity. All types of repetitions included."
         style="color: %s;" class="sstats">%s</span>
@@ -235,24 +235,6 @@ def add_heatmap_db(self, _old):
     report = stats.report_activity()
     html = ret + report
     return html
-
-def dayS(n, colors):
-    """Return color and string depending on number of items"""
-    levels = [(0, "#E6E6E6"), (14, colors[1]), (30, colors[3]),
-              (90, colors[5]), (180, colors[7]), (365, colors[8])]
-    for l in levels:
-        if n > l[0]:
-            continue
-        color = l[1]
-        break
-    else:
-         color = colors[9]
-    d = str(n)
-    if n == 1:
-        retstr = d + " day"
-    else:
-        retstr = d + " days"
-    return color, retstr
 
 def report_activity(self):
     """Calculate stats and generate report"""
@@ -315,9 +297,9 @@ def report_activity(self):
     # days learned
     dlearn = int(round((today - first_day) / float(86400)))
     if dlearn != 0:
-        plearn = int(round((len(revs_by_day) / float(dlearn)) * 100))
+        pdays = int(round((len(revs_by_day) / float(dlearn)) * 100))
     else:
-        plearn = 100 if len(revs_by_day) != 0 else 0
+        pdays = 100 if len(revs_by_day) != 0 else 0
 
     if (self.wholeCollection and avg != self.col.hm_avg) or not self.col.hm_avg:
         legpos = [0.125*avg, 0.25*avg, 0.5*avg, 0.75*avg,
@@ -338,9 +320,9 @@ def report_activity(self):
     last_year = max(time.gmtime(last_day).tm_year, time.gmtime().tm_year)
 
     return gen_heatmap(revs_by_day, self.col.hm_leg, first_year, last_year,
-                       scur, smax, avg_cur, plearn)
+                       scur, smax, avg_cur, pdays)
 
-def gen_heatmap(data, legend, start, stop, scur, smax, avg_cur, plearn):
+def gen_heatmap(data, legend, start, stop, scur, smax, avg_cur, pdays):
     """Create heatmap script and markup"""
     config = mw.col.conf["heatmap"]
     mode = heatmap_modes[config["mode"]]
@@ -351,9 +333,37 @@ def gen_heatmap(data, legend, start, stop, scur, smax, avg_cur, plearn):
     css = heatmap_css % colors
     col_cur, str_cur = dayS(scur, colors)
     col_max, str_max = dayS(smax, colors)
-    streak =  streak_div % (avg_cur, plearn, col_max, str_max, col_cur, str_cur)
+    col_pdays = dayS(pdays, colors, mode="pdays")
+    col_avg, str_avg = dayS(avg_cur, colors, mode="avg", term="review")
+    streak = streak_div % (col_avg, str_avg, col_pdays, pdays, col_max, str_max, col_cur, str_cur)
 
     return heatmap_boilerplate + css + heatmap + script + streak
+
+def dayS(n, colors, mode="streak", term="day"):
+    """Return color and string depending on number of items"""
+    if mode == "streak": # days
+        levels = [(0, "#E6E6E6"), (14, colors[1]), (30, colors[3]),
+                  (90, colors[5]), (180, colors[7]), (365, colors[8])]
+    elif mode == "pdays": # percentages
+        levels = [(0, "#E6E6E6")] + zip([25,50,60,70,80,85,90,95,99], colors)
+    elif mode == "avg": # review counts
+        hm_leg = mw.col.hm_leg
+        levels = zip(hm_leg[9:], colors) # use positive legend scaling
+    for l in levels:
+        if n > l[0]:
+            continue
+        color = l[1]
+        break
+    else:
+         color = colors[9]
+    if mode == "pdays":
+        return color
+    d = str(n)
+    if n == 1:
+        retstr = "{0} {1}".format(d, term)
+    else:
+        retstr = "{0} {1}s".format(d, term)
+    return color, retstr
 
 def my_link_handler(self, url, _old):
     """Launches Browser when clicking on a graph subdomain"""
