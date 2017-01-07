@@ -20,27 +20,6 @@ Copyright: Glutanimate 2016-2017
 License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 """
 
-
-### USER CONFIGURATION START ###
-
-# Data configuration
-
-# The following values control the number of days calculated
-# and displayed by the add-on. Limiting these can improve performance
-# on slower systems.
-
-# Nr of days to limit review history to (e.g. 365)
-HEATMAP_HISTORY_LIMIT = None # default: None, i.e. no limit
-# Nr of days to to limit review forecast to
-HEATMAP_FORECAST_LIMIT = None # default: None, i.e. no limit
-
-# Color scheme configuration
-
-# valid options: olive, lime, ice
-HEATMAP_COLOR_SCHEME = "lime"
-
-### USER CONFIGURATION END ###
-
 import time
 
 import aqt
@@ -51,6 +30,7 @@ from aqt.deckbrowser import DeckBrowser
 from anki.stats import CollectionStats
 from anki.find import Finder
 from anki.hooks import wrap, addHook
+
 
 heatmap_colors = {
     "olive": ("#DAE289", "#BBD179", "#9CC069", "#8AB45D", "#78A851", 
@@ -247,15 +227,15 @@ def add_heatmap_db(self, _old):
 
 def dayS(n, colors):
     """Return color and string depending on number of items"""
-    levels = [(0, colors[1]), (20, colors[3]), (40, colors[5]),
-                (60, colors[7]), (80, colors[9])]
+    levels = [(0, "#E6E6E6"), (14, colors[1]), (30, colors[3]),
+              (90, colors[5]), (180, colors[7]), (365, colors[8])]
     for l in levels:
         if n > l[0]:
             continue
         color = l[1]
         break
     else:
-         color = "#637939"
+         color = colors[9]
     d = str(n)
     if n == 1:
         retstr = d + " day"
