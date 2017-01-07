@@ -33,12 +33,16 @@ from anki.hooks import wrap, addHook
 
 
 heatmap_colors = {
-    "olive": ("#DAE289", "#BBD179", "#9CC069", "#8AB45D", "#78A851", 
-              "#669D45", "#648B3F", "#637939", "#4F6E30", "#3B6427"),
-    "lime":  ("#D6E685", "#BDDB7A", "#A4D06F", "#8CC665", "#74BA58", 
-              "#5CAE4C", "#44A340", "#378F36", "#2A7B2C", "#1E6823"),
-    "ice":   ("#A8D5F6", "#95C8F3", "#82BBF0", "#70AFEE", "#5DA2EB",
-              "#4A95E8", "#3889E6", "#257CE3", "#126FE0", "#0063DE")
+    "olive":    ("#dae289", "#bbd179", "#9cc069", "#8ab45d", "#78a851", 
+                "#669d45", "#648b3f", "#637939", "#4f6e30", "#3b6427"),
+    "lime":     ("#d6e685", "#bddb7a", "#a4d06f", "#8cc665", "#74ba58", 
+                "#5cae4c", "#44a340", "#378f36", "#2a7b2c", "#1e6823"),
+    "ice":      ("#a8d5f6", "#95c8f3", "#82bbf0", "#70afee", "#5da2eb",
+                "#4a95e8", "#3889e6", "#257ce3", "#126fe0", "#0063de"),
+    "magenta":  ("#fde0dd", "#fcc5c0", "#fa9fb5", "#f768a1", "#ea4e9c",
+                "#dd3497", "#ae017e", "#7a0177", "#610070",  "#49006a"),
+    "flame":    ("#ffeda0", "#fed976", "#feb24c", "#fd8d3c", "#fc6d33",
+                "#fc4e2a", "#e31a1c", "#d00d21", "#bd0026", "#800026")
 }
 
 heatmap_modes = {
@@ -348,7 +352,7 @@ def dayS(n, colors, mode="streak", term="day"):
         levels = [(0, "#E6E6E6")] + zip([25,50,60,70,80,85,90,95,99], colors)
     elif mode == "avg": # review counts
         hm_leg = mw.col.hm_leg
-        levels = zip(hm_leg[9:], colors) # use positive legend scaling
+        levels = zip(hm_leg[9:], colors) # scale according to (positive) legend
     for l in levels:
         if n > l[0]:
             continue
