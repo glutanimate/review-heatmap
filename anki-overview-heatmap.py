@@ -39,7 +39,7 @@ HEATMAP_FORECAST_LIMIT = None # default: None, i.e. no limit
 
 # Color scheme configuration
 
-# valid options: olive, lime, anki
+# valid options: olive, lime, ice
 HEATMAP_COLOR_SCHEME = "lime"
 
 ### USER CONFIGURATION END ###
@@ -58,8 +58,8 @@ heatmap_colors = {
               "#669D45", "#648B3F", "#637939", "#4F6E30", "#3B6427"),
     "lime":  ("#D6E685", "#BDDB7A", "#A4D06F", "#8CC665", "#74BA58", 
               "#5CAE4C", "#44A340", "#378F36", "#2A7B2C", "#1E6823"),
-    "anki":  ("#0075CA", "#0068B8", "#005BA6", "#004E94", "#004182",
-              "#003470", "#00275E", "#001A4C", "#000D3A", "#000029")
+    "ice":   ("#A8D5F6", "#95C8F3", "#82BBF0", "#70AFEE", "#5DA2EB",
+              "#4A95E8", "#3889E6", "#257CE3", "#126FE0", "#0063DE")
 }
 
 # need to use raw strings due to non-escaped newlines in minified JS
