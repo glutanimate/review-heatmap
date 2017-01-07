@@ -266,6 +266,7 @@ def report_activity(self):
     cur = 0
     first_day = None
     tot = 0
+
     for idx, item in enumerate(revlog):
         cur += 1
         diff = item[0] # days ago
@@ -313,7 +314,12 @@ def report_activity(self):
         self.col.hm_avg = avg
 
     # forecast of due cards
-    forecast = self._due(1, limfcst)
+    if today not in revs_by_day:
+        # include forecast for today if no reviews, yet
+        startfcst = 0
+    else:
+        startfcst = 1
+    forecast = self._due(startfcst, limfcst)
     for item in forecast:
         day = today + item[0] * 86400
         due = sum(item[1:3])
