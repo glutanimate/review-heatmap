@@ -4,9 +4,11 @@
 
 Adds a **heatmap graph** to Anki's main window which visualizes past and future card review activity, similar to the contribution view on GitHub. Information on the **current streak** is displayed alongside the heatmap. Clicking on an item shows the cards reviewed on that day.
 
-![heatmap of past reviews](https://github.com/Glutanimate/anki-addons-misc/blob/master/screenshots/_anki-overview-heatmap-1.png)
+![heatmap of past reviews](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-1.png)
 
-![heatmap of pending reviews](https://github.com/Glutanimate/anki-addons-misc/blob/master/screenshots/_anki-overview-heatmap-2.png)
+![heatmap of pending reviews](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-2.png)
+
+![options menu](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-3.png)
 
 **Video Demonstration**
 
@@ -16,9 +18,9 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 **Further Information**
 
-For more information please check out [the original add-on description](./ANKIWEB.md)
+For more information please check out [the original add-on description](./ANKIWEB.md).
 
-[Link to add-on on AnkiWeb]()
+[Link to add-on on AnkiWeb](https://ankiweb.net/shared/info/1771074083)
 
 **Credits and License**
 
@@ -30,7 +32,5 @@ Ships with the following javascript libraries:
 
 - d3.js (v3.5.17), (c) Mike Bostock, BSD license
 - cal-heatmap (v3.6.2), (c) Wan Qi Chen, MIT license
-
-The code for this add-on is hosted in my [misc Anki add-ons repository](https://github.com/Glutanimate/anki-addons-misc).
 
 Licensed under the [GNU GPL v3](http://www.gnu.de/documents/gpl-3.0.en.html). 
