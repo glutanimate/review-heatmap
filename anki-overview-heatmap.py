@@ -87,9 +87,10 @@ heatmap_css = """
 .graph-label {fill: #808080;}
 .heatmap {margin-top: 2em;}
 .heatmap-controls {margin-bottom: 1em;}
+.streak {margin-top: 1em;}
 .streak-info {margin-left: 1em;}
-.sdata {font-weight: bold;}
-.streak{margin-top: 1em;}
+.sstats {font-weight: bold;}
+.dstats {color: #808080;}
 .cal-heatmap-container rect.highlight-now {
     stroke: black;}
 .cal-heatmap-container rect.highlight {
@@ -172,10 +173,14 @@ heatmap_script = r"""
 
 streak_div = r"""
 <div class="streak">
+    <span class="streak-info">Daily average:</span>
+    <span title="Average reviews on learning days" class="dstats">%s</span>
+    <span class="streak-info">Days learned:</span>
+    <span title="Percentage of days spent learning over entire review history" class="dstats">%s%%</span>
     <span class="streak-info">Longest streak:</span>
-    <span title="All types of reviews included" style="color: %s;" class="smax sdata">%s</span>
+    <span title="All types of reviews included" style="color: %s;" class="sstats">%s</span>
     <span class="streak-info">Current streak:</span>
-    <span title="All types of reviews included" style="color: %s;" class="scur sdata">%s</span>
+    <span title="All types of reviews included" style="color: %s;" class="sstats">%s</span>
 </div>
 """
 
@@ -298,9 +303,18 @@ def report_activity(self):
         scur = 0
 
     # adapt legend to number of average reviews across entire collection
-    avg = int(round(float(tot) / (idx+1)))
-    if avg < 20:
+    avg_cur = int(round(float(tot) / (idx+1)))
+    if avg_cur < 20:
         avg = 20 # set a default average if avg too low
+    else:
+        avg = avg_cur
+
+    # days learned
+    dlearn = int(round((today - first_day) / float(86400)))
+    if dlearn != 0:
+        plearn = int(round((len(revs_by_day) / float(dlearn)) * 100))
+    else:
+        plearn = 100 if len(revs_by_day) != 0 else 0
 
     if (self.wholeCollection and avg != self.col.hm_avg) or not self.col.hm_avg:
         legpos = [0.125*avg, 0.25*avg, 0.5*avg, 0.75*avg,
@@ -321,9 +335,9 @@ def report_activity(self):
     last_year = max(time.gmtime(last_day).tm_year, time.gmtime().tm_year)
 
     return gen_heatmap(revs_by_day, self.col.hm_leg, first_year, last_year,
-                       scur, smax)
+                       scur, smax, avg_cur, plearn)
 
-def gen_heatmap(data, legend, start, stop, scur, smax):
+def gen_heatmap(data, legend, start, stop, scur, smax, avg_cur, plearn):
     """Create heatmap script and markup"""
     config = mw.col.conf["heatmap"]
     mode = heatmap_modes[config["mode"]]
@@ -334,7 +348,7 @@ def gen_heatmap(data, legend, start, stop, scur, smax):
     css = heatmap_css % colors
     col_cur, str_cur = dayS(scur, colors)
     col_max, str_max = dayS(smax, colors)
-    streak =  streak_div % (col_max, str_max, col_cur, str_cur)
+    streak =  streak_div % (avg_cur, plearn, col_max, str_max, col_cur, str_cur)
 
     return heatmap_boilerplate + css + heatmap + script + streak
 
