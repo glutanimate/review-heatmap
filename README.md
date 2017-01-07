@@ -8,7 +8,9 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 ![heatmap of pending reviews](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-2.png)
 
-![options menu](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-3.png)
+![customized heatmap](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-3.png)
+
+![options menu](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-4.png)
 
 **Video Demonstration**
 
