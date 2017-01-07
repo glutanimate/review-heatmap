@@ -286,7 +286,7 @@ def report_activity(self):
         day = today + diff * 86400 # date in unix time
         if not first_day:
             first_day = day
-        reviews = sum(item[1:5]) # all reviews of any type on that day
+        reviews = sum(item[1:6]) # all reviews of any type on that day
         tot += reviews
         revs_by_day[day] = reviews
 
@@ -298,7 +298,7 @@ def report_activity(self):
         scur = 0
 
     # adapt legend to number of average reviews across entire collection
-    avg = tot / (idx+1)
+    avg = int(round(float(tot) / (idx+1)))
     if avg < 20:
         avg = 20 # set a default average if avg too low
 
