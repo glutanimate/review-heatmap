@@ -240,8 +240,9 @@ def add_heatmap_db(self, _old):
 
 def dayS(n):
     """Return color and string depending on number of items"""
-    levels = [(0, "#CBCBCC"), (20, "#D1D883"), (40, "#9CC069"),
-                (60, "#669D45"), (80, "#3B6427")]
+    colors = heatmap_colors[HEATMAP_COLOR_SCHEME]
+    levels = [(0, colors[1]), (20, colors[3]), (40, colors[5]),
+                (60, colors[7]), (80, colors[9])]
     for l in levels:
         if n > l[0]:
             continue
