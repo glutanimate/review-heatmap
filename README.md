@@ -14,7 +14,13 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 **Video Demonstration**
 
-[![YouTube: Anki add-on demo: Batch Note Editing](https://i.ytimg.com/vi/3Hk5TYdvKnM/mqdefault.jpg)](https://youtu.be/3Hk5TYdvKnM)
+*General overview*
+
+[![YouTube: Anki add-on: Review Heatmap](https://i.ytimg.com/vi/3Hk5TYdvKnM/mqdefault.jpg)](https://youtu.be/3Hk5TYdvKnM)
+
+*Customization*
+
+[![YouTube: Add-on Update: Review Heatmap](https://i.ytimg.com/vi/7vaZ4St0n68/mqdefault.jpg)](https://youtu.be/7vaZ4St0n68)
 
 (Make sure to enable closed-captions for comments on the demonstrated features)
 
