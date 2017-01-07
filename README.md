@@ -1,8 +1,20 @@
 ## Review Heatmap for Anki
 
-**Overview**
+<!-- MarkdownTOC -->
+
+- [Overview](#overview)
+- [Screenshots](#screenshots)
+- [Video Demonstration](#video-demonstration)
+- [Further Information](#further-information)
+- [Credits and License](#credits-and-license)
+
+<!-- /MarkdownTOC -->
+
+### Overview
 
 Adds a **heatmap graph** to Anki's main window which visualizes past and future card review activity, similar to the contribution view on GitHub. Information on the **current streak** is displayed alongside the heatmap. Clicking on an item shows the cards reviewed on that day.
+
+### Screenshots
 
 ![heatmap of past reviews](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-1.png)
 
@@ -12,7 +24,7 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 ![options menu](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-4.png)
 
-**Video Demonstration**
+### Video Demonstration
 
 *General overview*
 
@@ -24,13 +36,13 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 (Make sure to enable closed-captions for comments on the demonstrated features)
 
-**Further Information**
+### Further Information
 
 For more information please check out [the original add-on description](./ANKIWEB.md).
 
 [Link to add-on on AnkiWeb](https://ankiweb.net/shared/info/1771074083)
 
-**Credits and License**
+### Credits and License
 
 *Copyright (c) 2016-2017 [Glutanimate](https://github.com/Glutanimate)*
 
