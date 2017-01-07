@@ -110,14 +110,14 @@ heatmap_boilerplate = r"""
 .cal-heatmap-container .q10{fill: #D9D9D9}
 /* past reviews (shades of green): */
 .cal-heatmap-container .q11{fill: #DAE289}
-.cal-heatmap-container .q12{fill: #C8D47E}
-.cal-heatmap-container .q13{fill: #B6C673}
-.cal-heatmap-container .q14{fill: #A5B868}
-.cal-heatmap-container .q15{fill: #93AA5D}
-.cal-heatmap-container .q16{fill: #819C52}
-.cal-heatmap-container .q17{fill: #708E47}
-.cal-heatmap-container .q18{fill: #5E803C}
-.cal-heatmap-container .q19{fill: #4C7231}
+.cal-heatmap-container .q12{fill: #BBD179}
+.cal-heatmap-container .q13{fill: #9CC069}
+.cal-heatmap-container .q14{fill: #8AB45D}
+.cal-heatmap-container .q15{fill: #78A851}
+.cal-heatmap-container .q16{fill: #669D45}
+.cal-heatmap-container .q17{fill: #648B3F}
+.cal-heatmap-container .q18{fill: #637939}
+.cal-heatmap-container .q19{fill: #4F6E30}
 .cal-heatmap-container .q20{fill: #3B6427}
 </style>
 
