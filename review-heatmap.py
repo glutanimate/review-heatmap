@@ -27,28 +27,15 @@ from aqt.qt import *
 from aqt import mw
 from aqt.overview import Overview
 from aqt.deckbrowser import DeckBrowser
+from aqt.stats import DeckStats
+from aqt.webview import AnkiWebView
 from anki.stats import CollectionStats
 from anki.find import Finder
 from anki.hooks import wrap, addHook
+from aqt.utils import saveGeom, restoreGeom, maybeHideClose, addCloseShortcut
 
 
-heatmap_colors = {
-    "olive":    ("#dae289", "#bbd179", "#9cc069", "#8ab45d", "#78a851", 
-                "#669d45", "#648b3f", "#637939", "#4f6e30", "#3b6427"),
-    "lime":     ("#d6e685", "#bddb7a", "#a4d06f", "#8cc665", "#74ba58", 
-                "#5cae4c", "#44a340", "#378f36", "#2a7b2c", "#1e6823"),
-    "ice":      ("#a8d5f6", "#95c8f3", "#82bbf0", "#70afee", "#5da2eb",
-                "#4a95e8", "#3889e6", "#257ce3", "#126fe0", "#0063de"),
-    "magenta":  ("#fde0dd", "#fcc5c0", "#fa9fb5", "#f768a1", "#ea4e9c",
-                "#dd3497", "#ae017e", "#7a0177", "#610070",  "#49006a"),
-    "flame":    ("#ffeda0", "#fed976", "#feb24c", "#fd8d3c", "#fc6d33",
-                "#fc4e2a", "#e31a1c", "#d00d21", "#bd0026", "#800026")
-}
-
-heatmap_modes = {
-    "year": {"domain": 'year', "subDomain": 'day', "range": 1}, 
-    "months": {"domain": 'month', "subDomain": 'day', "range": 12}
-}
+### Heatmap boilerplate ###
 
 # need to use raw strings due to non-escaped newlines in minified JS
 js_d3 = r'''
@@ -202,52 +189,20 @@ ov_body = """
 <script>$(function () { $("#study").focus(); });</script>
 """
 
-def render_page_ov(self):
-    """Replace original _renderPage()
-    We use this instead of _body() in order to stay compatible 
-    with other add-ons"""
-    # self is overview
-    load_config()
-    self._body = ov_body # modified body with stats section
-    stats = self.mw.col.stats()
-    stats.wholeCollection = False
-    report = stats.report_activity()
 
-    but = self.mw.button
-    deck = self.mw.col.decks.current()
-    self.sid = deck.get("sharedFrom")
-    if self.sid:
-        self.sidVer = deck.get("ver", None)
-        shareLink = '<a class=smallLink href="review">Reviews and Updates</a>'
-    else:
-        shareLink = ""
-    self.web.stdHtml(self._body % dict(
-        deck=deck['name'],
-        shareLink=shareLink,
-        desc=self._desc(deck),
-        table=self._table(),
-        stats=report
-        ), self.mw.sharedCSS + self._css)
+### Stats and Heatmap generation ###
 
-def add_heatmap_db(self, _old):
-    """Add heatmap to _renderStats() return"""
-    #self is deckbrowser
-    load_config()
-    ret = _old(self)
-    stats = self.mw.col.stats()
-    stats.wholeCollection = True
-    report = stats.report_activity()
-    html = ret + report
-    return html
-
-def report_activity(self):
+def report_repactivity(self, nolimits=False):
     """Calculate stats and generate report"""
     #self is anki.stats.CollectionStats
     # set up limits
-    limhist = mw.col.conf['heatmap']['limhist']
-    limfcst = mw.col.conf['heatmap']['limfcst']
-    limhist = limhist if limhist != 0 else None
-    limfcst = limfcst if limfcst != 0 else None
+    if nolimits:
+        limhist, limfcst = None, None
+    else:
+        limhist = mw.col.conf['heatmap']['limhist']
+        limfcst = mw.col.conf['heatmap']['limfcst']
+        limhist = None if limhist == 0 else limhist
+        limfcst = None if limfcst == 0 else limfcst
 
     revlog = self._done(limhist, 1)
     if not revlog:
@@ -375,21 +330,29 @@ def dayS(n, colors, mode="streak", term="day"):
         retstr = "{0} {1}s".format(d, term)
     return color, retstr
 
-def my_link_handler(self, url, _old):
+
+### Link handler and Finder ###
+
+def my_link_handler(self, url, _old=None):
     """Launches Browser when clicking on a graph subdomain"""
     if ":" in url:
         (cmd, arg) = url.split(":")
     else:
         cmd = None
     if not cmd or cmd not in ("showseen", "showdue"):
+        if not _old:
+            return
         return _old(self, url)
     days = url.split(":")[1]
     if cmd == "showseen":
         search = "seen:" + days
     else:
         search = "prop:due=" + days
-    if isinstance(self, Overview):
-        search += " deck:current"
+    try:
+        if isinstance(self, Overview) or not self.wholeCollection:
+            search += " deck:current"
+    except AttributeError:
+        pass
     browser = aqt.dialogs.open("Browser", self.mw)
     browser.form.searchEdit.lineEdit().setText(search)
     browser.onSearch()
@@ -414,17 +377,44 @@ def add_finder(self, col):
     """Add custom finder to search dictionary"""
     self.search["seen"] = self.find_seen_on
 
-# Add-on configuration
 
+### Add-on configuration ###
+
+heatmap_colors = {
+    "olive":    ("#dae289", "#bbd179", "#9cc069", "#8ab45d", "#78a851", 
+                "#669d45", "#648b3f", "#637939", "#4f6e30", "#3b6427"),
+    "lime":     ("#d6e685", "#bddb7a", "#a4d06f", "#8cc665", "#74ba58", 
+                "#5cae4c", "#44a340", "#378f36", "#2a7b2c", "#1e6823"),
+    "ice":      ("#a8d5f6", "#95c8f3", "#82bbf0", "#70afee", "#5da2eb",
+                "#4a95e8", "#3889e6", "#257ce3", "#126fe0", "#0063de"),
+    "magenta":  ("#fde0dd", "#fcc5c0", "#fa9fb5", "#f768a1", "#ea4e9c",
+                "#dd3497", "#ae017e", "#7a0177", "#610070",  "#49006a"),
+    "flame":    ("#ffeda0", "#fed976", "#feb24c", "#fd8d3c", "#fc6d33",
+                "#fc4e2a", "#e31a1c", "#d00d21", "#bd0026", "#800026")
+}
+
+heatmap_modes = {
+    "year": {"domain": 'year', "subDomain": 'day', "range": 1}, 
+    "months": {"domain": 'month', "subDomain": 'day', "range": 12}
+}
+
+# use synced conf for settings that are device-agnostic
 default_conf = {
     "colors": "lime",
     "mode": "year",
     "limhist": 0,
     "limfcst": 0,
-    "version": 0.1
+    "version": 0.2
 }
 
-def load_config():
+# use local prefs for settings that might be device-specific
+default_prefs = {
+    "display": [True, True, True],
+    "version": 0.2
+}
+
+
+def load_config(ret=None):
     """Load and/or create add-on preferences"""
     # Synced preferences
     if not 'heatmap' in mw.col.conf:
@@ -433,22 +423,41 @@ def load_config():
         mw.col.setMod()
 
     elif mw.col.conf['heatmap']['version'] < default_conf['version']:
-        print("Updating synced config DB from earlier IO release")
+        print("Updating synced config DB from earlier add-on release")
         for key in list(default_conf.keys()):
             if key not in mw.col.conf['heatmap']:
-                mw.col.conf['heatmap'][key] = default_conf_syncd[key]
-        mw.col.conf['heatmap']['version'] = default_conf_syncd['version']
+                mw.col.conf['heatmap'][key] = default_conf[key]
+        mw.col.conf['heatmap']['version'] = default_conf['version']
         # insert other update actions here:
         mw.col.setMod()
+
+    # Local preferences
+    if not 'heatmap' in mw.pm.profile:
+        mw.pm.profile["heatmap"] = default_prefs
+
+    elif mw.pm.profile['heatmap']['version'] < default_prefs['version']:
+        print("Updating synced config DB from earlier add-on release")
+        for key in list(default_prefs.keys()):
+            if key not in mw.pm.profile['heatmap']:
+                mw.pm.profile['heatmap'][key] = default_prefs[key]
+        mw.pm.profile['heatmap']['version'] = default_prefs['version']
+        # insert other update actions here:
+        mw.col.setMod()
+
+    if ret == "conf":
+        return mw.col.conf['heatmap']
+    if ret == "prefs":
+        return mw.pm.profile['heatmap']
+    return mw.col.conf['heatmap'], mw.pm.profile['heatmap']
 
 class HeatmapOpts(QDialog):
     """Main Options dialog"""
     def __init__(self, mw):
         QDialog.__init__(self, parent=mw)
         self.setup_ui()
-        self.setup_values(mw.col.conf["heatmap"])
+        self.setup_values(mw.col.conf["heatmap"], mw.pm.profile['heatmap'])
 
-    def setup_values(self, config):
+    def setup_values(self, config, prefs):
         """Set up widget data based on provided config dict"""
         colsel = heatmap_colors.keys()
         idx = colsel.index(config["colors"])
@@ -458,6 +467,9 @@ class HeatmapOpts(QDialog):
         self.mode_sel.setCurrentIndex(idx)
         self.hist_sel.setValue(config["limhist"])
         self.fcst_sel.setValue(config["limfcst"])
+        self.db_cb.setChecked(prefs["display"][0])
+        self.ov_cb.setChecked(prefs["display"][1])
+        self.st_cb.setChecked(prefs["display"][2])
 
     def setup_ui(self):
         """Set up widgets and layouts"""
@@ -465,7 +477,9 @@ class HeatmapOpts(QDialog):
         mode_l = QLabel("Calendar Mode")
         hist_l = QLabel("History Limit")
         fcst_l = QLabel("Forecast Limit")
+        show_l = QLabel("Display heatmap on the following screens:")
         rule1 = self.create_horizontal_rule()
+        rule2 = self.create_horizontal_rule()
 
         self.col_sel = QComboBox()
         self.col_sel.addItems(heatmap_colors.keys())
@@ -473,7 +487,12 @@ class HeatmapOpts(QDialog):
         self.mode_sel.addItems(heatmap_modes.keys())
         self.hist_sel = QSpinBox()
         self.fcst_sel = QSpinBox()
+        self.db_cb = QCheckBox("Main screen")
+        self.ov_cb = QCheckBox("Deck screen")
+        self.st_cb = QCheckBox("Stats screen")
+        sel_tt = "Only applies to main screen and deck overview"
         for sel in (self.hist_sel, self.fcst_sel):
+            sel.setToolTip(sel_tt)
             sel.setRange(0, 1000000)
             sel.setSuffix(" days")
             sel.setSpecialValueText("No limit")
@@ -489,6 +508,11 @@ class HeatmapOpts(QDialog):
         grid.addWidget(self.hist_sel, 4, 1, 1, 2)
         grid.addWidget(fcst_l, 5, 0, 1, 1)
         grid.addWidget(self.fcst_sel, 5, 1, 1, 2)
+        grid.addWidget(rule2, 6, 0, 1, 3)
+        grid.addWidget(show_l, 7, 0, 1, 3)
+        grid.addWidget(self.db_cb)
+        grid.addWidget(self.ov_cb)
+        grid.addWidget(self.st_cb)
 
         # Main button box
         button_box = QDialogButtonBox(QDialogButtonBox.Ok
@@ -516,14 +540,18 @@ class HeatmapOpts(QDialog):
 
     def restore(self):
         """Restore colors and fields back to defaults"""
-        self.setup_values(default_conf)
+        self.setup_values(default_conf, default_prefs)
 
     def on_accept(self):
         """Apply changes on OK button press"""
-        mw.col.conf['heatmap']['colors'] = self.col_sel.currentText()
-        mw.col.conf['heatmap']['mode'] = self.mode_sel.currentText()
-        mw.col.conf['heatmap']['limhist'] = self.hist_sel.value()
-        mw.col.conf['heatmap']['limfcst'] = self.fcst_sel.value()
+        config = mw.col.conf['heatmap']
+        prefs = mw.pm.profile['heatmap']
+        config['colors'] = self.col_sel.currentText()
+        config['mode'] = self.mode_sel.currentText()
+        config['limhist'] = self.hist_sel.value()
+        config['limfcst'] = self.fcst_sel.value()
+        prefs['display'] = [i.isChecked() for i in
+                                (self.db_cb, self.ov_cb, self.st_cb)]
         mw.col.setMod()
         mw.reset()
         self.close()
@@ -537,18 +565,120 @@ def on_heatmap_settings(mw):
     dialog = HeatmapOpts(mw)
     dialog.exec_()
 
+
+### Deck browser and Overview ###
+
+def my_render_page_ov(self):
+    """Replace original _renderPage()
+    We use this instead of _body() in order to stay compatible 
+    with other add-ons"""
+    # self is overview
+    prefs = load_config("prefs")
+    self._body = ov_body # modified body with stats section
+    report = ""
+    if prefs["display"][1]:
+        stats = self.mw.col.stats()
+        stats.wholeCollection = False
+        report = stats.report_repactivity()
+
+    but = self.mw.button
+    deck = self.mw.col.decks.current()
+    self.sid = deck.get("sharedFrom")
+    if self.sid:
+        self.sidVer = deck.get("ver", None)
+        shareLink = '<a class=smallLink href="review">Reviews and Updates</a>'
+    else:
+        shareLink = ""
+    self.web.stdHtml(self._body % dict(
+        deck=deck['name'],
+        shareLink=shareLink,
+        desc=self._desc(deck),
+        table=self._table(),
+        stats=report
+        ), self.mw.sharedCSS + self._css)
+
+def add_heatmap_db(self, _old):
+    """Add heatmap to _renderStats() return"""
+    #self is deckbrowser
+    prefs = load_config("prefs")
+    ret = _old(self)
+    if not prefs["display"][0]:
+        return ret
+    stats = self.mw.col.stats()
+    stats.wholeCollection = True
+    report = stats.report_repactivity()
+    html = ret + report
+    return html
+
+### Stats window ###
+
+def my_reps_graph(self, _old):
+    """Wraps dueGraph and adds our heatmap to the stats screen"""
+    #self is anki.stats.CollectionStats
+    ret = _old(self)
+    prefs = load_config("prefs")
+    if not prefs["display"][2]:
+        return ret
+    report = self.report_repactivity(nolimits=True)
+    html = report + ret
+    return html
+
+def my_statswindow_init(self, mw):
+    """Custom stats window that uses AnkiWebView instead of QWebView"""
+    # self is aqt.stats.DeckWindow
+    QDialog.__init__(self, mw, Qt.Window)
+    self.mw = mw
+    self.name = "deckStats"
+    self.period = 0
+    self.form = aqt.forms.stats.Ui_Dialog()
+    self.oldPos = None
+    self.wholeCollection = False
+    self.setMinimumWidth(700)
+    f = self.form
+    f.setupUi(self)
+    # remove old webview created in form:
+    f.verticalLayout.removeWidget(f.web)
+    f.web.deleteLater()
+    f.web = AnkiWebView() # need to use AnkiWebView for linkhandler to work
+    f.web.setLinkHandler(self._linkHandler)
+    self.form.verticalLayout.insertWidget(0, f.web)
+    restoreGeom(self, self.name)
+    b = f.buttonBox.addButton(_("Save Image"),
+                                      QDialogButtonBox.ActionRole)
+    b.connect(b, SIGNAL("clicked()"), self.browser)
+    b.setAutoDefault(False)
+    c = self.connect
+    s = SIGNAL("clicked()")
+    c(f.groups, s, lambda: self.changeScope("deck"))
+    f.groups.setShortcut("g")
+    c(f.all, s, lambda: self.changeScope("collection"))
+    c(f.month, s, lambda: self.changePeriod(0))
+    c(f.year, s, lambda: self.changePeriod(1))
+    c(f.life, s, lambda: self.changePeriod(2))
+    c(f.web, SIGNAL("loadFinished(bool)"), self.loadFin)
+    maybeHideClose(self.form.buttonBox)
+    addCloseShortcut(self)
+    self.refresh()
+    self.show() # show instead of exec in order for browser to open properly
+
+
+### Hooks and wraps ###
+
 # Set up menus and hooks
 options_action = QAction("Review &Heatmap Options...", mw)
 options_action.triggered.connect(lambda _, o=mw: on_heatmap_settings(o))
 mw.form.menuTools.addAction(options_action)
 
 # Stats calculation and rendering
-CollectionStats.report_activity = report_activity
-Overview._renderPage = render_page_ov
+CollectionStats.report_repactivity = report_repactivity
+CollectionStats.dueGraph = wrap(CollectionStats.dueGraph, my_reps_graph, "around")
+DeckStats.__init__ = my_statswindow_init
+Overview._renderPage = my_render_page_ov
 DeckBrowser._renderStats = wrap(DeckBrowser._renderStats, add_heatmap_db, "around")
 
 # Custom link handler and finder
 Overview._linkHandler = wrap(Overview._linkHandler, my_link_handler, "around")
 DeckBrowser._linkHandler = wrap(DeckBrowser._linkHandler, my_link_handler, "around")
+DeckStats._linkHandler = my_link_handler
 Finder.find_seen_on = find_seen_on
 Finder.__init__ = wrap(Finder.__init__, add_finder, "after")
