@@ -402,8 +402,8 @@ heatmap_modes = {
 default_conf = {
     "colors": "lime",
     "mode": "year",
-    "limhist": 0,
-    "limfcst": 0,
+    "limhist": 365,
+    "limfcst": 90,
     "version": 0.2
 }
 
