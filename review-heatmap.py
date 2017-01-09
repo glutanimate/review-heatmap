@@ -636,7 +636,7 @@ def my_reps_graph(self, _old):
     ret = _old(self)
     config, prefs = load_config()
     smode = False
-    if not prefs["display"][0]:
+    if not prefs["display"][2]:
         if not prefs["statsvis"]:
             return ret
         smode = True
