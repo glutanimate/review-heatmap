@@ -8,13 +8,7 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 **Video Demonstration**
 
-*General overview*
-
-[![YouTube: Anki add-on: Review Heatmap](https://i.ytimg.com/vi/3Hk5TYdvKnM/mqdefault.jpg)](https://youtu.be/3Hk5TYdvKnM)
-
-*Customization*
-
-[![YouTube: Add-on Update: Review Heatmap](https://i.ytimg.com/vi/7vaZ4St0n68/mqdefault.jpg)](https://youtu.be/7vaZ4St0n68)
+[![YouTube: Anki add-on: Review Heatmap](https://i.ytimg.com/vi/3Hk5TYdvKnM/mqdefault.jpg)](https://youtu.be/3Hk5TYdvKnM)  [![YouTube: Add-on Update: Review Heatmap](https://i.ytimg.com/vi/7vaZ4St0n68/mqdefault.jpg)](https://youtu.be/7vaZ4St0n68)
 
 (Make sure to enable closed-captions for comments on the demonstrated features)
 
@@ -30,6 +24,27 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 - 5 different color schemes, 2 different calendar modes - all easily configured via an options menu
 - The heatmap is updated in real-time as you review more cards
 
+**Release log**
+
+- 2017-01-10 – **v0.5.0** – First major update. Lots of new features and improvements. See below for more information
+- 2017-01-02 – **v0.2.2** – Future review counts will also appear positive now (thanks to David on GitHub!)
+- 2017-01-02 – **v0.2.1** – The add-on should now be compatible with "More Overview Stats"
+- 2017-01-01 – **v0.2.0** – Switched from an absolute color scale to one that's relative to the average daily review count (inspired by the comment below). Fixed a bug with the calendar controls. Improved streak calculation.
+- 2016-12-31 – **v0.1.0** – Initial release
+
+**Latest Changelog**
+
+*v0.5.0*
+
+- **New**: Stats on average review counts and days learned, each graded with a custom color scale
+- **New**: Customizable calendar modes - display the days as a continuous year, or split them up into months
+- **New**: Customizable color schemes - choose between 5 different color palettes
+- **New**: You can now decide where the heatmap will appear
+- **New**: All of the above and all other settings can now be contolled through an options menu
+- **New**: The heatmap will also appear in the stats window now. This one is unaffacted by any limits and follows the interval settings set in the stats window.
+- Limit heatmap data range to 365 days for past reviews and 90 for pending reviews by default. This should improve performance on lower-end machines. These limits can be lifted in the options menu.
+- Lots of bug fixes and improvements
+
 **Configuration**
 
 The add-on can be customized through its options menu which can be found under *Tools* → *Review Heatmap Options...*.
@@ -38,15 +53,16 @@ Options included are:
 
 - *Color scheme*: Controls the general color scheme of the add-on. Offers 5 different options. *Lime* is the default.
 - *Calendar mode*: Governs how the calendar will be displayed. In the default *year* mode you will be presented with a continuous view of all 365 days in a year. The *months* mode breaks this up into the months of the year.
-- *History limit*: Days to look back. Limited to 365 by default. The heatmap in the stats window is unaffected by this limit.
-- *Forecast limit*: Days to look ahead. Limited to 90 by default. The heatmap in the stats window is unaffected by this limit.
+- *History limit*: Days to look back in the main and deck screen heatmaps. Limited to 365 by default. Setting this to '0' will lift the limit.
+- *Forecast limit*: Days to look ahead in the main and deck screen heatmaps. Limited to 90 by default. Setting this to '0' will lift the limit.
 - *Heatmap display settings*: Controls where the heatmap should appear. All three screens are active by default.
+- *Show streak stats even if heatmap disabled*: Whether or not to show the review streak even if the heatmap display has been disabled for a screen. Active by default as the streak stat calculation and display isn't too process-intensive.
 
 *Performance considerations*
 
 Calculating and generating the heatmap is expensive from a performance standpoint. The limits on card history and forecasts should strike a good balance between speed and informativity, but depending on your machine you might still experience a small slowdown when switching betweeen screens. If that's the case, you could try experimenting with limiting these values further, or disabling the heatmap display for the main and deck screens entirely.
 
-For a full overview of your entire review history and pending reviews you can always refer to the stats window heatmap which will be unaffected by these limits.
+For a full overview of your entire review history and pending reviews you can always refer to the stats window heatmap which is controlled by the settings at the bottom of the stats window rather than the add-on limits.
 
 **Other Notes**
 
@@ -54,7 +70,7 @@ Here's some more technical information for those inclined to it:
 
 *Interpretation of the graph*
 
-What is actually mapped on the heatmap is the number of card repetitions on that particular day, spanning all types of card activity (cards in learning, review cards and even cards that you crammed). The entries in the review log also contain cards that you might have deleted in the meantime. Both of these factors combined explain the incongruencies you might notice when comparing the noted review count to the listed cards when clicking on a day.
+What is actually mapped on the heatmap is the number of card repetitions on that particular day, spanning all types of card activity (cards in learning, review cards and even cards that you crammed). The entries in the review log also contain cards that you might have deleted in the meantime. Both of these factors combined explain the disparity you might notice when comparing the noted review count to the listed cards when clicking on a day.
 
 *Color legend*
 
@@ -62,9 +78,9 @@ The add-on uses a palette of 10 colours to visualize your card review activity. 
 
 The exact legend scale looks as follows:
 
-[0.125*avg, 0.25*avg, 0.5*avg, 0.75*avg, avg, 1.25*avg, 1.5*avg, 2*avg, 4*avg]
+[0.125avg, 0.25avg, 0.5avg, 0.75avg, avg, 1.25avg, 1.5avg, 2avg, 4avg]
 
-where avg is your daily average on learning days across your entire card collection. For consistency's sake, deck-specific heatmaps will also use the same scale, rather than one adjusted to the daily average of the deck.
+where avg is your daily average on learning days across your entire card collection. For consistency's sake, deck-specific heatmaps will also use this scale, rather than one adjusted to the daily average of the deck.
 
 The stats listed below the heatmap use the following legend scales:
 
@@ -83,26 +99,6 @@ In order to show the cards reviewed on a specific day the add-on adds a new sear
 **Bug Reports and Suggestions**
 
 **I can't reply to your comments on this page**. If you are experiencing an issue and would like me to help, please use the [official support thread](https://anki.tenderapp.com/discussions/add-ons/8707-review-heatmap-official-thread) on Anki's forums (no registration required).
-
-**Release log**
-
-- 2017-01-?? – **v0.5.0** – First major update. Lots of new features and improvements. See below for more information
-- 2017-01-02 – **v0.2.2** – Future review counts will appear positive as well now (thanks to David on GitHub!)
-- 2017-01-02 – **v0.2.1** – The add-on should now be compatible with "More Overview Stats"
-- 2017-01-01 – **v0.2.0** – Switched from an absolute color scale to one that's relative to the average daily review count (inspired by the comment below). Fixed a bug with the calendar controls. Improved streak calculation.
-- 2016-12-31 – **v0.1.0** – Initial release
-
-**Latest Changelog**
-
-*v0.5*
-
-- **New**: Stats on average review counts and days learned, each graded with a custom color scale
-- **New**: Customizable calendar modes - display the days as a continuous year, or split them up into months
-- **New**: Customizable color schemes - choose between 5 different color palettes
-- **New**: Options menu - customize color schemes and calendar modes, control data limits and heatmap display locations
-- Limit heatmap data range to 365 days for past reviews and 90 for pending reviews by default. This should improve performance on lower-end machines. These limits can be lifted in the options menu, of course.
-- **New**: The heatmap will also appear in the stats window now. This one is unaffacted by any limits.
-- Lots of bug fixes and improvements
 
 **Credits and License**
 
