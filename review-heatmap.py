@@ -25,14 +25,16 @@ import time
 import aqt
 from aqt.qt import *
 from aqt import mw
+
 from aqt.overview import Overview
 from aqt.deckbrowser import DeckBrowser
 from aqt.stats import DeckStats
 from aqt.webview import AnkiWebView
+from aqt.utils import saveGeom, restoreGeom, maybeHideClose, addCloseShortcut
+
 from anki.stats import CollectionStats
 from anki.find import Finder
 from anki.hooks import wrap, addHook
-from aqt.utils import saveGeom, restoreGeom, maybeHideClose, addCloseShortcut
 
 
 ### Heatmap boilerplate ###
@@ -61,6 +63,14 @@ heatmap_boilerplate = r"""
 <style>%s</style>
 """ % (js_d3, js_heat, css_heat)
 
+streak_css = """
+<style>
+.streak {margin-top: 2em;}
+.streak-info {margin-left: 1em;}
+.sstats {font-weight: bold;}
+</style>
+"""
+
 heatmap_css = """
 <style>
 .hm-btn {
@@ -76,15 +86,15 @@ heatmap_css = """
     color: #fff}
 .hm-btn:active {background: #000}
 .graph-label {fill: #808080;}
-.heatmap {margin-top: 2em;}
+.heatmap {margin-top: 1em;}
 .heatmap-controls {margin-bottom: 1em;}
-.streak {margin-top: 1em;}
-.streak-info {margin-left: 1em;}
-.sstats {font-weight: bold;}
 .cal-heatmap-container rect.highlight-now {
     stroke: black;}
 .cal-heatmap-container rect.highlight {
     stroke: #E9002E;}
+.streak {margin-top: 0.5em;}
+.streak-info {margin-left: 1em;}
+.sstats {font-weight: bold;}
 /* future reviews (shades of grey): */
 .cal-heatmap-container .q1{fill: #525252}
 .cal-heatmap-container .q2{fill: #616161}
@@ -122,43 +132,43 @@ heatmap_div = r"""
 
 heatmap_script = r"""
 <script type="text/javascript">
-    var cal = new CalHeatMap();
-    cal.init({
-        domain: "%s",
-        subDomain: "%s",
-        range: %d,
-        minDate: new Date(%s, 01),
-        maxDate: new Date(%s, 01),
-        cellSize: 10,
-        domainMargin: [1, 1, 1, 1],
-        itemName: ["review", "reviews"],
-        highlight: "now",
-        legend: %s,
-        displayLegend: false,
-        subDomainTitleFormat: {
-                empty: "No reviews on {date}",
-                filled: "{count} {name} {connector} {date}"
-            },
-        onClick: function(date, nb){
-            // call link handler
-            if (nb === null || nb == 0){
-                cal.highlight("now"); return;
-            }
-            today = new Date();
-            other = new Date(date);
-            if (nb >= 0) {
-                diff = today.getTime() - other.getTime();
-                cmd = "showseen:"
-            } else {
-                diff = other.getTime() - today.getTime();
-                cmd = "showdue:"
-            }
-            cal.highlight(["now", date])
-            diffdays = Math.ceil(diff / (1000 * 60 * 60 * 24))
-            py.link(cmd + diffdays)
+var cal = new CalHeatMap();
+cal.init({
+    domain: "%s",
+    subDomain: "%s",
+    range: %d,
+    minDate: new Date(%s, 01),
+    maxDate: new Date(%s, 01),
+    cellSize: 10,
+    domainMargin: [1, 1, 1, 1],
+    itemName: ["review", "reviews"],
+    highlight: "now",
+    legend: %s,
+    displayLegend: false,
+    subDomainTitleFormat: {
+            empty: "No reviews on {date}",
+            filled: "{count} {name} {connector} {date}"
         },
-        data: %s
-    });
+    onClick: function(date, nb){
+        // call link handler
+        if (nb === null || nb == 0){
+            cal.highlight("now"); return;
+        }
+        today = new Date();
+        other = new Date(date);
+        if (nb >= 0) {
+            diff = today.getTime() - other.getTime();
+            cmd = "showseen:"
+        } else {
+            diff = other.getTime() - today.getTime();
+            cmd = "showdue:"
+        }
+        cal.highlight(["now", date])
+        diffdays = Math.ceil(diff / (1000 * 60 * 60 * 24))
+        py.link(cmd + diffdays)
+    },
+    data: %s
+});
 </script>"""
 
 streak_div = r"""
@@ -192,18 +202,13 @@ ov_body = """
 
 ### Stats and Heatmap generation ###
 
-def report_repactivity(self, nolimits=False):
+def report_activity(self, limhist, limfcst, smode=False):
     """Calculate stats and generate report"""
     #self is anki.stats.CollectionStats
-    # set up limits
-    if nolimits:
-        limhist, limfcst = None, None
-    else:
-        limhist = mw.col.conf['heatmap']['limhist']
-        limfcst = mw.col.conf['heatmap']['limfcst']
-        limhist = None if limhist == 0 else limhist
-        limfcst = None if limfcst == 0 else limfcst
-
+    config = mw.col.conf["heatmap"]
+    limhist = None if limhist == 0 else limhist
+    limfcst = None if limfcst == 0 else limfcst
+    # get data
     revlog = self._done(limhist, 1)
     if not revlog:
         return ""
@@ -216,36 +221,35 @@ def report_repactivity(self, nolimits=False):
 
     # reviews and streaks:
     today = int(time.time())
-    revs_by_day = {}
-    streaks = []
-    cur = 0
     first_day = None
+    revs_by_day = {}
+    smax = 0
+    scur = 0
+    slast = 0
+    cur = 0
     tot = 0
-
     for idx, item in enumerate(revlog):
         cur += 1
         diff = item[0] # days ago
         try:
-            if diff + 1 != revlog[idx+1][0]: # days+1 ago
-                # streak over
-                streaks.append(cur)
-                cur = 0
+            next_entry = revlog[idx+1][0]
         except IndexError: # last item
-            streaks.append(cur)
-
+            slast = cur
+            next_entry = None
+        if diff + 1 != next_entry: # days+1 ago, streak over
+            if cur > smax:
+                smax = cur
+            cur = 0
         day = today + diff * 86400 # date in unix time
         if not first_day:
             first_day = day
         reviews = sum(item[1:6]) # all reviews of any type on that day
         tot += reviews
-        revs_by_day[day] = reviews
+        if not smode:
+            revs_by_day[day] = reviews
 
-    smax = max(streaks)
-    if revlog[-1][0] in (0, -1):
-        # is last recorded date today or yesterday?
-        scur = streaks[-1]
-    else:
-        scur = 0
+    if revlog[-1][0] in (0, -1): # is last recorded date today or yesterday?
+        scur = slast
 
     # adapt legend to number of average reviews across entire collection
     avg_cur = int(round(float(tot) / (idx+1)))
@@ -257,9 +261,9 @@ def report_repactivity(self, nolimits=False):
     # days learned
     dlearn = int(round((today - first_day) / float(86400)))
     if dlearn != 0:
-        pdays = int(round((len(revs_by_day) / float(dlearn)) * 100))
-    else:
-        pdays = 100 if len(revs_by_day) != 0 else 0
+        pdays = int(round(((idx+1) / float(dlearn))*100))
+    else: # review history only extends to yesterday
+        pdays = 100
 
     if (self.wholeCollection and avg != self.col.hm_avg) or not self.col.hm_avg:
         legpos = [0.125*avg, 0.25*avg, 0.5*avg, 0.75*avg,
@@ -268,9 +272,11 @@ def report_repactivity(self, nolimits=False):
         self.col.hm_leg = leg
         self.col.hm_avg = avg
 
+    if smode:
+        return streak_css + gen_streak(scur, smax, avg_cur, pdays, config)
+
     # forecast of due cards
-    if today not in revs_by_day:
-        # include forecast for today if no reviews, yet
+    if today not in revs_by_day: # include forecast for today if no reviews, yet
         startfcst = 0
     else:
         startfcst = 1
@@ -283,26 +289,31 @@ def report_repactivity(self, nolimits=False):
 
     first_year = time.gmtime(first_day).tm_year
     last_year = max(time.gmtime(last_day).tm_year, time.gmtime().tm_year)
+    heatmap = gen_heatmap(revs_by_day, self.col.hm_leg, first_year, last_year, config)
+    streak = gen_streak(scur, smax, avg_cur, pdays, config)
 
-    return gen_heatmap(revs_by_day, self.col.hm_leg, first_year, last_year,
-                       scur, smax, avg_cur, pdays)
+    return heatmap + streak
 
-def gen_heatmap(data, legend, start, stop, scur, smax, avg_cur, pdays):
+def gen_heatmap(data, legend, start, stop, config):
     """Create heatmap script and markup"""
-    config = mw.col.conf["heatmap"]
     mode = heatmap_modes[config["mode"]]
     colors = heatmap_colors[config["colors"]]
     rng = mode["range"]
     heatmap = heatmap_div % (rng, rng)
     script = heatmap_script % (mode["domain"], mode["subDomain"], rng, start, stop, legend, data)
     css = heatmap_css % colors
+    return heatmap_boilerplate + css + heatmap + script
+
+def gen_streak(scur, smax, avg_cur, pdays, config):
+    """Create heatmap markup"""
+    colors = heatmap_colors[config["colors"]]
     col_cur, str_cur = dayS(scur, colors)
     col_max, str_max = dayS(smax, colors)
     col_pdays = dayS(pdays, colors, mode="pdays")
     col_avg, str_avg = dayS(avg_cur, colors, mode="avg", term="review")
     streak = streak_div % (col_avg, str_avg, col_pdays, pdays, col_max, str_max, col_cur, str_cur)
+    return streak
 
-    return heatmap_boilerplate + css + heatmap + script + streak
 
 def dayS(n, colors, mode="streak", term="day"):
     """Return color and string depending on number of items"""
@@ -404,45 +415,36 @@ default_conf = {
     "mode": "year",
     "limhist": 365,
     "limfcst": 90,
-    "version": 0.2
+    "version": 0.3
 }
 
 # use local prefs for settings that might be device-specific
 default_prefs = {
     "display": [True, True, True],
-    "version": 0.2
+    "statsvis": True,
+    "version": 0.3
 }
-
 
 def load_config(ret=None):
     """Load and/or create add-on preferences"""
-    # Synced preferences
-    if not 'heatmap' in mw.col.conf:
-        # create initial configuration
-        mw.col.conf['heatmap'] = default_conf
-        mw.col.setMod()
+    configs = [
+        (mw.col.conf, default_conf),
+        (mw.pm.profile, default_prefs)
+    ]
+    for conf, default in configs:
+        if not 'heatmap' in conf:
+            # create initial configuration
+            conf['heatmap'] = default
+            mw.col.setMod()
 
-    elif mw.col.conf['heatmap']['version'] < default_conf['version']:
-        print("Updating synced config DB from earlier add-on release")
-        for key in list(default_conf.keys()):
-            if key not in mw.col.conf['heatmap']:
-                mw.col.conf['heatmap'][key] = default_conf[key]
-        mw.col.conf['heatmap']['version'] = default_conf['version']
-        # insert other update actions here:
-        mw.col.setMod()
-
-    # Local preferences
-    if not 'heatmap' in mw.pm.profile:
-        mw.pm.profile["heatmap"] = default_prefs
-
-    elif mw.pm.profile['heatmap']['version'] < default_prefs['version']:
-        print("Updating synced config DB from earlier add-on release")
-        for key in list(default_prefs.keys()):
-            if key not in mw.pm.profile['heatmap']:
-                mw.pm.profile['heatmap'][key] = default_prefs[key]
-        mw.pm.profile['heatmap']['version'] = default_prefs['version']
-        # insert other update actions here:
-        mw.col.setMod()
+        elif conf['heatmap']['version'] < default['version']:
+            print("Updating synced config DB from earlier add-on release")
+            for key in list(default.keys()):
+                if key not in conf['heatmap']:
+                    conf['heatmap'][key] = default[key]
+            conf['heatmap']['version'] = default['version']
+            # insert other update actions here:
+            mw.col.setMod()
 
     if ret == "conf":
         return mw.col.conf['heatmap']
@@ -470,6 +472,7 @@ class HeatmapOpts(QDialog):
         self.db_cb.setChecked(prefs["display"][0])
         self.ov_cb.setChecked(prefs["display"][1])
         self.st_cb.setChecked(prefs["display"][2])
+        self.streak_cb.setChecked(prefs["statsvis"])
 
     def setup_ui(self):
         """Set up widgets and layouts"""
@@ -480,6 +483,7 @@ class HeatmapOpts(QDialog):
         show_l = QLabel("Display heatmap on the following screens:")
         rule1 = self.create_horizontal_rule()
         rule2 = self.create_horizontal_rule()
+        rule3 = self.create_horizontal_rule()
 
         self.col_sel = QComboBox()
         self.col_sel.addItems(heatmap_colors.keys())
@@ -490,6 +494,7 @@ class HeatmapOpts(QDialog):
         self.db_cb = QCheckBox("Main screen")
         self.ov_cb = QCheckBox("Deck screen")
         self.st_cb = QCheckBox("Stats screen")
+        self.streak_cb = QCheckBox("Show streak stats even if heatmap disabled")
         sel_tt = "Only applies to main screen and deck overview"
         for sel in (self.hist_sel, self.fcst_sel):
             sel.setToolTip(sel_tt)
@@ -513,6 +518,9 @@ class HeatmapOpts(QDialog):
         grid.addWidget(self.db_cb)
         grid.addWidget(self.ov_cb)
         grid.addWidget(self.st_cb)
+        grid.addWidget(rule3, 9, 0, 1, 3)
+        grid.addWidget(self.streak_cb, 10, 0, 1, 3)
+
 
         # Main button box
         button_box = QDialogButtonBox(QDialogButtonBox.Ok
@@ -550,8 +558,8 @@ class HeatmapOpts(QDialog):
         config['mode'] = self.mode_sel.currentText()
         config['limhist'] = self.hist_sel.value()
         config['limfcst'] = self.fcst_sel.value()
-        prefs['display'] = [i.isChecked() for i in
-                                (self.db_cb, self.ov_cb, self.st_cb)]
+        prefs['display'] = [i.isChecked() for i in (self.db_cb, self.ov_cb, self.st_cb)]
+        prefs['statsvis'] = self.streak_cb.isChecked()
         mw.col.setMod()
         mw.reset()
         self.close()
@@ -573,13 +581,18 @@ def my_render_page_ov(self):
     We use this instead of _body() in order to stay compatible 
     with other add-ons"""
     # self is overview
-    prefs = load_config("prefs")
+    config, prefs = load_config()
     self._body = ov_body # modified body with stats section
     report = ""
-    if prefs["display"][1]:
+    if prefs["display"][1] or prefs["statsvis"]:
+        if prefs["statsvis"] and not prefs["display"][1]:
+            smode = True
+        else:
+            smode = False 
+        limhist, limfcst = config['limhist'], config['limfcst']
         stats = self.mw.col.stats()
         stats.wholeCollection = False
-        report = stats.report_repactivity()
+        report = stats.report_activity(limhist, limfcst, smode=smode)
 
     but = self.mw.button
     deck = self.mw.col.decks.current()
@@ -600,13 +613,18 @@ def my_render_page_ov(self):
 def add_heatmap_db(self, _old):
     """Add heatmap to _renderStats() return"""
     #self is deckbrowser
-    prefs = load_config("prefs")
+    config, prefs = load_config()
     ret = _old(self)
+    smode = False
     if not prefs["display"][0]:
-        return ret
+        if not prefs["statsvis"]:
+            return ret
+        smode = True
+    # set up limits
+    limhist, limfcst = config['limhist'], config['limfcst']
     stats = self.mw.col.stats()
     stats.wholeCollection = True
-    report = stats.report_repactivity()
+    report = stats.report_activity(limhist, limfcst, smode=smode)
     html = ret + report
     return html
 
@@ -616,10 +634,20 @@ def my_reps_graph(self, _old):
     """Wraps dueGraph and adds our heatmap to the stats screen"""
     #self is anki.stats.CollectionStats
     ret = _old(self)
-    prefs = load_config("prefs")
-    if not prefs["display"][2]:
-        return ret
-    report = self.report_repactivity(nolimits=True)
+    config, prefs = load_config()
+    smode = False
+    if not prefs["display"][0]:
+        if not prefs["statsvis"]:
+            return ret
+        smode = True
+    # set up limits
+    if self.type == 0:
+        limhist, limfcst = 31, 31
+    elif self.type == 1:
+        limhist, limfcst = 365, 365
+    elif self.type == 2:
+        limhist, limfcst = None, None
+    report = self.report_activity(limhist, limfcst, smode=smode)
     html = report + ret
     return html
 
@@ -643,8 +671,7 @@ def my_statswindow_init(self, mw):
     f.web.setLinkHandler(self._linkHandler)
     self.form.verticalLayout.insertWidget(0, f.web)
     restoreGeom(self, self.name)
-    b = f.buttonBox.addButton(_("Save Image"),
-                                      QDialogButtonBox.ActionRole)
+    b = f.buttonBox.addButton(_("Save Image"), QDialogButtonBox.ActionRole)
     b.connect(b, SIGNAL("clicked()"), self.browser)
     b.setAutoDefault(False)
     c = self.connect
@@ -670,7 +697,7 @@ options_action.triggered.connect(lambda _, o=mw: on_heatmap_settings(o))
 mw.form.menuTools.addAction(options_action)
 
 # Stats calculation and rendering
-CollectionStats.report_repactivity = report_repactivity
+CollectionStats.report_activity = report_activity
 CollectionStats.dueGraph = wrap(CollectionStats.dueGraph, my_reps_graph, "around")
 DeckStats.__init__ = my_statswindow_init
 Overview._renderPage = my_render_page_ov
