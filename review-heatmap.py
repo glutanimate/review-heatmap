@@ -80,7 +80,8 @@ heatmap_css = """
     padding: 2px 8px;
     border-radius: 3px;
     margin-left: 2px;
-    text-decoration: none;}
+    text-decoration: none;
+    user-select: none;}
 .hm-btn:hover {
     background: #808080;
     color: #fff}
@@ -620,7 +621,6 @@ def add_heatmap_db(self, _old):
         if not prefs["statsvis"]:
             return ret
         smode = True
-    # set up limits
     limhist, limfcst = config['limhist'], config['limfcst']
     stats = self.mw.col.stats()
     stats.wholeCollection = True
@@ -640,7 +640,6 @@ def my_reps_graph(self, _old):
         if not prefs["statsvis"]:
             return ret
         smode = True
-    # set up limits
     if self.type == 0:
         limhist, limfcst = 31, 31
     elif self.type == 1:
@@ -665,6 +664,7 @@ def my_statswindow_init(self, mw):
     f = self.form
     f.setupUi(self)
     # remove old webview created in form:
+    # (TODO: find a less hacky solution)
     f.verticalLayout.removeWidget(f.web)
     f.web.deleteLater()
     f.web = AnkiWebView() # need to use AnkiWebView for linkhandler to work
