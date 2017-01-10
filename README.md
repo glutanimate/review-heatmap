@@ -32,7 +32,7 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 *Customization*
 
-[![YouTube: Add-on Update: Review Heatmap](https://i.ytimg.com/vi/7vaZ4St0n68/mqdefault.jpg)](https://youtu.be/7vaZ4St0n68)
+[![YouTube: Add-on Update: Review Heatmap](https://i.ytimg.com/vi/2u8p0N47eUg/mqdefault.jpg)](https://youtu.be/2u8p0N47eUg)
 
 (Make sure to enable closed-captions for comments on the demonstrated features)
 
