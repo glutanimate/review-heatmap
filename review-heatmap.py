@@ -262,7 +262,7 @@ def report_activity(self, limhist, limfcst, smode=False):
     # days learned
     dlearn = int(round((today - first_day) / float(86400)))
     if dlearn != 0:
-        pdays = int(round(((idx+1) / float(dlearn))*100))
+        pdays = int(round(((idx+1) / float(dlearn+1))*100))
     else: # review history only extends to yesterday
         pdays = 100
 
@@ -393,9 +393,9 @@ def add_finder(self, col):
 ### Add-on configuration ###
 
 heatmap_colors = {
-    "olive":    ("#dae289", "#bbd179", "#9cc069", "#8ab45d", "#78a851", 
+    "olive":    ("#dae289", "#bbd179", "#9cc069", "#8ab45d", "#78a851",
                 "#669d45", "#648b3f", "#637939", "#4f6e30", "#3b6427"),
-    "lime":     ("#d6e685", "#bddb7a", "#a4d06f", "#8cc665", "#74ba58", 
+    "lime":     ("#d6e685", "#bddb7a", "#a4d06f", "#8cc665", "#74ba58",
                 "#5cae4c", "#44a340", "#378f36", "#2a7b2c", "#1e6823"),
     "ice":      ("#a8d5f6", "#95c8f3", "#82bbf0", "#70afee", "#5da2eb",
                 "#4a95e8", "#3889e6", "#257ce3", "#126fe0", "#0063de"),
@@ -406,7 +406,7 @@ heatmap_colors = {
 }
 
 heatmap_modes = {
-    "year": {"domain": 'year', "subDomain": 'day', "range": 1}, 
+    "year": {"domain": 'year', "subDomain": 'day', "range": 1},
     "months": {"domain": 'month', "subDomain": 'day', "range": 12}
 }
 
@@ -579,7 +579,7 @@ def on_heatmap_settings(mw):
 
 def my_render_page_ov(self):
     """Replace original _renderPage()
-    We use this instead of _body() in order to stay compatible 
+    We use this instead of _body() in order to stay compatible
     with other add-ons"""
     # self is overview
     config, prefs = load_config()
@@ -589,7 +589,7 @@ def my_render_page_ov(self):
         if prefs["statsvis"] and not prefs["display"][1]:
             smode = True
         else:
-            smode = False 
+            smode = False
         limhist, limfcst = config['limhist'], config['limfcst']
         stats = self.mw.col.stats()
         stats.wholeCollection = False
