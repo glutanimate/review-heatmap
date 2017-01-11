@@ -5,6 +5,7 @@
 - [Overview](#overview)
 - [Screenshots](#screenshots)
 - [Video Demonstration](#video-demonstration)
+- [Installation](#installation)
 - [Further Information](#further-information)
 - [Credits and License](#credits-and-license)
 
@@ -36,11 +37,23 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 (Make sure to enable closed-captions for comments on the demonstrated features)
 
+### Installation
+
+*AnkiWeb*
+
+[Link to the add-on on AnkiWeb](https://ankiweb.net/shared/info/1771074083)
+
+*Manual installation*
+
+1. Go to *Tools* -> *Add-ons* -> *Open add-ons folder*
+2. Find and delete `Review_Heatmap.py` and `Review_Heatmap.pyc`
+3. Download and extract the latest add-on release from the [releases tab](https://github.com/Glutanimate/review-heatmap/releases)
+4. Move `review-heatmap.py` into the add-ons folder
+5. Restart Anki
+
 ### Further Information
 
 For more information please check out [the original add-on description](./ANKIWEB.md).
-
-[Link to add-on on AnkiWeb](https://ankiweb.net/shared/info/1771074083)
 
 ### Credits and License
 
