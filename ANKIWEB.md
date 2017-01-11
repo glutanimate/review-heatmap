@@ -26,13 +26,16 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 **Release log**
 
+- 2017-01-11 – **v0.5.1** – Fix an error in the calculation of "days learned" (thanks to David!)
 - 2017-01-10 – **v0.5.0** – First major update. Lots of new features and improvements. See below for more information
 - 2017-01-02 – **v0.2.2** – Future review counts will also appear positive now (thanks to David on GitHub!)
 - 2017-01-02 – **v0.2.1** – The add-on should now be compatible with "More Overview Stats"
 - 2017-01-01 – **v0.2.0** – Switched from an absolute color scale to one that's relative to the average daily review count (inspired by the comment below). Fixed a bug with the calendar controls. Improved streak calculation.
 - 2016-12-31 – **v0.1.0** – Initial release
 
-**Latest Changelog**
+**Changelog and News**
+
+Some users have reported issues with updating to v0.5.0. If you are still having trouble installing the latest release you can try following the [manual installation instructions](https://github.com/Glutanimate/review-heatmap#screenshots), instead.
 
 *v0.5.0*
 
