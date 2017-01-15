@@ -26,10 +26,11 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 **Release log**
 
-- 2017-01-11 – **v0.5.1** – Fix an error in the calculation of "days learned" (thanks to David!)
+- 2017-01-15 – v0.5.2 – Fixed an issue where review counts larger than 999 would not display correctly
+- 2017-01-11 – v0.5.1 – Fixed an error in the calculation of "days learned" (thanks to David!)
 - 2017-01-10 – **v0.5.0** – First major update. Lots of new features and improvements. See below for more information
-- 2017-01-02 – **v0.2.2** – Future review counts will also appear positive now (thanks to David on GitHub!)
-- 2017-01-02 – **v0.2.1** – The add-on should now be compatible with "More Overview Stats"
+- 2017-01-02 – v0.2.2 – Future review counts will also appear positive now (thanks to David on GitHub!)
+- 2017-01-02 – v0.2.1 – The add-on should now be compatible with "More Overview Stats"
 - 2017-01-01 – **v0.2.0** – Switched from an absolute color scale to one that's relative to the average daily review count (inspired by the comment below). Fixed a bug with the calendar controls. Improved streak calculation.
 - 2016-12-31 – **v0.1.0** – Initial release
 
