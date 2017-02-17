@@ -628,6 +628,16 @@ def add_heatmap_db(self, _old):
     html = ret + report
     return html
 
+def toggle_heatmap():
+    """Toggle heatmap display on demand"""
+    prefs = mw.pm.profile['heatmap']
+    if mw.state == "deckBrowser":
+        prefs['display'][0] = not prefs['display'][0]
+        mw.deckBrowser.refresh()
+    elif mw.state == "overview":
+        prefs['display'][1] = not prefs['display'][1]
+        mw.overview.refresh()
+
 ### Stats window ###
 
 def my_reps_graph(self, _old):
@@ -695,6 +705,10 @@ def my_statswindow_init(self, mw):
 options_action = QAction("Review &Heatmap Options...", mw)
 options_action.triggered.connect(lambda _, o=mw: on_heatmap_settings(o))
 mw.form.menuTools.addAction(options_action)
+
+toggle_action = QAction(mw, triggered=toggle_heatmap)
+toggle_action.setShortcut(QKeySequence(_("Ctrl+R")))
+mw.addAction(toggle_action)
 
 # Stats calculation and rendering
 CollectionStats.report_activity = report_activity
