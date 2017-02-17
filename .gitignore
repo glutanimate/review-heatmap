@@ -1,4 +1,6 @@
-review-heatmap.sublime-project
-review-heatmap.sublime-workspace
-.directory
+*.pyo
 *.pyc
+.hidden
+.directory
+*.sublime-project
+*.sublime-workspace
