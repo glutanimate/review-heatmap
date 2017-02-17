@@ -1,8 +1,9 @@
 ## Review Heatmap for Anki
 
+Adds a **heatmap graph** to Anki's main window which visualizes past and future card review activity, similar to the contribution view on GitHub. Information on the **current streak** is displayed alongside the heatmap. Clicking on an item shows the cards reviewed on that day.
+
 <!-- MarkdownTOC -->
 
-- [Overview](#overview)
 - [Screenshots](#screenshots)
 - [Video Demonstration](#video-demonstration)
 - [Installation](#installation)
@@ -11,19 +12,11 @@
 
 <!-- /MarkdownTOC -->
 
-### Overview
-
-Adds a **heatmap graph** to Anki's main window which visualizes past and future card review activity, similar to the contribution view on GitHub. Information on the **current streak** is displayed alongside the heatmap. Clicking on an item shows the cards reviewed on that day.
-
 ### Screenshots
 
 ![heatmap of past reviews](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-1.png)
 
 ![heatmap of pending reviews](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-2.png)
-
-![customized heatmap](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-3.png)
-
-![options menu](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-4.png)
 
 ### Video Demonstration
 
@@ -46,14 +39,14 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 *Manual installation*
 
 1. Go to *Tools* -> *Add-ons* -> *Open add-ons folder*
-2. Find and delete `Review_Heatmap.py` and `Review_Heatmap.pyc`
+2. Find and delete `Review Heatmap.py` and `review_heatmap` (or `review_heatmap.py` if you were using an older version)
 3. Download and extract the latest add-on release from the [releases tab](https://github.com/Glutanimate/review-heatmap/releases)
-4. Move `review-heatmap.py` into the add-ons folder
+4. Move `Review Heatmap.py` and `review_heatmap` into the add-ons folder
 5. Restart Anki
 
 ### Further Information
 
-For more information please check out [the original add-on description](./ANKIWEB.md).
+For more information please check out [the add-on description](./ANKIWEB.md).
 
 ### Credits and License
 
