@@ -26,6 +26,7 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 **Release log**
 
+- 2017-02-19 - **v0.6.0** – Modularized the add-on - **Please remove any previous versions of the add-on before updating**
 - 2017-01-15 – v0.5.2 – Fixed an issue where review counts larger than 999 would not display correctly
 - 2017-01-11 – v0.5.1 – Fixed an error in the calculation of "days learned" (thanks to David!)
 - 2017-01-10 – **v0.5.0** – First major update. Lots of new features and improvements. See below for more information
@@ -34,9 +35,14 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 - 2017-01-01 – **v0.2.0** – Switched from an absolute color scale to one that's relative to the average daily review count (inspired by the comment below). Fixed a bug with the calendar controls. Improved streak calculation.
 - 2016-12-31 – **v0.1.0** – Initial release
 
-**Changelog and News**
+**Detailed Changelog and News**
 
-Some users have reported issues with updating to v0.5.0. If you are still having trouble installing the latest release you can try following the [manual installation instructions](https://github.com/Glutanimate/review-heatmap#screenshots), instead.
+*v0.6.0*:
+
+- **New**: Toggle heatmap display on the deck browser and overview pages by using <code>CTRL</code> + <code>R</code>
+- Changed: New modularized add-on structure which should make maintenance easier
+
+As this version uses a new file structure you will have to **remove older versions of the add-on** before updating. Otherwise you might end up with multiple heatmaps.
 
 *v0.5.0*
 
