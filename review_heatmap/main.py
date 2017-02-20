@@ -3,11 +3,11 @@
 """
 This file is part of the Review Heatmap add-on for Anki
 
+Main module.
+
 Copyright: Glutanimate 2016-2017
 License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 """
-
-### Main module ###
 
 import time
 
