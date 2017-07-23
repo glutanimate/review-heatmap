@@ -46,7 +46,7 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 ### Further Information
 
-For more information please check out [the add-on description](./ANKIWEB.md).
+For more information please check out [the add-on description](https://ankiweb.net/shared/info/1771074083).
 
 ### Credits and License
 
