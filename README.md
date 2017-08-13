@@ -6,17 +6,16 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 - [Screenshots](#screenshots)
 - [Video Demonstration](#video-demonstration)
-- [Installation](#installation)
-- [Further Information](#further-information)
+- [Documentation](#documentation)
 - [Credits and License](#credits-and-license)
 
 <!-- /MarkdownTOC -->
 
 ### Screenshots
 
-![heatmap of past reviews](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-1.png)
+![heatmap of past reviews](screenshots/review-heatmap-1.png)
 
-![heatmap of pending reviews](https://github.com/Glutanimate/review-heatmap/blob/master/screenshots/review-heatmap-2.png)
+![heatmap of pending reviews](screenshots/review-heatmap-2.png)
 
 ### Video Demonstration
 
@@ -30,27 +29,13 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 (Make sure to enable closed-captions for comments on the demonstrated features)
 
-### Installation
+### Documentation
 
-*AnkiWeb*
-
-[Link to the add-on on AnkiWeb](https://ankiweb.net/shared/info/1771074083)
-
-*Manual installation*
-
-1. Go to *Tools* -> *Add-ons* -> *Open add-ons folder*
-2. Find and delete `Review Heatmap.py` and `review_heatmap` (or `review_heatmap.py` if you were using an older version)
-3. Download and extract the latest add-on release from the [releases tab](https://github.com/Glutanimate/review-heatmap/releases)
-4. Move `Review Heatmap.py` and `review_heatmap` into the add-ons folder
-5. Restart Anki
-
-### Further Information
-
-For more information please check out [the add-on description](https://ankiweb.net/shared/info/1771074083).
+The installation and use of the add-on is documented in the [Wiki section](https://github.com/Glutanimate/review-heatmap/wiki) and a [series of video tutorials on YouTube](https://www.youtube.com/playlist?list=PL3MozITKTz5Y9owI163AJMYqKwhFrTKcT). More information may also be found in the [AnkiWeb description](docs/description.md).
 
 ### Credits and License
 
-*Copyright (c) 2016-2017 [Glutanimate](https://github.com/Glutanimate)*
+*Review Heatmap* is *Copyright © 2016-2017 [Aristotelis P.](https://glutanimate.com)*
 
 Inspired by GitHub's contribution calendar and *Forecast graph on Overview page* by Steve AW.
 
@@ -59,4 +44,4 @@ Ships with the following javascript libraries:
 - d3.js (v3.5.17), (c) Mike Bostock, BSD license
 - cal-heatmap (v3.6.2), (c) Wan Qi Chen, MIT license
 
-Licensed under the [GNU GPL v3](http://www.gnu.de/documents/gpl-3.0.en.html). 
+Licensed under the [GNU AGPL v3](https://www.gnu.org/licenses/agpl.html).
