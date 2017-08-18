@@ -49,7 +49,8 @@ def report_activity(self, limhist, limfcst, smode=False):
         self.col.hm_avg = None
 
     # reviews and streaks:
-    today = int(time.time())
+    today = self.col.sched.today # today in days since col creation time
+    today_unix = self.col.crt + today * 86400 # absolute unix timestamp
     first_day = None
     revs_by_day = {}
     smax = 0
@@ -57,6 +58,7 @@ def report_activity(self, limhist, limfcst, smode=False):
     slast = 0
     cur = 0
     tot = 0
+
     for idx, item in enumerate(revlog):
         cur += 1
         diff = item[0] # days ago
@@ -69,13 +71,13 @@ def report_activity(self, limhist, limfcst, smode=False):
             if cur > smax:
                 smax = cur
             cur = 0
-        day = today + diff * 86400 # date in unix time
+        day = today + diff
         if not first_day:
             first_day = day
         reviews = sum(item[1:6]) # all reviews of any type on that day
         tot += reviews
         if not smode:
-            revs_by_day[day] = reviews
+            revs_by_day[self.col.crt + day * 86400] = reviews # by unix time
 
     if revlog[-1][0] in (0, -1): # is last recorded date today or yesterday?
         scur = slast
@@ -88,7 +90,7 @@ def report_activity(self, limhist, limfcst, smode=False):
         avg = avg_cur
 
     # days learned
-    dlearn = int(round((today - first_day) / float(86400)))
+    dlearn = today - first_day
     if dlearn != 0:
         pdays = int(round(((idx+1) / float(dlearn+1))*100))
     else: # review history only extends to yesterday
@@ -105,19 +107,19 @@ def report_activity(self, limhist, limfcst, smode=False):
         return streak_css + gen_streak(scur, smax, avg_cur, pdays, config)
 
     # forecast of due cards
-    if today not in revs_by_day: # include forecast for today if no reviews, yet
+    if today_unix not in revs_by_day: # include forecast for today if no reviews, yet
         startfcst = 0
     else:
         startfcst = 1
     forecast = self._due(startfcst, limfcst)
     for item in forecast:
-        day = today + item[0] * 86400
+        day = today + item[0]
         due = sum(item[1:3])
-        revs_by_day[day] = -due # negative in order to apply colorscheme
+        revs_by_day[self.col.crt + day * 86400] = -due # negative in order to apply colorscheme
     last_day = day
 
-    first_year = time.gmtime(first_day).tm_year
-    last_year = max(time.gmtime(last_day).tm_year, time.gmtime().tm_year)
+    first_year = time.gmtime(first_day * 86400).tm_year
+    last_year = max(time.gmtime(last_day * 86400).tm_year, time.gmtime().tm_year)
     heatmap = gen_heatmap(revs_by_day, self.col.hm_leg, first_year, last_year, config)
     streak = gen_streak(scur, smax, avg_cur, pdays, config)
 
