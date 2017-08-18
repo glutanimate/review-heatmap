@@ -49,8 +49,9 @@ def report_activity(self, limhist, limfcst, smode=False):
         self.col.hm_avg = None
 
     # reviews and streaks:
+    col_crt = self.col.crt 
     today = self.col.sched.today # today in days since col creation time
-    today_unix = self.col.crt + today * 86400 # absolute unix timestamp
+    today_unix = col_crt + today * 86400 # absolute unix timestamp
     first_day = None
     revs_by_day = {}
     smax = 0
@@ -77,7 +78,7 @@ def report_activity(self, limhist, limfcst, smode=False):
         reviews = sum(item[1:6]) # all reviews of any type on that day
         tot += reviews
         if not smode:
-            revs_by_day[self.col.crt + day * 86400] = reviews # by unix time
+            revs_by_day[col_crt + day * 86400] = reviews # by unix time
 
     if revlog[-1][0] in (0, -1): # is last recorded date today or yesterday?
         scur = slast
@@ -115,11 +116,11 @@ def report_activity(self, limhist, limfcst, smode=False):
     for item in forecast:
         day = today + item[0]
         due = sum(item[1:3])
-        revs_by_day[self.col.crt + day * 86400] = -due # negative in order to apply colorscheme
+        revs_by_day[col_crt + day * 86400] = -due # negative in order to apply colorscheme
     last_day = day
 
-    first_year = time.gmtime(first_day * 86400).tm_year
-    last_year = max(time.gmtime(last_day * 86400).tm_year, time.gmtime().tm_year)
+    first_year = time.gmtime(col_crt + first_day * 86400).tm_year
+    last_year = max(time.gmtime(col_crt + last_day * 86400).tm_year, time.gmtime().tm_year)
     heatmap = gen_heatmap(revs_by_day, self.col.hm_leg, first_year, last_year, config)
     streak = gen_streak(scur, smax, avg_cur, pdays, config)
 
