@@ -4,7 +4,7 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 **COMPATIBILITY**
 
-This add-on only works with Anki's stable release branch (2.0.x ≥ 2.0.37). The 2.1 beta branch is **not supported** at this point in time.
+Initial tests have shown this add-on to both work on Anki 2.0.x and Anki 2.1.x. However, as the Anki 2.1.x line of releases is still in beta, I cannot provide any kind of official support for this platform. **Please do not report issues with Anki 2.1 in the review section below**. Instead, please report all issues you encounter on [GitHub](https://github.com/glutanimate/review-heatmap/issues). As I'm not using Anki 2.1.x myself it might take me a while to address them.
 
 **VIDEO DEMONSTRATION**
 
@@ -44,23 +44,17 @@ Simply follow the generic instructions listed below this add-on description.
 
 **DOCUMENTATION**
 
-The use of this add-on is documented in the [official Wiki](https://github.com/Glutanimate/review-heatmap/wiki) and a [series of video tutorials on YouTube](https://www.youtube.com/playlist?list=PL3MozITKTz5Y9owI163AJMYqKwhFrTKcT).
-
-If you are planning on using this add-on with AnkiMobile / AnkiDroid / AnkiWeb you should also read through [this section on the card introduction order on mobile clients](https://github.com/glutanimate/review-heatmap/wiki/Troubleshooting#wrong-card-introduction-order-on-ankimobileankidroidankiweb).
+The use of this add-on is documented in the [official Wiki](https://github.com/Glutanimate/review-heatmap/wiki) and the YouTube videos linked to above.
 
 **HELP**
 
-Please check out the [Troubleshooting section](https://github.com/Glutanimate/review-heatmap/wiki/Troubleshooting) in the Wiki if you are experiencing issues with the add-on.
-
-Bug reports and suggestions are always welcome, but it might take me a while to get to them. **Please do not post bug reports in the review section**, as I will not be able to help you or reply. Instead, please use the [official support thread](https://anki.tenderapp.com/discussions/add-ons/8707-review-heatmap-official-thread) (no registration necessary!).
+Please check out the [Troubleshooting section](https://github.com/Glutanimate/review-heatmap/wiki/Troubleshooting) in the Wiki if you are experiencing issues with the add-on. Bug reports and suggestions are always welcome, but it might take me a while to get to them. **Please do not post bug reports in the review section**, as I will not be able to help you or reply. Instead, please use the [official support thread](https://anki.tenderapp.com/discussions/add-ons/8707-review-heatmap-official-thread) (no registration necessary!).
 
 **CREDITS AND LICENSE**
 
 *Copyright (c) 2016-2017 [Aristotelis P.](https://github.com/Glutanimate)*
 
-Inspired by GitHub's contribution calendar and *Forecast graph on Overview page* by Steve AW.
-
-Ships with the following javascript libraries:
+Inspired by GitHub's contribution calendar and *Forecast graph on Overview page* by Steve AW. Ships with the following javascript libraries:
 
 - d3.js (v3.5.17), (c) Mike Bostock, BSD license
 - cal-heatmap (v3.6.2), (c) Wan Qi Chen, MIT license

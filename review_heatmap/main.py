@@ -25,6 +25,9 @@ from anki.stats import CollectionStats
 from anki.find import Finder
 from anki.hooks import wrap, addHook
 
+from anki import version as anki_version
+isAnki20 = anki_version.startswith("2.0.")
+
 from .config import *
 from .html import (heatmap_boilerplate, streak_css, streak_div,
     heatmap_css, heatmap_div, heatmap_script, ov_body)
@@ -132,7 +135,9 @@ def gen_heatmap(data, legend, start, stop, config):
     colors = heatmap_colors[config["colors"]]
     rng = mode["range"]
     heatmap = heatmap_div % (rng, rng)
-    script = heatmap_script % (mode["domain"], mode["subDomain"], rng, start, stop, legend, data)
+    bridge = "py.link" if isAnki20 else "pycmd"
+    script = heatmap_script % (mode["domain"], mode["subDomain"], 
+        rng, start, stop, legend, bridge, data)
     css = heatmap_css % colors
     return heatmap_boilerplate + css + heatmap + script
 
@@ -152,7 +157,7 @@ def dayS(n, colors, mode="streak", term="day"):
         levels = [(0, "#E6E6E6"), (14, colors[1]), (30, colors[3]),
                   (90, colors[5]), (180, colors[7]), (365, colors[8])]
     elif mode == "pdays": # percentages
-        levels = [(0, "#E6E6E6")] + zip([25,50,60,70,80,85,90,95,99], colors)
+        levels = [(0, "#E6E6E6")] + list(zip([25,50,60,70,80,85,90,95,99], colors))
     elif mode == "avg": # review counts
         hm_leg = mw.col.hm_leg
         levels = zip(hm_leg[9:], colors) # scale according to (positive) legend
@@ -197,7 +202,10 @@ def my_link_handler(self, url, _old=None):
         pass
     browser = aqt.dialogs.open("Browser", self.mw)
     browser.form.searchEdit.lineEdit().setText(search)
-    browser.onSearch()
+    if isAnki20:
+        browser.onSearch()
+    else:
+        browser.onSearchActivated()
 
 def find_seen_on(self, val):
     """Find cards seen on a specific day"""
@@ -248,13 +256,25 @@ def my_render_page_ov(self):
         shareLink = '<a class=smallLink href="review">Reviews and Updates</a>'
     else:
         shareLink = ""
-    self.web.stdHtml(self._body % dict(
-        deck=deck['name'],
-        shareLink=shareLink,
-        desc=self._desc(deck),
-        table=self._table(),
-        stats=report
-        ), self.mw.sharedCSS + self._css)
+
+    if isAnki20:
+        self.web.stdHtml(self._body % dict(
+            deck=deck['name'],
+            shareLink=shareLink,
+            desc=self._desc(deck),
+            table=self._table(),
+            stats=report
+            ), self.mw.sharedCSS + self._css)
+    else:
+        self.web.stdHtml(self._body % dict(
+                deck=deck['name'],
+                shareLink=shareLink,
+                desc=self._desc(deck),
+                table=self._table(),
+                stats=report
+            ),
+             css=["overview.css"],
+             js=["jquery.js", "overview.js"])
 
 def add_heatmap_db(self, _old):
     """Add heatmap to _renderStats() return"""
@@ -305,7 +325,11 @@ def my_reps_graph(self, _old):
     html = report + ret
     return html
 
-def my_statswindow_init(self, mw):
+
+def deckStatsInit21(self, mw):
+    self.form.web.onBridgeCmd = self._linkHandler
+
+def deckStatsInit20(self, mw):
     """Custom stats window that uses AnkiWebView instead of QWebView"""
     # self is aqt.stats.DeckWindow
     QDialog.__init__(self, mw, Qt.Window)
@@ -327,7 +351,7 @@ def my_statswindow_init(self, mw):
     self.form.verticalLayout.insertWidget(0, f.web)
     restoreGeom(self, self.name)
     b = f.buttonBox.addButton(_("Save Image"), QDialogButtonBox.ActionRole)
-    b.connect(b, SIGNAL("clicked()"), self.browser)
+    b.clicked.connect(self.browser)
     b.setAutoDefault(False)
     c = self.connect
     s = SIGNAL("clicked()")
@@ -358,7 +382,10 @@ mw.addAction(toggle_action)
 # Stats calculation and rendering
 CollectionStats.report_activity = report_activity
 CollectionStats.dueGraph = wrap(CollectionStats.dueGraph, my_reps_graph, "around")
-DeckStats.__init__ = my_statswindow_init
+if isAnki20:
+    DeckStats.__init__ = deckStatsInit20
+else:
+    DeckStats.__init__ = wrap(DeckStats.__init__, deckStatsInit21, "after")
 Overview._renderPage = my_render_page_ov
 DeckBrowser._renderStats = wrap(DeckBrowser._renderStats, add_heatmap_db, "around")
 
