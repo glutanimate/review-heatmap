@@ -141,7 +141,7 @@ cal.init({
         }
         cal.highlight(["now", date])
         diffdays = Math.ceil(diff / (1000 * 60 * 60 * 24))
-        py.link(cmd + diffdays)
+        %s(cmd + diffdays)
     },
     data: %s
 });

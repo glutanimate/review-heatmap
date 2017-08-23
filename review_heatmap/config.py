@@ -82,10 +82,10 @@ class HeatmapOpts(QDialog):
 
     def setup_values(self, config, prefs):
         """Set up widget data based on provided config dict"""
-        colsel = heatmap_colors.keys()
+        colsel = list(heatmap_colors.keys())
         idx = colsel.index(config["colors"])
         self.col_sel.setCurrentIndex(idx)
-        modesel = heatmap_modes.keys()
+        modesel = list(heatmap_modes.keys())
         idx = modesel.index(config["mode"])
         self.mode_sel.setCurrentIndex(idx)
         self.hist_sel.setValue(config["limhist"])
@@ -107,9 +107,9 @@ class HeatmapOpts(QDialog):
         rule3 = self.create_horizontal_rule()
 
         self.col_sel = QComboBox()
-        self.col_sel.addItems(heatmap_colors.keys())
+        self.col_sel.addItems(list(heatmap_colors.keys()))
         self.mode_sel = QComboBox()
-        self.mode_sel.addItems(heatmap_modes.keys())
+        self.mode_sel.addItems(list(heatmap_modes.keys()))
         self.hist_sel = QSpinBox()
         self.fcst_sel = QSpinBox()
         self.db_cb = QCheckBox("Main screen")
