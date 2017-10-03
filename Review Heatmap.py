@@ -23,4 +23,4 @@ License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 # This file imports Review Heatmap into Anki
 # Please don't edit this if you don't know what you're doing.
 
-import review_heatmap.main
+import review_heatmap
