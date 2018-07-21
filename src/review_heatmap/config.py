@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """
 This file is part of the Review Heatmap add-on for Anki
@@ -14,15 +14,15 @@ from aqt import mw
 
 heatmap_colors = {
     "olive":    ("#dae289", "#bbd179", "#9cc069", "#8ab45d", "#78a851",
-                "#669d45", "#648b3f", "#637939", "#4f6e30", "#3b6427"),
+                 "#669d45", "#648b3f", "#637939", "#4f6e30", "#3b6427"),
     "lime":     ("#d6e685", "#bddb7a", "#a4d06f", "#8cc665", "#74ba58",
-                "#5cae4c", "#44a340", "#378f36", "#2a7b2c", "#1e6823"),
+                 "#5cae4c", "#44a340", "#378f36", "#2a7b2c", "#1e6823"),
     "ice":      ("#a8d5f6", "#95c8f3", "#82bbf0", "#70afee", "#5da2eb",
-                "#4a95e8", "#3889e6", "#257ce3", "#126fe0", "#0063de"),
+                 "#4a95e8", "#3889e6", "#257ce3", "#126fe0", "#0063de"),
     "magenta":  ("#fde0dd", "#fcc5c0", "#fa9fb5", "#f768a1", "#ea4e9c",
-                "#dd3497", "#ae017e", "#7a0177", "#610070",  "#49006a"),
+                 "#dd3497", "#ae017e", "#7a0177", "#610070",  "#49006a"),
     "flame":    ("#ffeda0", "#fed976", "#feb24c", "#fd8d3c", "#fc6d33",
-                "#fc4e2a", "#e31a1c", "#d00d21", "#bd0026", "#800026")
+                 "#fc4e2a", "#e31a1c", "#d00d21", "#bd0026", "#800026")
 }
 
 heatmap_modes = {
@@ -45,6 +45,7 @@ default_prefs = {
     "statsvis": True,
     "version": 0.3
 }
+
 
 def load_config(ret=None):
     """Load and/or create add-on preferences"""
@@ -73,8 +74,10 @@ def load_config(ret=None):
         return mw.pm.profile['heatmap']
     return mw.col.conf['heatmap'], mw.pm.profile['heatmap']
 
+
 class HeatmapOpts(QDialog):
     """Main Options dialog"""
+
     def __init__(self, mw):
         QDialog.__init__(self, parent=mw)
         self.setup_ui()
@@ -115,7 +118,8 @@ class HeatmapOpts(QDialog):
         self.db_cb = QCheckBox("Main screen")
         self.ov_cb = QCheckBox("Deck screen")
         self.st_cb = QCheckBox("Stats screen")
-        self.streak_cb = QCheckBox("Show streak stats even if heatmap disabled")
+        self.streak_cb = QCheckBox(
+            "Show streak stats even if heatmap disabled")
         sel_tt = "Only applies to main screen and deck overview"
         for sel in (self.hist_sel, self.fcst_sel):
             sel.setToolTip(sel_tt)
@@ -142,12 +146,11 @@ class HeatmapOpts(QDialog):
         grid.addWidget(rule3, 9, 0, 1, 3)
         grid.addWidget(self.streak_cb, 10, 0, 1, 3)
 
-
         # Main button box
         button_box = QDialogButtonBox(QDialogButtonBox.Ok
-                        | QDialogButtonBox.Cancel)
+                                      | QDialogButtonBox.Cancel)
         defaults_btn = button_box.addButton("Defaults",
-           QDialogButtonBox.ResetRole)
+                                            QDialogButtonBox.ResetRole)
         defaults_btn.clicked.connect(self.restore)
         button_box.accepted.connect(self.on_accept)
         button_box.rejected.connect(self.on_reject)
@@ -179,7 +182,8 @@ class HeatmapOpts(QDialog):
         config['mode'] = self.mode_sel.currentText()
         config['limhist'] = self.hist_sel.value()
         config['limfcst'] = self.fcst_sel.value()
-        prefs['display'] = [i.isChecked() for i in (self.db_cb, self.ov_cb, self.st_cb)]
+        prefs['display'] = [i.isChecked()
+                            for i in (self.db_cb, self.ov_cb, self.st_cb)]
         prefs['statsvis'] = self.streak_cb.isChecked()
         mw.col.setMod()
         mw.reset()
@@ -188,6 +192,7 @@ class HeatmapOpts(QDialog):
     def on_reject(self):
         """Dismiss changes on Close button press"""
         self.close()
+
 
 def on_heatmap_settings(mw):
     """Call settings dialog"""

@@ -5,7 +5,7 @@ This file is part of the Review Heatmap add-on for Anki.
 
 Global variables
 
-Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
+Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 

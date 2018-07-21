@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 """
 This file is part of the Review Heatmap add-on for Anki
@@ -23,20 +23,19 @@ from aqt.utils import restoreGeom, maybeHideClose, addCloseShortcut
 
 from anki.stats import CollectionStats
 from anki.find import Finder
-from anki.hooks import wrap, addHook
+from anki.hooks import wrap
 
-from anki import version as anki_version
-isAnki20 = anki_version.startswith("2.0.")
-
+from .consts import anki21
 from .config import *
-from .html import (heatmap_boilerplate, streak_css, streak_div,
-    heatmap_css, heatmap_div, heatmap_script, ov_body)
+from .web import (heatmap_boilerplate, streak_css, streak_div,
+                  heatmap_css, heatmap_div, heatmap_script, ov_body)
 
 ### Stats and Heatmap generation ###
 
+
 def report_activity(self, limhist, limfcst, smode=False):
     """Calculate stats and generate report"""
-    #self is anki.stats.CollectionStats
+    # self is anki.stats.CollectionStats
     config = mw.col.conf["heatmap"]
     limhist = None if limhist == 0 else limhist
     limfcst = None if limfcst == 0 else limfcst
@@ -48,13 +47,13 @@ def report_activity(self, limhist, limfcst, smode=False):
     # set up reused attributes
     try:
         self.col.hm_avg
-    except AttributeError: # avg for col not set
+    except AttributeError:  # avg for col not set
         self.col.hm_avg = None
 
     # reviews and streaks:
-    col_crt = self.col.crt 
-    today = self.col.sched.today # today in days since col creation time
-    today_unix = col_crt + today * 86400 # absolute unix timestamp
+    col_crt = self.col.crt
+    today = self.col.sched.today  # today in days since col creation time
+    today_unix = col_crt + today * 86400  # absolute unix timestamp
     first_day = None
     revs_by_day = {}
     smax = 0
@@ -65,31 +64,31 @@ def report_activity(self, limhist, limfcst, smode=False):
 
     for idx, item in enumerate(revlog):
         cur += 1
-        diff = item[0] # days ago
+        diff = item[0]  # days ago
         try:
             next_entry = revlog[idx+1][0]
-        except IndexError: # last item
+        except IndexError:  # last item
             slast = cur
             next_entry = None
-        if diff + 1 != next_entry: # days+1 ago, streak over
+        if diff + 1 != next_entry:  # days+1 ago, streak over
             if cur > smax:
                 smax = cur
             cur = 0
         day = today + diff
         if not first_day:
             first_day = day
-        reviews = sum(item[1:6]) # all reviews of any type on that day
+        reviews = sum(item[1:6])  # all reviews of any type on that day
         tot += reviews
         if not smode:
-            revs_by_day[col_crt + day * 86400] = reviews # by unix time
+            revs_by_day[col_crt + day * 86400] = reviews  # by unix time
 
-    if revlog[-1][0] in (0, -1): # is last recorded date today or yesterday?
+    if revlog[-1][0] in (0, -1):  # is last recorded date today or yesterday?
         scur = slast
 
     # adapt legend to number of average reviews across entire collection
     avg_cur = int(round(float(tot) / (idx+1)))
     if avg_cur < 20:
-        avg = 20 # set a default average if avg too low
+        avg = 20  # set a default average if avg too low
     else:
         avg = avg_cur
 
@@ -97,7 +96,7 @@ def report_activity(self, limhist, limfcst, smode=False):
     dlearn = today - first_day
     if dlearn != 0:
         pdays = int(round(((idx+1) / float(dlearn+1))*100))
-    else: # review history only extends to yesterday
+    else:  # review history only extends to yesterday
         pdays = 100
 
     if (self.wholeCollection and avg != self.col.hm_avg) or not self.col.hm_avg:
@@ -111,7 +110,7 @@ def report_activity(self, limhist, limfcst, smode=False):
         return streak_css + gen_streak(scur, smax, avg_cur, pdays, config)
 
     # forecast of due cards
-    if today_unix not in revs_by_day: # include forecast for today if no reviews, yet
+    if today_unix not in revs_by_day:  # include forecast for today if no reviews, yet
         startfcst = 0
     else:
         startfcst = 1
@@ -119,15 +118,19 @@ def report_activity(self, limhist, limfcst, smode=False):
     for item in forecast:
         day = today + item[0]
         due = sum(item[1:3])
-        revs_by_day[col_crt + day * 86400] = -due # negative in order to apply colorscheme
+        # negative in order to apply colorscheme
+        revs_by_day[col_crt + day * 86400] = -due
     last_day = day
 
     first_year = time.gmtime(col_crt + first_day * 86400).tm_year
-    last_year = max(time.gmtime(col_crt + last_day * 86400).tm_year, time.gmtime().tm_year)
-    heatmap = gen_heatmap(revs_by_day, self.col.hm_leg, first_year, last_year, config)
+    last_year = max(time.gmtime(col_crt + last_day *
+                                86400).tm_year, time.gmtime().tm_year)
+    heatmap = gen_heatmap(revs_by_day, self.col.hm_leg,
+                          first_year, last_year, config)
     streak = gen_streak(scur, smax, avg_cur, pdays, config)
 
     return heatmap + streak
+
 
 def gen_heatmap(data, legend, start, stop, config):
     """Create heatmap script and markup"""
@@ -135,11 +138,12 @@ def gen_heatmap(data, legend, start, stop, config):
     colors = heatmap_colors[config["colors"]]
     rng = mode["range"]
     heatmap = heatmap_div % (rng, rng)
-    bridge = "py.link" if isAnki20 else "pycmd"
-    script = heatmap_script % (mode["domain"], mode["subDomain"], 
-        rng, start, stop, legend, bridge, data)
+    bridge = "pycmd" if anki21 else "py.link"
+    script = heatmap_script % (mode["domain"], mode["subDomain"],
+                               rng, start, stop, legend, bridge, data)
     css = heatmap_css % colors
     return heatmap_boilerplate + css + heatmap + script
+
 
 def gen_streak(scur, smax, avg_cur, pdays, config):
     """Create heatmap markup"""
@@ -148,26 +152,30 @@ def gen_streak(scur, smax, avg_cur, pdays, config):
     col_max, str_max = dayS(smax, colors)
     col_pdays = dayS(pdays, colors, mode="pdays")
     col_avg, str_avg = dayS(avg_cur, colors, mode="avg", term="review")
-    streak = streak_div % (col_avg, str_avg, col_pdays, pdays, col_max, str_max, col_cur, str_cur)
+    streak = streak_div % (col_avg, str_avg, col_pdays,
+                           pdays, col_max, str_max, col_cur, str_cur)
     return streak
+
 
 def dayS(n, colors, mode="streak", term="day"):
     """Return color and string depending on number of items"""
-    if mode == "streak": # days
+    if mode == "streak":  # days
         levels = [(0, "#E6E6E6"), (14, colors[1]), (30, colors[3]),
                   (90, colors[5]), (180, colors[7]), (365, colors[8])]
-    elif mode == "pdays": # percentages
-        levels = [(0, "#E6E6E6")] + list(zip([25,50,60,70,80,85,90,95,99], colors))
-    elif mode == "avg": # review counts
+    elif mode == "pdays":  # percentages
+        levels = [(0, "#E6E6E6")] + \
+            list(zip([25, 50, 60, 70, 80, 85, 90, 95, 99], colors))
+    elif mode == "avg":  # review counts
         hm_leg = mw.col.hm_leg
-        levels = zip(hm_leg[9:], colors) # scale according to (positive) legend
+        # scale according to (positive) legend
+        levels = zip(hm_leg[9:], colors)
     for l in levels:
         if n > l[0]:
             continue
         color = l[1]
         break
     else:
-         color = colors[9]
+        color = colors[9]
     if mode == "pdays":
         return color
     d = str(n)
@@ -202,10 +210,11 @@ def my_link_handler(self, url, _old=None):
         pass
     browser = aqt.dialogs.open("Browser", self.mw)
     browser.form.searchEdit.lineEdit().setText(search)
-    if isAnki20:
+    if not anki21:
         browser.onSearch()
     else:
         browser.onSearchActivated()
+
 
 def find_seen_on(self, val):
     """Find cards seen on a specific day"""
@@ -223,6 +232,7 @@ def find_seen_on(self, val):
     # results are empty sometimes, possibly because corresponding cards deleted?
     return ("c.id in (select cid from revlog where id between %d and %d)" % (cutoff1, cutoff2))
 
+
 def add_finder(self, col):
     """Add custom finder to search dictionary"""
     self.search["seen"] = self.find_seen_on
@@ -236,7 +246,7 @@ def my_render_page_ov(self):
     with other add-ons"""
     # self is overview
     config, prefs = load_config()
-    self._body = ov_body # modified body with stats section
+    self._body = ov_body  # modified body with stats section
     report = ""
     if prefs["display"][1] or prefs["statsvis"]:
         if prefs["statsvis"] and not prefs["display"][1]:
@@ -248,7 +258,6 @@ def my_render_page_ov(self):
         stats.wholeCollection = False
         report = stats.report_activity(limhist, limfcst, smode=smode)
 
-    but = self.mw.button
     deck = self.mw.col.decks.current()
     self.sid = deck.get("sharedFrom")
     if self.sid:
@@ -257,24 +266,25 @@ def my_render_page_ov(self):
     else:
         shareLink = ""
 
-    if isAnki20:
+    if not anki21:
         self.web.stdHtml(self._body % dict(
             deck=deck['name'],
             shareLink=shareLink,
             desc=self._desc(deck),
             table=self._table(),
             stats=report
-            ), self.mw.sharedCSS + self._css)
+        ), self.mw.sharedCSS + self._css)
     else:
         self.web.stdHtml(self._body % dict(
-                deck=deck['name'],
-                shareLink=shareLink,
-                desc=self._desc(deck),
-                table=self._table(),
-                stats=report
-            ),
-             css=["overview.css"],
-             js=["jquery.js", "overview.js"])
+            deck=deck['name'],
+            shareLink=shareLink,
+            desc=self._desc(deck),
+            table=self._table(),
+            stats=report
+        ),
+            css=["overview.css"],
+            js=["jquery.js", "overview.js"])
+
 
 def add_heatmap_db(self, _old):
     """Add heatmap to _renderStats() return"""
@@ -293,6 +303,7 @@ def add_heatmap_db(self, _old):
     html = ret + report
     return html
 
+
 def toggle_heatmap():
     """Toggle heatmap display on demand"""
     prefs = mw.pm.profile['heatmap']
@@ -304,6 +315,7 @@ def toggle_heatmap():
         mw.overview.refresh()
 
 ### Stats window ###
+
 
 def my_reps_graph(self, _old):
     """Wraps dueGraph and adds our heatmap to the stats screen"""
@@ -329,6 +341,7 @@ def my_reps_graph(self, _old):
 def deckStatsInit21(self, mw):
     self.form.web.onBridgeCmd = self._linkHandler
 
+
 def deckStatsInit20(self, mw):
     """Custom stats window that uses AnkiWebView instead of QWebView"""
     # self is aqt.stats.DeckWindow
@@ -346,7 +359,7 @@ def deckStatsInit20(self, mw):
     # (TODO: find a less hacky solution)
     f.verticalLayout.removeWidget(f.web)
     f.web.deleteLater()
-    f.web = AnkiWebView() # need to use AnkiWebView for linkhandler to work
+    f.web = AnkiWebView()  # need to use AnkiWebView for linkhandler to work
     f.web.setLinkHandler(self._linkHandler)
     self.form.verticalLayout.insertWidget(0, f.web)
     restoreGeom(self, self.name)
@@ -365,7 +378,7 @@ def deckStatsInit20(self, mw):
     maybeHideClose(self.form.buttonBox)
     addCloseShortcut(self)
     self.refresh()
-    self.show() # show instead of exec in order for browser to open properly
+    self.show()  # show instead of exec in order for browser to open properly
 
 
 ### Hooks and wraps ###
@@ -381,17 +394,20 @@ mw.addAction(toggle_action)
 
 # Stats calculation and rendering
 CollectionStats.report_activity = report_activity
-CollectionStats.dueGraph = wrap(CollectionStats.dueGraph, my_reps_graph, "around")
-if isAnki20:
+CollectionStats.dueGraph = wrap(
+    CollectionStats.dueGraph, my_reps_graph, "around")
+if not anki21:
     DeckStats.__init__ = deckStatsInit20
 else:
     DeckStats.__init__ = wrap(DeckStats.__init__, deckStatsInit21, "after")
 Overview._renderPage = my_render_page_ov
-DeckBrowser._renderStats = wrap(DeckBrowser._renderStats, add_heatmap_db, "around")
+DeckBrowser._renderStats = wrap(
+    DeckBrowser._renderStats, add_heatmap_db, "around")
 
 # Custom link handler and finder
 Overview._linkHandler = wrap(Overview._linkHandler, my_link_handler, "around")
-DeckBrowser._linkHandler = wrap(DeckBrowser._linkHandler, my_link_handler, "around")
+DeckBrowser._linkHandler = wrap(
+    DeckBrowser._linkHandler, my_link_handler, "around")
 DeckStats._linkHandler = my_link_handler
 Finder.find_seen_on = find_seen_on
 Finder.__init__ = wrap(Finder.__init__, add_finder, "after")
