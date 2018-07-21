@@ -1,6 +1,6 @@
 ## Review Heatmap for Anki
 
-Adds a **heatmap graph** to Anki's main window which visualizes past and future card review activity, similar to the contribution view on GitHub. Information on the **current streak** is displayed alongside the heatmap. Clicking on an item shows the cards reviewed on that day.
+Adds a **heatmap graph** to [Anki](https://apps.ankiweb.net/)'s main window which visualizes past and future card review activity, similar to the contribution view on GitHub. Information on the **current streak** is displayed alongside the heatmap. Clicking on an item shows the cards reviewed on that day.
 
 <!-- MarkdownTOC -->
 
@@ -35,7 +35,7 @@ The installation and use of the add-on is documented in the [Wiki section](https
 
 ### Credits and License
 
-*Review Heatmap* is *Copyright © 2016-2017 [Aristotelis P.](https://glutanimate.com)*
+*Review Heatmap* is *Copyright © 2016-2018 [Aristotelis P.](https://glutanimate.com)*
 
 Inspired by GitHub's contribution calendar and *Forecast graph on Overview page* by Steve AW.
 

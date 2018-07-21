@@ -4,7 +4,7 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 **COMPATIBILITY**
 
-Initial tests have shown this add-on to both work on Anki 2.0.x and Anki 2.1.x. However, as the Anki 2.1.x line of releases is still in beta, I cannot provide any kind of official support for this platform. **Please do not report issues with Anki 2.1 in the review section below**. Instead, please report all issues you encounter on [GitHub](https://github.com/glutanimate/review-heatmap/issues). As I'm not using Anki 2.1.x myself it might take me a while to address them.
+This add-on is designed to work both on Anki 2.0 and Anki 2.1. However, as Anki 2.1 is still being tested it is possible that a future beta release will break 2.1 compatibility. **Please do not report issues with Anki 2.1 in the review section below**. Instead, please report all issues you encounter on [GitHub](https://github.com/glutanimate/hierarchical-tags/issues).
 
 **VIDEO DEMONSTRATION**
 
@@ -52,7 +52,7 @@ Please check out the [Troubleshooting section](https://github.com/Glutanimate/re
 
 **CREDITS AND LICENSE**
 
-*Copyright (c) 2016-2017 [Aristotelis P.](https://github.com/Glutanimate)*
+*Copyright (c) 2016-2018 [Aristotelis P.](https://github.com/Glutanimate)*
 
 Inspired by GitHub's contribution calendar and *Forecast graph on Overview page* by Steve AW. Ships with the following javascript libraries:
 
