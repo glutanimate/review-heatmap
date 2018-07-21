@@ -5,13 +5,13 @@ This file is part of the Review Heatmap add-on for Anki
 
 Handles HTML and JS templates used by the add-on.
 
-Review Heatmp ships with the following third-part javascript libraries:
+This module ships with the following third-party javascript libraries:
 
 - d3.js (v3.5.17), (c) Mike Bostock, BSD license
 - cal-heatmap (v3.6.2), (c) Wan Qi Chen, MIT license
 
-Copyright: Glutanimate 2016-2017
-License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
+Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
+License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
 # need to use raw strings due to non-escaped newlines in minified JS

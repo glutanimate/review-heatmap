@@ -3,10 +3,10 @@
 """
 This file is part of the Review Heatmap add-on for Anki
 
-Main module.
+Main Module, hooks add-on methods into Anki.
 
-Copyright: Glutanimate 2016-2017
-License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
+Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
+License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
 import time
