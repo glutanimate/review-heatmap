@@ -11,4 +11,5 @@ Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
+from ._version import __version__
 from . import main
