@@ -33,7 +33,6 @@ research
 .hidden
 .directory
 # Docs and tools
-.github
 docs/specs.md
 docs/todo.md
 docs/*.todo
