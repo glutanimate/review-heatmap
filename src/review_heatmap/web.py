@@ -9,6 +9,8 @@ Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
+from __future__ import unicode_literals
+
 from .web_libs import js_d3, js_heat, css_heat
 
 heatmap_boilerplate = r"""
