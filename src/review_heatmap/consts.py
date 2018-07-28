@@ -13,10 +13,19 @@ import sys
 import os
 from anki import version
 
-anki21 = version.startswith("2.1.")
-sys_encoding = sys.getfilesystemencoding()
+ANKI21 = version.startswith("2.1.")
+SYS_ENCODING = sys.getfilesystemencoding()
 
-if anki21:
-    addon_path = os.path.dirname(__file__)
+if ANKI21:
+    ADDON_PATH = os.path.dirname(__file__)
 else:
-    addon_path = os.path.dirname(__file__).decode(sys_encoding)
+    ADDON_PATH = os.path.dirname(__file__).decode(SYS_ENCODING)
+
+ANKIWEB_ID = "1771074083"
+LINK_PATREON = "https://www.patreon.com/glutanimate"
+LINK_COFFEE = "https://www.buymeacoffee.com/glutanimate"
+LINK_DESCRIPTION = "https://ankiweb.net/shared/info/{}".format(ANKIWEB_ID)
+LINK_RATE = "https://ankiweb.net/shared/review/{}".format(ANKIWEB_ID)
+LINK_TWITTER = "https://twitter.com/glutanimate"
+LINK_YOUTUBE = "https://www.youtube.com/c/glutanimate"
+LINK_HELP = "https://github.com/glutanimate/review-heatmap/wiki"

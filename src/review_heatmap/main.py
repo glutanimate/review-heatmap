@@ -27,7 +27,7 @@ from anki.stats import CollectionStats
 from anki.find import Finder
 from anki.hooks import wrap
 
-from .consts import anki21
+from .consts import ANKI21
 from .config import *
 from .web import (heatmap_boilerplate, streak_css, streak_div,
                   heatmap_css, heatmap_div, heatmap_script, ov_body)
@@ -140,7 +140,7 @@ def gen_heatmap(data, legend, start, stop, config):
     colors = heatmap_colors[config["colors"]]
     rng = mode["range"]
     heatmap = heatmap_div % (rng, rng)
-    bridge = "pycmd" if anki21 else "py.link"
+    bridge = "pycmd" if ANKI21 else "py.link"
     script = heatmap_script % (mode["domain"], mode["subDomain"],
                                rng, start, stop, legend, bridge, data)
     css = heatmap_css % colors
@@ -212,7 +212,7 @@ def my_link_handler(self, url, _old=None):
         pass
     browser = aqt.dialogs.open("Browser", self.mw)
     browser.form.searchEdit.lineEdit().setText(search)
-    if not anki21:
+    if not ANKI21:
         browser.onSearch()
     else:
         browser.onSearchActivated()
@@ -268,7 +268,7 @@ def my_render_page_ov(self):
     else:
         shareLink = ""
 
-    if not anki21:
+    if not ANKI21:
         self.web.stdHtml(self._body % dict(
             deck=deck['name'],
             shareLink=shareLink,
@@ -398,7 +398,7 @@ mw.addAction(toggle_action)
 CollectionStats.report_activity = report_activity
 CollectionStats.dueGraph = wrap(
     CollectionStats.dueGraph, my_reps_graph, "around")
-if not anki21:
+if not ANKI21:
     DeckStats.__init__ = deckStatsInit20
 else:
     DeckStats.__init__ = wrap(DeckStats.__init__, deckStatsInit21, "after")

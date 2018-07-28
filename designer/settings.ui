@@ -664,6 +664,43 @@ with a coffee</string>
         </spacer>
        </item>
        <item>
+        <layout class="QGridLayout" name="layoutHotkey">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Heatmap toggle hotkey:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="btnKeyToggle">
+           <property name="focusPolicy">
+            <enum>Qt::TabFocus</enum>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Exclude decks from main heatmap</string>
@@ -785,6 +822,8 @@ with a coffee</string>
  </widget>
  <tabstops>
   <tabstop>tabWidget</tabstop>
+  <tabstop>btnPatreon</tabstop>
+  <tabstop>btnCoffee</tabstop>
   <tabstop>selHmColor</tabstop>
   <tabstop>selHmCalMode</tabstop>
   <tabstop>cbHmMain</tabstop>
@@ -797,6 +836,7 @@ with a coffee</string>
   <tabstop>spinLimHist</tabstop>
   <tabstop>spinLimFcst</tabstop>
   <tabstop>cbLimDel</tabstop>
+  <tabstop>btnKeyToggle</tabstop>
   <tabstop>listDecks</tabstop>
   <tabstop>btnDeckAdd</tabstop>
   <tabstop>btnDeckDel</tabstop>
