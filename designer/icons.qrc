@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="/review_heatmap">
+    <file>icons/help.svg</file>
+    <file>icons/heart.svg</file>
+    <file>icons/coffee.svg</file>
+    <file>icons/patreon.svg</file>
+    <file>icons/rate.svg</file>
+    <file>icons/twitter.svg</file>
+    <file>icons/youtube.svg</file>
+    <file>icons/email.svg</file>
+  </qresource>
+</RCC>
