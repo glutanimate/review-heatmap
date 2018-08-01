@@ -139,8 +139,8 @@ def gen_heatmap(data, legend, start, stop, config):
     mode = heatmap_modes[config["mode"]]
     colors = heatmap_colors[config["colors"]]
     rng = mode["range"]
-    heatmap = heatmap_div % (rng, rng)
     bridge = "pycmd" if ANKI21 else "py.link"
+    heatmap = heatmap_div % (rng, rng, bridge)
     script = heatmap_script % (mode["domain"], mode["subDomain"],
                                rng, start, stop, legend, bridge, data)
     css = heatmap_css % colors
@@ -195,21 +195,23 @@ def my_link_handler(self, url, _old=None):
     if ":" in url:
         (cmd, arg) = url.split(":")
     else:
-        cmd = None
-    if not cmd or cmd not in ("showseen", "showdue"):
-        if not _old:
-            return
-        return _old(self, url)
-    days = url.split(":")[1]
-    if cmd == "showseen":
-        search = "seen:" + days
-    else:
-        search = "prop:due=" + days
-    try:
-        if isinstance(self, Overview) or not self.wholeCollection:
-            search += " deck:current"
-    except AttributeError:
-        pass
+        cmd = url
+        arg = ""
+    if not cmd or cmd not in ("revhm_seen", "revhm_due", "revhm_opts"):
+        return None if not _old else _old(self, url)
+    
+    if cmd == "revhm_opts":
+        return on_heatmap_settings(mw)
+    
+    
+    if cmd == "revhm_seen":
+        search = "seen:" + arg
+    elif cmd == "revhm_due":
+        search = "prop:due=" + arg
+    
+    if isinstance(self, Overview) or getattr(self, "wholeCollection", False):
+        search += " deck:current"
+
     browser = aqt.dialogs.open("Browser", self.mw)
     browser.form.searchEdit.lineEdit().setText(search)
     if not ANKI21:
