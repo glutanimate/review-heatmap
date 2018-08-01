@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/review_heatmap">
+    <file>icons/options.svg</file>
     <file>icons/help.svg</file>
     <file>icons/heart.svg</file>
     <file>icons/coffee.svg</file>
@@ -8,5 +9,9 @@
     <file>icons/twitter.svg</file>
     <file>icons/youtube.svg</file>
     <file>icons/email.svg</file>
+    <file>icons/down.svg</file>
+    <file>icons/left.svg</file>
+    <file>icons/right.svg</file>
+    <file>icons/circle.svg</file>
   </qresource>
 </RCC>
