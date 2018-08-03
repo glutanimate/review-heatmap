@@ -27,10 +27,12 @@ from anki.stats import CollectionStats
 from anki.find import Finder
 from anki.hooks import wrap
 
-from .consts import ANKI21
-from .config import *
+from .options import invokeOptionsDialog
+from .contrib import invokeContribDialog
+from .config import load_config, heatmap_colors, heatmap_modes
 from .web import (heatmap_boilerplate, streak_css, streak_div,
                   heatmap_css, heatmap_div, heatmap_script, ov_body)
+from .consts import ANKI21
 
 ### Stats and Heatmap generation ###
 
@@ -137,10 +139,10 @@ def report_activity(self, limhist, limfcst, smode=False):
 def gen_heatmap(data, legend, start, stop, config):
     """Create heatmap script and markup"""
     mode = heatmap_modes[config["mode"]]
-    colors = heatmap_colors[config["colors"]]
+    colors = heatmap_colors[config["colors"]]["colors"]
     rng = mode["range"]
     bridge = "pycmd" if ANKI21 else "py.link"
-    heatmap = heatmap_div % (rng, rng, bridge)
+    heatmap = heatmap_div % {"rng": rng, "bridge": bridge}
     script = heatmap_script % (mode["domain"], mode["subDomain"],
                                rng, start, stop, legend, bridge, data)
     css = heatmap_css % colors
@@ -149,11 +151,11 @@ def gen_heatmap(data, legend, start, stop, config):
 
 def gen_streak(scur, smax, avg_cur, pdays, config):
     """Create heatmap markup"""
-    colors = heatmap_colors[config["colors"]]
+    colors = heatmap_colors[config["colors"]]["colors"]
     col_cur, str_cur = dayS(scur, colors)
     col_max, str_max = dayS(smax, colors)
     col_pdays = dayS(pdays, colors, mode="pdays")
-    col_avg, str_avg = dayS(avg_cur, colors, mode="avg", term="review")
+    col_avg, str_avg = dayS(avg_cur, colors, mode="avg", term="card")
     streak = streak_div % (col_avg, str_avg, col_pdays,
                            pdays, col_max, str_max, col_cur, str_cur)
     return streak
@@ -197,11 +199,14 @@ def my_link_handler(self, url, _old=None):
     else:
         cmd = url
         arg = ""
-    if not cmd or cmd not in ("revhm_seen", "revhm_due", "revhm_opts"):
+    if not cmd or cmd not in ("revhm_seen", "revhm_due", "revhm_opts", 
+                              "revhm_contrib"):
         return None if not _old else _old(self, url)
     
     if cmd == "revhm_opts":
-        return on_heatmap_settings(mw)
+        return invokeOptionsDialog(mw)
+    elif cmd == "revhm_contrib":
+        return invokeContribDialog(mw)
     
     
     if cmd == "revhm_seen":
@@ -389,7 +394,7 @@ def deckStatsInit20(self, mw):
 
 # Set up menus and hooks
 options_action = QAction("Review &Heatmap Options...", mw)
-options_action.triggered.connect(lambda _, o=mw: on_heatmap_settings(o))
+options_action.triggered.connect(lambda _, o=mw: invokeOptionsDialog(o))
 mw.form.menuTools.addAction(options_action)
 
 toggle_action = QAction(mw, triggered=toggle_heatmap)
