@@ -9,6 +9,8 @@ Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
+from __future__ import unicode_literals
+
 import sys
 import os
 from anki import version
@@ -21,6 +23,11 @@ if ANKI21:
 else:
     ADDON_PATH = os.path.dirname(__file__).decode(SYS_ENCODING)
 
+# spam protection:
+_mail_author_snippets = ["ankiglutanimate", "ατ", "gmail.com"]
+MAIL_AUTHOR = "".join(_mail_author_snippets).replace("ατ", "@")
+
+ADDON_NAME = "Review Heatmap"
 ANKIWEB_ID = "1771074083"
 LINK_PATREON = "https://www.patreon.com/glutanimate"
 LINK_COFFEE = "https://www.buymeacoffee.com/glutanimate"

@@ -55,7 +55,7 @@ html_template = """\
     <p>With code contributions from: {contributors_string}</p>
     <p><span style="font-style:italic;">{display_name}</span> is licensed under the {license}.</p>
     {libs_string}
-    <p><img src=":/review_heatmap/icons/heart.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
+    <p><img src=":/review_heatmap/icons/heart_small.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
     <p>Thank you very much to all of you who have decided to support my work through your tips and contributions. I really appreciate it!</p>
     <p>Thanks in particular to all of my past and present <a href="https://www.patreon.com/glutanimate"><span style="text-decoration: underline; color:#0000ff;">Patreon</span></a> supporters:</p>
     <p><span style="color:#aa0000;">{patrons_string}</span></p>
@@ -74,7 +74,7 @@ libs_item_template = """\
 
 
 def get_about_string():
-    authors_string = "\n".join(authors_template.format(**dct) 
+    authors_string = "\n".join(authors_template.format(**dct)
                                for dct in authors)
     libs_entries = "\n".join(libs_item_template.format(**dct)
                              for dct in libs)
