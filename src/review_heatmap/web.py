@@ -15,9 +15,9 @@ from .consts import ANKI21
 
 # Initialize Qt web resources
 if ANKI21:
-    from .forms5 import web_rc
+    from .forms5 import web_rc  # noqa: F401
 else:
-    from .forms4 import web_rc
+    from .forms4 import web_rc  # noqa: F401
 
 heatmap_boilerplate = r"""
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
@@ -53,7 +53,11 @@ heatmap_css = """
 }
 .hm-btn:active {background: #000}
 .graph-label {fill: #808080;}
-.heatmap {margin-top: 1em;}
+.heatmap {
+    margin-top: 1em;
+    min-width: 640px;
+    display:inline-block;
+}
 .heatmap-controls {margin-bottom: 0;}
 .cal-heatmap-container rect.highlight-now {
     stroke: black;}
@@ -136,28 +140,21 @@ select.hm-sel:active, select.hm-sel:focus {
 """ % {"bg": "" if not ANKI21 else
              "url(qrc:/review_heatmap/icons/down.svg) 96%% / 10%% no-repeat"}
 
-heatmap_div = r"""
-<script>
-function onHmSelChange(selector) {
-    selector.blur();
-    var val = selector.value;
-    console.log(val);
-}
-</script>
+heatmap_element = r"""
+<div></div>
 <div class="heatmap">
-    <div class="heatmap-controls" style="width:640px">
-        <div id="textbox">
+    <div class="heatmap-controls">
         <div class="alignleft">
             <span>&nbsp;</span>
         </div>
         <div class="aligncenter">
-            <div title="Go to previous year" onclick="cal.previous(%d);" class="hm-btn">
+            <div title="Go to previous year" onclick="cal.previous(%(rng)d);" class="hm-btn">
                 <img height="10px" src="qrc:/review_heatmap/icons/left.svg" />
             </div>
             <div title="Today" onclick="cal.rewind();" class="hm-btn">
                 <img height="10px" src="qrc:/review_heatmap/icons/circle.svg" />
             </div>
-            <div title="Go to next year" onclick="cal.next(%d);" class="hm-btn">
+            <div title="Go to next year" onclick="cal.next(%(rng)d);" class="hm-btn">
                 <img height="10px" src="qrc:/review_heatmap/icons/right.svg" />
             </div>
         </div>
@@ -168,31 +165,46 @@ function onHmSelChange(selector) {
                 <option value="r" class="hm-sel-itm">Review cards studied&nbsp;&nbsp;&nbsp;&nbsp;</option>
                 <option value="c" class="hm-sel-itm">Cards added</option>
             </select>
-            <div class="hm-btn opts-btn" title="Options" onclick="%s('revhm_opts')">
+            <div class="hm-btn opts-btn" title="Options" onclick="%(bridge)s('revhm_opts')">
                 <img src="qrc:/review_heatmap/icons/options.svg" />
             </div>
-        </div>
+            <div class="hm-btn opts-btn" title="Support this add-on" onclick="%(bridge)s('revhm_contrib')">
+                <img src="qrc:/review_heatmap/icons/heart_bw.svg" />
+            </div>
         </div>
         <div style="clear: both;">&nbsp;</div>
     </div>
     <div id="cal-heatmap"></div>
-</div>"""
+</div>
 
-heatmap_script = r"""
 <script type="text/javascript">
+
+function onHmSelChange(selector) {
+    selector.blur();
+    var val = selector.value;
+    console.log(val);
+}
+
+var calStartDate = new Date();
+calStartDate.setMonth(calStartDate.getMonth() - 6);
+calStartDate.setDate(1);
+
 var cal = new CalHeatMap();
 cal.init({
-    domain: "%s",
-    subDomain: "%s",
-    range: %d,
-    minDate: new Date(%s, 01),
-    maxDate: new Date(%s, 01),
+    domain: "%(dom)s",
+    subDomain: "%(subdom)s",
+    range: %(rng)d,
+    minDate: new Date(%(start)s, 01),
+    maxDate: new Date(%(stop)s, 01),
     cellSize: 10,
+    dayLabel: true,
     domainMargin: [1, 1, 1, 1],
     itemName: ["review", "reviews"],
     highlight: "now",
-    legend: %s,
+    start: calStartDate,
+    legend: %(leg)s,
     displayLegend: false,
+    domainLabelFormat: "%(domLabForm)s",
     subDomainTitleFormat: {
             empty: "No reviews on {date}",
             filled: "{count} {name} {connector} {date}"
@@ -213,11 +225,13 @@ cal.init({
         }
         cal.highlight(["now", date])
         diffdays = Math.ceil(diff / (1000 * 60 * 60 * 24))
-        %s(cmd + diffdays)
+        %(bridge)s(cmd + diffdays)
     },
-    data: %s
+    data: %(data)s
 });
-</script>"""
+
+</script>
+"""
 
 streak_div = r"""
 <div class="streak">
