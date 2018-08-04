@@ -11,8 +11,6 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 
 from __future__ import unicode_literals
 
-from functools import reduce
-
 from aqt.qt import *
 from aqt import mw
 from aqt.utils import showInfo, openLink
@@ -21,7 +19,8 @@ from .about import get_about_string
 from ._version import __version__
 from .consts import (ANKI21, LINK_PATREON, LINK_COFFEE, ADDON_NAME,
                      LINK_RATE, LINK_TWITTER, LINK_YOUTUBE, LINK_HELP)
-from .config import heatmap_colors, heatmap_modes, activity_stats
+from .config import (heatmap_colors, heatmap_modes, activity_stats, 
+                     default_config, default_prefs)
 
 if ANKI21:
     from .forms5 import settings
@@ -38,6 +37,7 @@ def getColCreationTime():
         return None
 
 # Widget <-> config assignments
+
 
 comboboxes = {
     "selHmColor": {"confPath": ("config", "colors"), "presets": heatmap_colors},
@@ -68,6 +68,7 @@ dateedits = {
 
 # Utility functions for operating with nested collections
 
+
 def getNestedValue(obj, keys):
     """
     Get value out of nested collection by supplying tuple of 
@@ -77,6 +78,7 @@ def getNestedValue(obj, keys):
     for nr, key in enumerate(keys):
         cur = cur[key]
     return cur
+
 
 def setNestedValue(obj, keys, value):
     """
@@ -93,19 +95,21 @@ def setNestedValue(obj, keys, value):
 
 # Options dialog and associated classes
 
+
 class OptionsDialog(QDialog):
     """Main options dialog"""
 
-    def __init__(self, parent, conf):
+    def __init__(self, parent, conf, conf_default):
         super(OptionsDialog, self).__init__(parent=parent)
         self.conf = conf
+        self.conf_default = conf_default
         # Set up UI from pre-generated UI form:
         self.form = settings.Ui_Dialog()
         self.form.setupUi(self)
         # Perform any subsequent setup steps:
         self.setupLabels()
         self.setupEvents()
-        self.setupValues()
+        self.setupValues(self.conf)
 
     def updateHotkey(self, btn, hotkey):
         """Update hotkey label and attribute"""
@@ -116,13 +120,13 @@ class OptionsDialog(QDialog):
         win = GrabKey(self, lambda key: self.updateHotkey(btn, key))
         win.exec_()
 
-    def setupValues(self):
+    def setupValues(self, conf):
         """Set up widget data based on provided config dict"""
-        conf = self.conf
 
         for object_name, object_data in comboboxes.items():
             combobox = getattr(self.form, object_name)
             presets = object_data["presets"]
+            combobox.clear()  # needed to restore defaults
             combobox.addItems(list(val["label"] for val in presets.values()))
             current = getNestedValue(conf, object_data["confPath"])
             current_index = list(presets.keys()).index(current)
@@ -163,8 +167,8 @@ class OptionsDialog(QDialog):
             self.updateHotkey(keygrabber, hotkey)
             keygrabber.clicked.connect(lambda: self.grabKeyFor(keygrabber))
 
-    def getValues(self):
-        conf = self.conf
+    def writeValues(self, conf):
+
         for object_name, object_data in comboboxes.items():
             combobox = getattr(self.form, object_name)
             presets = object_data["presets"]
@@ -212,14 +216,17 @@ class OptionsDialog(QDialog):
         self.form.btnTwitter.clicked.connect(lambda: openLink(LINK_TWITTER))
         self.form.btnYoutube.clicked.connect(lambda: openLink(LINK_YOUTUBE))
         self.form.btnHelp.clicked.connect(lambda: openLink(LINK_HELP))
+        restore_btn = self.form.buttonBox.button(
+            QDialogButtonBox.RestoreDefaults)
+        restore_btn.clicked.connect(self.restore)
 
     def restore(self):
-        """Restore colors and fields back to defaults"""
-        self.setup_values(default_conf, default_prefs)
+        """Restore widgets back to defaults"""
+        self.setupValues(self.conf_default)
 
     def accept(self):
         """Apply changes on OK button press"""
-        self.getValues()
+        self.writeValues(self.conf)
         mw.col.setMod()
         mw.reset()
         super(OptionsDialog, self).accept()
@@ -312,5 +319,7 @@ def invokeOptionsDialog(mw):
     """Call settings dialog"""
     conf = {"config": mw.col.conf['heatmap'],
             "prefs": mw.pm.profile['heatmap']}
-    dialog = OptionsDialog(mw, conf)
+    conf_default = {"config": default_config,
+                      "prefs": default_prefs}
+    dialog = OptionsDialog(mw, conf, conf_default)
     dialog.exec_()
