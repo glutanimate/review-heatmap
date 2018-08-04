@@ -30,9 +30,11 @@ from anki.hooks import wrap
 from .options import invokeOptionsDialog
 from .contrib import invokeContribDialog
 from .config import load_config, heatmap_colors, heatmap_modes
-from .web import (heatmap_boilerplate, streak_css, streak_div,
-                  heatmap_css, heatmap_div, heatmap_script, ov_body)
+from .web import (streak_css, streak_div, heatmap_boilerplate,
+                  heatmap_css, heatmap_element, ov_body)
 from .consts import ANKI21
+
+BRIDGE = "pycmd" if ANKI21 else "py.link"
 
 ### Stats and Heatmap generation ###
 
@@ -132,8 +134,8 @@ def report_activity(self, limhist, limfcst, smode=False):
     heatmap = gen_heatmap(revs_by_day, self.col.hm_leg,
                           first_year, last_year, config)
     streak = gen_streak(scur, smax, avg_cur, pdays, config)
-
     return heatmap + streak
+
 
 
 def gen_heatmap(data, legend, start, stop, config):
@@ -141,23 +143,32 @@ def gen_heatmap(data, legend, start, stop, config):
     mode = heatmap_modes[config["mode"]]
     colors = heatmap_colors[config["colors"]]["colors"]
     rng = mode["range"]
-    bridge = "pycmd" if ANKI21 else "py.link"
-    heatmap = heatmap_div % {"rng": rng, "bridge": bridge}
-    script = heatmap_script % (mode["domain"], mode["subDomain"],
-                               rng, start, stop, legend, bridge, data)
+    domlabform = mode["domLabForm"]
+
     css = heatmap_css % colors
-    return heatmap_boilerplate + css + heatmap + script
+
+    heatmap = heatmap_element % {"dom": mode["domain"],
+                                 "subdom": mode["subDomain"],
+                                 "rng": rng, "start": start, "stop": stop,
+                                 "domLabForm": domlabform, "leg": legend,
+                                 "bridge": BRIDGE, "data": data}
+
+    
+    return heatmap_boilerplate + css + heatmap
 
 
 def gen_streak(scur, smax, avg_cur, pdays, config):
     """Create heatmap markup"""
     colors = heatmap_colors[config["colors"]]["colors"]
+    
     col_cur, str_cur = dayS(scur, colors)
     col_max, str_max = dayS(smax, colors)
     col_pdays = dayS(pdays, colors, mode="pdays")
     col_avg, str_avg = dayS(avg_cur, colors, mode="avg", term="card")
+    
     streak = streak_div % (col_avg, str_avg, col_pdays,
                            pdays, col_max, str_max, col_cur, str_cur)
+    
     return streak
 
 
