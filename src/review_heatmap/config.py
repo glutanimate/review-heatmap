@@ -47,12 +47,14 @@ heatmap_modes = OrderedDict((
     ("year", {"label": "Continuous year",
               "domain": 'year',
               "subDomain": 'day',
-              "range": 1}
+              "range": 1,
+              "domLabForm": "%Y"}
      ),
     ("months", {"label": "Split into months",
                 "domain": 'month',
                 "subDomain": 'day',
-                "range": 12}
+                "range": 12,
+                "domLabForm": "%b '%y"}
      )
 ))
 
@@ -64,7 +66,7 @@ activity_stats = OrderedDict((
 ))
 
 # use synced conf for settings that are device-agnostic
-default_conf = {
+default_config = {
     "colors": "lime",
     "mode": "year",
     "stat": "a",
@@ -86,7 +88,7 @@ default_prefs = {
 def load_config(ret=None):
     """Load and/or create add-on preferences"""
     configs = [
-        (mw.col.conf, default_conf),
+        (mw.col.conf, default_config),
         (mw.pm.profile, default_prefs)
     ]
     for conf, default in configs:
