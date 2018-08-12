@@ -12,6 +12,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import unicode_literals
 
 from collections import OrderedDict
+from copy import deepcopy
 
 from aqt import mw
 
@@ -98,8 +99,10 @@ def load_config(ret=None):
             mw.col.setMod()
 
         else:
-            default.update(conf["heatmap"])
-            conf["heatmap"] = default
+            # FIXME: This is a very inefficient approach
+            temp_default = deepcopy(default)
+            temp_default.update(conf["heatmap"])
+            conf["heatmap"] = temp_default
             # insert other update actions here:
             mw.col.setMod()
 
