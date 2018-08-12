@@ -199,7 +199,7 @@ cal.init({
     cellSize: 10,
     dayLabel: true,
     domainMargin: [1, 1, 1, 1],
-    itemName: ["review", "reviews"],
+    itemName: ["card", "cards"],
     highlight: "now",
     start: calStartDate,
     legend: %(leg)s,
