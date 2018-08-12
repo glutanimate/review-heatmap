@@ -3,58 +3,31 @@
 """
 This file is part of the Review Heatmap add-on for Anki
 
-Contribution dialog
+Contributions dialog
 
 Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
-
 from __future__ import unicode_literals
 
-from aqt.qt import *
-from aqt.utils import openLink
-
-from .consts import (ANKI21, LINK_PATREON, LINK_COFFEE, ADDON_NAME, MAIL_AUTHOR)
+from .libaddon.widgets.contrib import ContribDialog
+from .consts import ANKI21
 
 if ANKI21:
-    from .forms5 import contrib
+    from .forms5 import contrib as qtform_contrib  # noqa: F401
 else:
-    from .forms4 import contrib
+    from .forms4 import contrib as qtform_contrib  # noqa: F401
 
-mail_string = "mailto:{}".format(MAIL_AUTHOR)
-format_dict = {"addon": ADDON_NAME}
 
-class ContribDialog(QDialog):
-    """Main Options dialog"""
+class RevHmContrib(ContribDialog):
+
+    """
+    Add-on-specific options dialog implementation
+    """
 
     def __init__(self, parent):
-        super(ContribDialog, self).__init__(parent=parent)
-        # Set up UI from pre-generated UI form:
-        self.form = contrib.Ui_Dialog()
-        self.form.setupUi(self)
-        # Perform any subsequent setup steps:
-        self.setupLabels()
-        self.setupEvents()
+        super(RevHmContrib, self).__init__(qtform_contrib, parent=parent)
 
-    def setupLabels(self):
-        """
-        Insert add-on name into dialog
-        """
-        for label in ("labContrib", "labHeader", "labFooter"):
-            widget = getattr(self.form, label, None)
-            if not widget:
-                continue
-            widget.setText(widget.text().format(**format_dict))
-
-    def setupEvents(self):
-        """
-        Connect button click events
-        """
-        self.form.btnCoffee.clicked.connect(lambda: openLink(LINK_COFFEE))
-        self.form.btnPatreon.clicked.connect(lambda: openLink(LINK_PATREON))
-        self.form.btnMail.clicked.connect(lambda: openLink(mail_string))
-
-
-def invokeContribDialog(parent):
-    dialog = ContribDialog(parent)
+def invokeContributionsDialog(parent):
+    dialog = RevHmContrib(parent)
     dialog.exec_()

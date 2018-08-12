@@ -1,37 +1,20 @@
 # -*- coding: utf-8 -*-
 
 """
-This file is part of the Review Heatmap add-on for Anki
+Add-on agnostic reusable about screen module
 
-Assemble about screen contents
-
-Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
+Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
 from __future__ import unicode_literals
 
-display_name = "Review Heatmap"
-license = "GNU AGPLv3"
+from .consts import (ADDON_NAME, LICENSE, LIBRARIES,
+                     AUTHORS, CONTRIBUTORS, PATRONS)
 
-libs = (
-    {"name": "d3.js", "version": "v3.5.17",
-        "author": "Mike Bostock", "license": "BSD license"},
-    {"name": "cal-heatmap", "version": "v3.6.2",
-        "author": "Wan Qi Chen", "license": "MIT license"},
-)
 
 libs_header = ("<p>The development of this add-on was made possible "
                "through the following third-party open-source libraries:</p>")
-
-authors = (
-    {"name": "Aristotelis P. (Glutanimate)", "years": "2016-2018",
-     "contact": "https://glutanimate.com"},
-)  # trailing comma required for single-element tuples
-
-contributors = ("hehu80", )
-patrons = ("Blacky 372", "Sebastián Ortega", "Peter Benisch", "Edan Maor")
-
 
 html_template = """\
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
@@ -75,18 +58,18 @@ libs_item_template = """\
 
 def get_about_string():
     authors_string = "\n".join(authors_template.format(**dct)
-                               for dct in authors)
+                               for dct in AUTHORS)
     libs_entries = "\n".join(libs_item_template.format(**dct)
-                             for dct in libs)
+                             for dct in LIBRARIES)
     if libs_entries:
         libs_string = "\n".join((libs_header, "<ul>", libs_entries, "</ul>"))
     else:
         libs_string = ""
-    contributors_string = ", ".join(contributors)
-    patrons_string = ", ".join(patrons)
+    contributors_string = ", ".join(CONTRIBUTORS)
+    patrons_string = ", ".join(PATRONS)
 
-    return html_template.format(display_name=display_name,
-                                license=license,
+    return html_template.format(display_name=ADDON_NAME,
+                                license=LICENSE,
                                 authors_string=authors_string,
                                 libs_string=libs_string,
                                 contributors_string=contributors_string,

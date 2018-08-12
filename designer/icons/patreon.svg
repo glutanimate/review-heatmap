@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="28mm"
-   height="28mm"
-   viewBox="0 0 28 28"
+   width="39.229256mm"
+   height="31.229258mm"
+   viewBox="0 0 39.229256 31.229258"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="round.svg">
+   sodipodi:docname="patreon.svg">
   <defs
      id="defs2">
     <filter
@@ -58,16 +58,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="98.911428"
-     inkscape:cy="115.58646"
+     inkscape:zoom="2.8"
+     inkscape:cx="39.065171"
+     inkscape:cy="56.156404"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0" />
+     fit-margin-left="4"
+     fit-margin-right="4"
+     fit-margin-bottom="0"
+     units="px" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -84,10 +85,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-49.886856,-152.74558)">
+     transform="translate(-44.272227,-151.13096)">
     <g
        id="g1289"
-       transform="matrix(0.34770428,0,0,0.34770428,30.926354,119.5142)">
+       transform="matrix(0.39399623,0,0,0.39399623,26.538125,113.226)">
       <circle
          r="37.423153"
          cy="135.8378"
@@ -105,7 +106,7 @@
            id="path828" />
         <polygon
            style="fill:#052d49"
-           points="17.59,0.1 0.012,0.1 0.012,95.988 17.59,95.988 "
+           points="0.012,0.1 0.012,95.988 17.59,95.988 17.59,0.1 "
            id="polygon830" />
       </g>
     </g>

@@ -28,7 +28,7 @@ from anki.find import Finder
 from anki.hooks import wrap
 
 from .options import invokeOptionsDialog
-from .contrib import invokeContribDialog
+from .contrib import invokeContributionsDialog
 from .config import load_config, heatmap_colors, heatmap_modes
 from .web import (streak_css, streak_div, heatmap_boilerplate,
                   heatmap_css, heatmap_element, ov_body)
@@ -217,7 +217,7 @@ def my_link_handler(self, url, _old=None):
     if cmd == "revhm_opts":
         return invokeOptionsDialog(mw)
     elif cmd == "revhm_contrib":
-        return invokeContribDialog(mw)
+        return invokeContributionsDialog(mw)
     
     
     if cmd == "revhm_seen":

@@ -11,4 +11,4 @@ Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
-import review_heatmap
+import review_heatmap  # noqa: F401

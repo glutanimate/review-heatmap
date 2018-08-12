@@ -7,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   viewBox="0 0 16 12.571431"
+   viewBox="0 0 24 12.571431"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="email.svg"
-   width="16"
+   width="24"
    height="12.571431">
   <metadata
      id="metadata10">
@@ -42,15 +42,15 @@
      id="namedview6"
      showgrid="false"
      fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
+     fit-margin-left="4"
+     fit-margin-right="4"
      fit-margin-bottom="0"
-     inkscape:zoom="0.74069435"
-     inkscape:cx="-597.06013"
-     inkscape:cy="-137.43107"
+     inkscape:zoom="8.3799999"
+     inkscape:cx="-25.532725"
+     inkscape:cy="-13.545863"
      inkscape:current-layer="svg2" />
   <path
-     d="M 14.485716,0 C 15.314284,0 16,0.6857155 16,1.5142844 l 0,9.5428626 c 0,0.828568 -0.685716,1.514284 -1.514284,1.514284 l -12.9714316,0 C 0.68571556,12.571431 0,11.885715 0,11.057147 L 0,1.5142844 C 0,0.6857155 0.68571556,0 1.5142844,0 L 14.485716,0 Z m -0.2,3.2285778 0,-1.5142934 -6.285716,4.2 -6.2857156,-4.2 0,1.5142934 6.2857156,4.2 z"
+     d="M 18.485716,0 C 19.314284,0 20,0.6857155 20,1.5142844 v 9.5428626 c 0,0.828568 -0.685716,1.514284 -1.514284,1.514284 H 5.5142844 C 4.6857156,12.571431 4,11.885715 4,11.057147 V 1.5142844 C 4,0.6857155 4.6857156,0 5.5142844,0 Z m -0.2,3.2285778 V 1.7142844 l -6.285716,4.2 -6.2857156,-4.2 V 3.2285778 L 12,7.4285778 Z"
      id="path4"
      inkscape:connector-curvature="0" />
 </svg>

@@ -324,8 +324,8 @@ with a coffee</string>
              </property>
              <property name="iconSize">
               <size>
-               <width>28</width>
-               <height>28</height>
+               <width>36</width>
+               <height>36</height>
               </size>
              </property>
             </widget>

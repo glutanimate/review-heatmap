@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>465</width>
-    <height>330</height>
+    <width>471</width>
+    <height>368</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,12 +15,12 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QVBoxLayout" name="contribLayout" stretch="0,1,0,2,0">
+    <layout class="QVBoxLayout" name="contribLayout">
      <property name="topMargin">
-      <number>10</number>
+      <number>5</number>
      </property>
      <property name="bottomMargin">
-      <number>5</number>
+      <number>10</number>
      </property>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -83,6 +83,12 @@
      </item>
      <item>
       <widget class="QLabel" name="labHeader">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Writing, supporting, and maintaining my add-ons takes a lot of time. If &lt;span style=&quot; font-weight:600;&quot;&gt;{addon}&lt;/span&gt; has been a valuable asset in your studies, please consider &lt;span style=&quot; font-weight:600;&quot;&gt;supporting my work&lt;/span&gt; through one of the methods below:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
@@ -94,23 +100,10 @@
      <item>
       <widget class="QPushButton" name="btnPatreon">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>160</width>
-         <height>45</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <weight>50</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
        </property>
        <property name="toolTip">
         <string>Perks include access to Patron-only add-ons, &lt;br&gt;exclusive blog posts, mentions in the credits, and more!</string>
@@ -125,49 +118,21 @@
        </property>
        <property name="iconSize">
         <size>
-         <width>28</width>
-         <height>28</height>
+         <width>42</width>
+         <height>42</height>
         </size>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QGridLayout" name="gridLayout_3" rowstretch="0">
-       <item row="0" column="1">
-        <widget class="QPushButton" name="btnMail">
-         <property name="toolTip">
-          <string>&lt;html&gt;Feel free to send me an email with your idea – be it a new add-on or feature in an existing add-on – and we can work things out.&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Hire me to work on
-an add-on for you</string>
-         </property>
-         <property name="icon">
-          <iconset resource="icons.qrc">
-           <normaloff>:/review_heatmap/icons/email.svg</normaloff>:/review_heatmap/icons/email.svg</iconset>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
         <widget class="QPushButton" name="btnCoffee">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>160</width>
-           <height>45</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <weight>50</weight>
-           <italic>false</italic>
-           <bold>false</bold>
-          </font>
          </property>
          <property name="toolTip">
           <string>Each coffee helps. Thank you!</string>
@@ -188,10 +153,43 @@ with a coffee</string>
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="btnMail">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;Feel free to send me an email with your idea – be it a new add-on or feature in an existing add-on – and we can work things out.&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>Hire me to work on
+an add-on for you</string>
+         </property>
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/review_heatmap/icons/email.svg</normaloff>:/review_heatmap/icons/email.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>14</height>
+          </size>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
      <item>
       <widget class="QLabel" name="labFooter">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Each contribution is greatly appreciated and will help me &lt;span style=&quot; font-weight:600;&quot;&gt;maintain and improve&lt;/span&gt; my add-ons as time goes by!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
@@ -216,8 +214,6 @@ with a coffee</string>
  </widget>
  <tabstops>
   <tabstop>btnPatreon</tabstop>
-  <tabstop>btnCoffee</tabstop>
-  <tabstop>btnMail</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

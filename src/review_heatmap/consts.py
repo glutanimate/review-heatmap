@@ -15,24 +15,32 @@ import sys
 import os
 from anki import version
 
+from ._version import __version__
+
+# PLATFORM
+
 ANKI21 = version.startswith("2.1.")
 SYS_ENCODING = sys.getfilesystemencoding()
-
 if ANKI21:
     ADDON_PATH = os.path.dirname(__file__)
 else:
     ADDON_PATH = os.path.dirname(__file__).decode(SYS_ENCODING)
 
-# spam protection:
-_mail_author_snippets = ["ankiglutanimate", "ατ", "gmail.com"]
-MAIL_AUTHOR = "".join(_mail_author_snippets).replace("ατ", "@")
+# ADD-ON
 
 ADDON_NAME = "Review Heatmap"
-ANKIWEB_ID = "1771074083"
-LINK_PATREON = "https://www.patreon.com/glutanimate"
-LINK_COFFEE = "https://www.buymeacoffee.com/glutanimate"
-LINK_DESCRIPTION = "https://ankiweb.net/shared/info/{}".format(ANKIWEB_ID)
-LINK_RATE = "https://ankiweb.net/shared/review/{}".format(ANKIWEB_ID)
-LINK_TWITTER = "https://twitter.com/glutanimate"
-LINK_YOUTUBE = "https://www.youtube.com/c/glutanimate"
-LINK_HELP = "https://github.com/glutanimate/review-heatmap/wiki"
+ADDON_ID = "1771074083"
+ADDON_VERSION = __version__
+ADDON_HELP = "https://github.com/glutanimate/review-heatmap/wiki"
+LICENSE = "GNU AGPLv3"
+LIBRARIES = (
+    {"name": "d3.js", "version": "v3.5.17",
+        "author": "Mike Bostock", "license": "BSD license"},
+    {"name": "cal-heatmap", "version": "v3.6.2",
+        "author": "Wan Qi Chen", "license": "MIT license"},
+)
+AUTHORS = (
+    {"name": "Aristotelis P. (Glutanimate)", "years": "2016-2018",
+     "contact": "https://glutanimate.com"},
+)  # trailing comma required for single-element tuples
+CONTRIBUTORS = ("hehu80", )
