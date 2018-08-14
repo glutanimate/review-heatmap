@@ -13,14 +13,12 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 
 from __future__ import unicode_literals
 
-
 from aqt.qt import *
 from aqt.utils import showInfo, openLink
 
 from ..consts import (ADDON_NAME, ADDON_VERSION, ADDON_HELP,
                       LINK_PATREON, LINK_COFFEE, LINK_RATE,
                       LINK_TWITTER, LINK_YOUTUBE)
-
 
 from ..about import get_about_string  # noqa: E402
 
@@ -340,6 +338,66 @@ class OptionsDialog(QDialog):
         """Invoke key grabber"""
         win = GrabKey(self, lambda key: self.updateHotkey(btn, key))
         win.exec_()
+
+    # List widgets
+
+    def addListItems(self, list_widget, item_tuples, clear=False):
+        """
+        Set text and data of supplied list_widget
+
+        Arguments:
+            list_widget {QListWidget} -- Widget to update
+            item_tuples {list} -- List of tuples of the form (text, data)
+
+        Keyword Arguments:
+            clear {bool} -- Whether or not to clear widget contents beforehand
+                            (default: {False})
+        Returns:
+            list -- List of created items
+        """
+        if clear:
+            list_widget.clear()
+
+        list_items = []
+
+        for text, data in item_tuples:
+            new_item = QListWidgetItem(text)
+            if data:
+                new_item.setData(Qt.UserRole, data)
+            list_widget.addItem(new_item)
+            list_items.append(new_item)
+
+        return list_items
+
+    def removeListItems(self, list_widget, list_items):
+        for item in list_items:
+            list_widget.takeItem(list_widget.row(item))
+            del(item)
+
+    def selectListItem(self, list_widget, item):
+        list_widget.selectionModel().clearSelection()
+        list_widget.setCurrentItem(item)
+
+    def getListItems(self, list_widget):
+        """
+        Get list widget items, text, and data
+
+        Arguments:
+            list_widget {QListWidget} -- List widget to parse
+
+        Returns:
+            dict -- Dictionary of list items with data or text as keys
+        """
+        list_items = {}
+        for idx in range(list_widget.count()):
+            item = list_widget.item(idx)
+            data = item.data(Qt.UserRole)
+            text = item.text()
+            if data:
+                list_items[data] = (item, text)
+            else:
+                list_items[text] = (item, None)
+        return list_items
 
     # Button box
 
