@@ -711,6 +711,9 @@ with a coffee</string>
             <property name="toolTip">
              <string>&lt;html&gt;Any decks listed here will not be included in the calculations for the main heatmap. Each individual deck's heatmap will still work, however.&lt;/html&gt;</string>
             </property>
+            <property name="selectionMode">
+             <enum>QAbstractItemView::ExtendedSelection</enum>
+            </property>
            </widget>
           </item>
           <item>

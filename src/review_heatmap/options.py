@@ -11,6 +11,12 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 
 from __future__ import unicode_literals
 
+import time
+
+from aqt.qt import *
+
+from aqt.studydeck import StudyDeck
+
 from .config import (heatmap_colors, heatmap_modes, activity_stats,
                      default_config, default_prefs)
 
@@ -114,6 +120,9 @@ widgets_options = (
         },
         "minimum": {
             "getter": "getColCreationTime"
+        },
+        "maximum": {
+            "getter": "getCurrentTime"
         }
     },
     {
@@ -139,8 +148,38 @@ class RevHmOptions(OptionsDialog):
         super(RevHmOptions, self).__init__(qtform_options, widgets_options,
                                            conf, defaults, parent=mw)
 
+    def setupEvents(self):
+        super(RevHmOptions, self).setupEvents()
+        self.form.btnDeckAdd.clicked.connect(self.onAddIgnoredDeck)
+        self.form.btnDeckDel.clicked.connect(self.onDeleteIgnoredDeck)
+    
+    def onAddIgnoredDeck(self):
+        lwidget_decks = self.form.listDecks
+        ret = StudyDeck(self.mw, accept=_("Choose"),
+                        title=_("Choose Deck"), help="",
+                        parent=self, geomKey="selectDeck")
+        deck_name = ret.name
+        deck_id = self.mw.col.decks.id(deck_name)
+        current_items = self.getListItems(lwidget_decks)
+        
+        try:
+            new_item = current_items[deck_id][0]
+        except KeyError:
+            new_item = self.addListItems(lwidget_decks,
+                                         [(deck_name, deck_id)])[0]
+        
+        self.selectListItem(lwidget_decks, new_item)
+
+    def onDeleteIgnoredDeck(self):
+        lwidget_decks = self.form.listDecks
+        selected = lwidget_decks.selectedItems()
+        self.removeListItems(lwidget_decks, selected)
+
     def getColCreationTime(self):
         return self.mw.col.crt
+    
+    def getCurrentTime(self):
+        return round(time.time())
 
     def getComboItems(self, dct):
         return list((val["label"], key) for key, val in dct.items())
