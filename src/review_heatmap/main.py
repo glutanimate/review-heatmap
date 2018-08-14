@@ -407,6 +407,9 @@ def deckStatsInit20(self, mw):
 options_action = QAction("Review &Heatmap Options...", mw)
 options_action.triggered.connect(lambda _, o=mw: invokeOptionsDialog(o))
 mw.form.menuTools.addAction(options_action)
+if ANKI21:
+    mw.addonManager.setConfigAction(
+        __name__, lambda: invokeOptionsDialog(mw))
 
 toggle_action = QAction(mw, triggered=toggle_heatmap)
 toggle_action.setShortcut(QKeySequence(_("Ctrl+R")))
