@@ -252,17 +252,22 @@ class OptionsDialog(QDialog):
 
             elif object_type == "dateedit":
                 minimum = self.confToWidgetVal(conf, widget_dict["minimum"])
-                minDateTime = QDateTime()
-                minDateTime.setTime_t(minimum)
+                maximum = self.confToWidgetVal(conf, widget_dict["maximum"])
+
+                qdatetime_min = QDateTime()
+                qdatetime_min.setTime_t(minimum)
+                widget.setMinimumDateTime(qdatetime_min)
+                qdatetime_max = QDateTime()
+                qdatetime_max.setTime_t(maximum)
+                widget.setMaximumDateTime(qdatetime_max)
 
                 if current:
-                    curDateTime = QDateTime()
-                    curDateTime.setTime_t(current)
+                    qdatetime_cur = QDateTime()
+                    qdatetime_cur.setTime_t(current)
                 else:
-                    curDateTime = minDateTime
+                    qdatetime_cur = qdatetime_min
 
-                widget.setMinimumDateTime(minDateTime)
-                widget.setDateTime(curDateTime)
+                widget.setDateTime(qdatetime_cur)
 
             elif object_type == "keygrabber":
                 self.updateHotkey(widget, current)
