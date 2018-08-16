@@ -10,7 +10,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 from __future__ import unicode_literals
 
-from .libaddon.widgets.contrib import ContribDialog
+from .libaddon.gui.contrib import ContribDialog
 from .consts import ANKI21
 
 if ANKI21:

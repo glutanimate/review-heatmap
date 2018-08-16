@@ -12,6 +12,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import unicode_literals
 
 import time
+from collections import OrderedDict
 
 from aqt.qt import *
 
@@ -20,121 +21,130 @@ from aqt.studydeck import StudyDeck
 from .config import (heatmap_colors, heatmap_modes, activity_stats,
                      default_config, default_prefs)
 
-from .libaddon.widgets.options import OptionsDialog
+from .libaddon.gui.options import OptionsDialog
 
 from .consts import ANKI21
 
 if ANKI21:
-    from .forms5 import options as qtform_options  # noqa: F401
+    from .forms5 import options as option_qtform  # noqa: F401
 else:
-    from .forms4 import options as qtform_options  # noqa: F401
+    from .forms4 import options as option_qtform  # noqa: F401
 
 
 # Widget <-> config mappings
 
-widgets_options = (
-    {
-        "name": "selHmColor",
-        "type": "combobox",
-        "current": {
-            "confPath": ("config", "colors"),
+# order is important as events might fire when setting widget
+# properties
+option_widgets = OrderedDict((
+    ("selHmColor",
+        {
+            "value": {
+                "confPath": ("config", "colors"),
+            },
+            "items": {
+                "getter": "getHeatmapColors"
+            }
+        }
+     ),
+    ("selHmCalMode",
+        {
+            "value": {
+                "confPath": ("config", "mode")
+            },
+            "items": {
+                "getter": "getHeatmapModes"
+            }
+        }
+     ),
+    ("selActivity",
+        {
+            "value": {
+                "confPath": ("config", "stat")
+            },
+            "items": {
+                "getter": "getActivityStats"
+            }
+        }
+     ),
+    ("cbHmMain",
+        {
+            "value": {
+                "confPath": ("prefs", "display", 0)
+            }
+        }
+     ),
+    ("cbHmDeck",
+        {
+            "value": {
+                "confPath": ("prefs", "display", 1)
+            }
+        }
+     ),
+    ("cbHmStats",
+        {
+            "value": {
+                "confPath": ("prefs", "display", 2)
+            }
+        }
+     ),
+    ("cbStreakAll",
+        {
+            "value": {
+                "confPath": ("prefs", "statsvis")
+            }
+        }
+     ),
+    ("spinLimHist",
+        {
+            "value": {
+                "confPath": ("config", "limhist")
+            }
+        }
+     ),
+    ("spinLimFcst",
+        {
+            "value": {
+                "confPath": ("config", "limfcst")
+            }
+        }
+     ),
+    ("dateLimData",
+        {
+            "value": {
+                "confPath": ("config", "limdate")
+            },
+            "min": {
+                "getter": "getColCreationTime"
+            },
+            "max": {
+                "getter": "getCurrentTime"
+            }
+        }
+     ),
+    ("cbLimDel",
+        {
+            "value": {
+                "confPath": ("config", "limcdel")
+            }
+        }
+     ),
+    ("keyGrabToggle",
+        {
+            "value": {
+                "confPath": ("prefs", "hotkeys", "toggle")
+            }
         },
-        "items": {
-            "getter": "getHeatmapColors"
+     ),
+    ("listDecks",
+        {
+            "value": {
+                "confPath": ("config", "limdecks"),
+                "getter": "getIgnoredDecks",
+                "setter": "setIgnoredDecks"
+            }
         }
-    },
-    {
-        "name": "selHmCalMode",
-        "type": "combobox",
-        "current": {
-            "confPath": ("config", "mode")
-        },
-        "items": {
-            "getter": "getHeatmapModes"
-        }
-    },
-    {
-        "name": "selActivity",
-        "type": "combobox",
-        "current": {
-            "confPath": ("config", "stat")
-        },
-        "items": {
-            "getter": "getActivityStats"
-        }
-    },
-    {
-        "name": "cbHmMain",
-        "type": "checkbox",
-        "current": {
-            "confPath": ("prefs", "display", 0)
-        }
-    },
-    {
-        "name": "cbHmDeck",
-        "type": "checkbox",
-        "current": {
-            "confPath": ("prefs", "display", 1)
-        }
-    },
-    {
-        "name": "cbHmStats",
-        "type": "checkbox",
-        "current": {
-            "confPath": ("prefs", "display", 2)
-        }
-    },
-    {
-        "name": "cbStreakAll",
-        "type": "checkbox",
-        "current": {
-            "confPath": ("prefs", "statsvis")
-        }
-    },
-    {
-        "name": "spinLimHist",
-        "type": "spinbox",
-        "current": {
-            "confPath": ("config", "limhist")
-        }
-    },
-    {
-        "name": "spinLimFcst",
-        "type": "spinbox",
-        "current": {
-            "confPath": ("config", "limfcst")
-        }
-    },
-    {
-        "name": "btnKeyToggle",
-        "type": "keygrabber",
-        "current": {
-            "confPath": ("prefs", "hotkeys", "toggle")
-        }
-    },
-    {
-        "name": "dateLimData",
-        "type": "dateedit",
-        "current": {
-            "confPath": ("config", "limdate")
-        },
-        "minimum": {
-            "getter": "getColCreationTime"
-        },
-        "maximum": {
-            "getter": "getCurrentTime"
-        }
-    },
-    {
-        "name": "listDecks",
-        "type": "list",
-        "current": {
-            "confPath": ("config", "limdecks"),
-            "getter": "getIgnoredDecks",
-            "setter": "setIgnoredDecks"
-        }
-    },
-)
+     ),
+))
 
 
 class RevHmOptions(OptionsDialog):
@@ -145,35 +155,37 @@ class RevHmOptions(OptionsDialog):
 
     def __init__(self, conf, defaults, mw):
         self.mw = mw
-        super(RevHmOptions, self).__init__(qtform_options, widgets_options,
+        super(RevHmOptions, self).__init__(option_qtform, option_widgets,
                                            conf, defaults, parent=mw)
+
+    # Events:
 
     def setupEvents(self):
         super(RevHmOptions, self).setupEvents()
         self.form.btnDeckAdd.clicked.connect(self.onAddIgnoredDeck)
         self.form.btnDeckDel.clicked.connect(self.onDeleteIgnoredDeck)
     
+    # Actions:
+
     def onAddIgnoredDeck(self):
-        lwidget_decks = self.form.listDecks
+        list_widget = self.form.listDecks
         ret = StudyDeck(self.mw, accept=_("Choose"),
                         title=_("Choose Deck"), help="",
                         parent=self, geomKey="selectDeck")
         deck_name = ret.name
         deck_id = self.mw.col.decks.id(deck_name)
-        current_items = self.getListItems(lwidget_decks)
         
-        try:
-            new_item = current_items[deck_id][0]
-        except KeyError:
-            new_item = self.addListItems(lwidget_decks,
-                                         [(deck_name, deck_id)])[0]
-        
-        self.selectListItem(lwidget_decks, new_item)
+        item_tuple = (deck_name, deck_id)
+
+        if not self.setCurrent(list_widget, item_tuple):
+            self.setValuesAndCurrent(list_widget, [item_tuple], item_tuple)
 
     def onDeleteIgnoredDeck(self):
-        lwidget_decks = self.form.listDecks
-        selected = lwidget_decks.selectedItems()
-        self.removeListItems(lwidget_decks, selected)
+        list_widget = self.form.listDecks
+        selected = self.getSelected(list_widget)
+        self.removeValues(list_widget, selected)
+
+    # Config Getters/Setters:
 
     def getColCreationTime(self):
         return self.mw.col.crt
@@ -193,11 +205,17 @@ class RevHmOptions(OptionsDialog):
     def getActivityStats(self):
         return self.getComboItems(activity_stats)
 
-    # def getIgnoredDecks(self, cur):
-    #     return ()
-
-    # def setIgnoredDecks(self, cur):
-    #     return ()
+    def getIgnoredDecks(self, dids):
+        item_tuples = []
+        for did in dids:
+            name = self.mw.col.decks.nameOrNone(did)
+            if not name:
+                continue
+            item_tuples.append((name, did))
+        return item_tuples
+            
+    def setIgnoredDecks(self, list_items):
+        return list(list_items.keys())
 
 
 def invokeOptionsDialog(mw):
