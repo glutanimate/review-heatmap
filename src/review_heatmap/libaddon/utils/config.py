@@ -1,6 +1,14 @@
+# -*- coding: utf-8 -*-
+
+"""
+Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
+License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
+"""
 
 
-# Utility functions for operating with nested config collections
+from functools import reduce
+
+# Utility functions for operating with nested objects
 
 def getNestedValue(obj, keys):
     """
@@ -37,3 +45,24 @@ def setNestedValue(obj, keys, value):
             cur[key] = value
             return
         cur = cur[key]
+
+
+def getNestedAttribute(obj, attr, *args):
+    """
+    Gets nested attribute from "."-separated string
+    
+    Arguments:
+        obj {object} -- object to parse
+        attr {string} -- attribute name, optionally including
+                         "."-characters to denote different levels
+                         of nesting
+    
+    Returns:
+        object -- object corresponding to attribute name
+    
+    Credits:
+        https://gist.github.com/wonderbeyond/d293e7a2af1de4873f2d757edd580288
+    """
+    def _getattr(obj, attr):
+        return getattr(obj, attr, *args)
+    return reduce(_getattr, [obj] + attr.split('.'))

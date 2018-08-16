@@ -109,16 +109,12 @@ from aqt.qt import Qt, QDialogButtonBox
 from aqt.utils import openLink
 
 from .basic.dialog import BasicDialog
-from .basic.interface import INTERFACE_API_BY_KEY
 
 from ..consts import (ADDON_NAME, ADDON_VERSION, ADDON_HELP,
                       LINK_PATREON, LINK_COFFEE, LINK_RATE,
                       LINK_TWITTER, LINK_YOUTUBE)
-
-from ..about import get_about_string  # noqa: E402
-
-from ..config import getNestedValue, setNestedValue
-
+from ..utils.config import getNestedValue, setNestedValue
+from ..utils.about import get_about_string  # noqa: E402
 
 # Options dialog and associated classes
 
@@ -190,7 +186,7 @@ class OptionsDialog(BasicDialog):
 
     def restore(self):
         """Restore widgets back to defaults"""
-        self.applyConfig(self.defaults)
+        self.setConfig(self.defaults)
 
     # Utility functions to translate config into widget state and vice versa
 
@@ -238,7 +234,6 @@ class OptionsDialog(BasicDialog):
         Returns:
             tuple  -- tuple of conf_path {tuple} and conf_val {object}
         """
-        conf_path = properties.get("confPath", None)
         setter_name = properties.get("setter", None)
         setter = getattr(self, setter_name, None) if setter_name else None
 
@@ -247,52 +242,24 @@ class OptionsDialog(BasicDialog):
         else:
             conf_val = widget_val
 
-        return conf_path, conf_val
+        return conf_val
 
     def setConfig(self, conf):
         """Set up widget data based on provided config dict"""
-        for object_name, properties in self.widgets.items():
-            widget = self.nameToWidget(object_name)
+        for widget_name, properties in self.widgets:
+            for key, property_dict in properties:
+                value = self.confToWidgetVal(conf, property_dict)
+                self.interface.set(widget_name, key, value)
 
-            if widget is None:
-                raise NotImplementedError(
-                    "Widget not implemented: ", object_name)
-
-            for key in properties:
-                if key in INTERFACE_API_BY_KEY:
-                    value_setter = INTERFACE_API_BY_KEY[key][0]
-                    if not value_setter:
-                        raise NotImplementedError(
-                            "Setter for widget property not implemented: ",
-                            key)
-                    value = self.confToWidgetVal(conf, properties[key])
-                    value_setter(self, widget, value)
-                else:
-                    raise NotImplementedError(
-                        "Widget property not implemented: ", key)
 
     def getConfig(self, conf):
-        for object_name, properties in self.widgets.items():
-            widget = self.nameToWidget(object_name)
-
-            if widget is None:
-                raise NotImplementedError(
-                    "Widget not implemented: ", object_name)
-
-            for key in properties:
-                # FIXME: only if relevant for config
-                if key in INTERFACE_API_BY_KEY:
-                    value_getter = INTERFACE_API_BY_KEY[key][1]
-                    if not value_getter:
-                        raise NotImplementedError(
-                            "Getter for widget property not implemented: ",
-                            key)
-                    widget_val = value_getter(self, widget)
-                    conf_path, conf_val = self.widgetToConfVal(properties[key],
-                                                               widget_val)
-                    setNestedValue(conf, conf_path, conf_val)
-                else:
-                    raise NotImplementedError(
-                        "Widget property not implemented: ", key)
-
+        """Get data from dialog and write it to config"""
+        for widget_name, properties in self.widgets:
+            for key, property_dict in properties:
+                conf_path = property_dict.get("confPath", None)
+                if not conf_path:  # property irrelevant for config
+                    continue
+                widget_val = self.interface.get(widget_name, key)
+                conf_val = self.widgetToConfVal(property_dict, widget_val)
+                setNestedValue(conf, conf_path, conf_val)
         return conf
