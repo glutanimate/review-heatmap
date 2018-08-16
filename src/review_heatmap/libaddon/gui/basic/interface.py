@@ -5,6 +5,11 @@ Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
+from collections import MutableSequence, MutableSet, MutableMapping
+
+from ...utils.config import getNestedAttribute
+
+
 from .widgets.qt import *
 # TODO: Switch to QKeySequenceEdit once Qt4 support dropped
 from .widgets.qkeygrabber import QKeyGrabButton
@@ -12,10 +17,60 @@ from .widgets.qcolorbutton import QColorButton
 
 
 class CommonWidgetInterface(object):
+    # TODO: document expected value types / returned value types
+    #       for each widget
 
-    # WIDGET-AGNOSTIC METHODS
+    methods_by_key = {
+        "value": ("setValue", "getValue"),
+        "items": ("setValues", "getValues"),
+        "current": ("setCurrent", "getCurrent"),
+        "min": ("setMinValue", None),
+        "max": ("setMaxValue", None),
+    }
+
+    def __init__(self, parent):
+        self.parent = parent
+
+    # UTILITY
+
+    def nameToWidget(self, name):
+        """
+        Gets widget corresponding to attribute name
+
+        Arguments:
+            name {string} -- Object name of widget
+
+        Raises:
+            NotImplementedError -- Should the widget not be found
+
+        Returns:
+            object -- parent dialog widget corresponding to attribute name
+        """
+        try:
+            return getNestedAttribute(self.parent, name)
+        except AttributeError:
+            raise NotImplementedError(
+                "Widget not implemented: ", name)
 
     # API
+
+    def set(self, widget_name, property, value):
+        widget = self.nameToWidget(widget_name)
+        # try:
+        setter = getattr(self, self.methods_by_key[property][0])
+        return setter(widget, value)
+        # except (KeyError, TypeError) as e:
+        #     raise NotImplementedError(
+        #         "Setting following property not implemented: ", property)
+
+    def get(self, widget_name, property):
+        widget = self.nameToWidget(widget_name)
+        # try:
+        getter = getattr(self, self.methods_by_key[property][1])
+        return getter(widget)
+        # except (KeyError, TypeError):
+        #     raise NotImplementedError(
+        #         "Getting following property not implemented: ", property)
 
     def setValue(self, widget, value):
         """
@@ -31,30 +86,49 @@ class CommonWidgetInterface(object):
         Raises:
             NotImplementedError -- [description]
         """
-        if isinstance(widget, (QCheckBox, QRadioButton)):
-            widget.setChecked(value)
-        elif isinstance(widget, (QSpinBox, QDoubleSpinBox)):
-            widget.setValue(value)
-        elif isinstance(widget, QComboBox):
-            self._setComboCurrent(widget, value)
-        elif isinstance(widget, QListWidget):
-            self._addListValues(widget, value, clear=True)
-        elif isinstance(widget, QDateEdit):
-            self._setDateTime(widget, value)
-        elif isinstance(widget, (QLineEdit, QLabel, QPushButton,
-                                 QKeyGrabButton)):
-            widget.setText(value)
-        elif isinstance(widget, QTextEdit):
-            widget.setHtml(value)
-        elif isinstance(widget, QPlainTextEdit):
-            widget.setPlainText(value)
-        elif isinstance(widget, QFontComboBox):
-            self._setFontComboCurrent(value)
-        elif isinstance(widget, QColorButton):
-            widget.setColor(color)
-        else:
-            raise NotImplementedError(
-                "setValue not implemented for widget ", widget)
+        try:
+            if isinstance(widget, QColorButton):
+                assert isinstance(value, dict)
+                widget.setColor(color)
+            elif isinstance(widget, QKeyGrabButton):
+                assert isinstance(value, str) or isinstance(value, unicode)
+                widget.setKey(color)
+            elif isinstance(widget, (QCheckBox, QRadioButton)):
+                assert isinstance(value, bool)
+                widget.setChecked(value)
+            elif isinstance(widget, (QSpinBox, QDoubleSpinBox)):
+                assert isinstance(value, (int, float))
+                widget.setValue(value)
+            elif isinstance(widget, QComboBox):
+                # data should be non-mutable
+                assert not issubclass(
+                    type(value), (MutableSequence, MutableSet, MutableMapping))
+                self._setComboCurrent(widget, value)
+            elif isinstance(widget, QListWidget):
+                assert isinstance(value, list) or isinstance(value, tuple)
+                self._addListValues(widget, value, clear=True)
+            elif isinstance(widget, QDateEdit):
+                assert isinstance(value, int)
+                self._setDateTime(widget, value)
+            elif isinstance(widget, (QLineEdit, QLabel, QPushButton)):
+                assert isinstance(value, str) or isinstance(value, unicode)
+                widget.setText(value)
+            elif isinstance(widget, QTextEdit):
+                assert isinstance(value, str) or isinstance(value, unicode)
+                widget.setHtml(value)
+            elif isinstance(widget, QPlainTextEdit):
+                assert isinstance(value, str) or isinstance(value, unicode)
+                widget.setPlainText(value)
+            elif isinstance(widget, QFontComboBox):
+                self._setFontComboCurrent(value)
+            else:
+                raise NotImplementedError(
+                    "setValue not implemented for widget ", widget)
+        except AssertionError as e:
+            print(e)
+            raise TypeError("Inappropriate value type "
+                            "{} for widget: ".format(type(value)),
+                            widget)
 
     def getValue(self, widget):
         """
@@ -69,29 +143,31 @@ class CommonWidgetInterface(object):
 
         Raises:
             NotImplementedError -- [description]
+
         """
 
         if isinstance(widget, (QCheckBox, QRadioButton)):
-            return widget.isChecked(current)
+            return widget.isChecked()
         elif isinstance(widget, (QSpinBox, QDoubleSpinBox)):
             return widget.value()
         elif isinstance(widget, QComboBox):
-            return self._getComboCurrent(widget)
+            return self._getComboCurrent(widget, data_only=True)
         elif isinstance(widget, QListWidget):
-            return self._getListValues(widget)
+            return self._getListValues(widget, data_only=True)
         elif isinstance(widget, QDateEdit):
             return self._getDateTime(widget)
-        elif isinstance(widget, (QLineEdit, QLabel, QPushButton,
-                                 QKeyGrabButton)):
+        elif isinstance(widget, (QLineEdit, QLabel, QPushButton)):
             return widget.text()
         elif isinstance(widget, QTextEdit):
             return widget.toHtml()
         elif isinstance(widget, QPlainTextEdit):
             return widget.toPlainText()
         elif isinstance(widget, QFontComboBox):
-            return self._getFontComboCurrent(value)
+            return self._getFontComboCurrent(widget)
         elif isinstance(widget, QColorButton):
             return widget.color()
+        elif isinstance(widget, QKeyGrabButton):
+            return widget.key()
         else:
             raise NotImplementedError(
                 "getValue not implemented for widget ", widget)
@@ -195,7 +271,7 @@ class CommonWidgetInterface(object):
         widget.setCurrentItem(item)
 
     def _getWidgetItems(self, widget):
-        return [widget.item(idx) for idx in range(list_widget.count())]
+        return [widget.item(idx) for idx in range(widget.count())]
 
     # WIDGET-SPECIFIC METHODS
 
@@ -216,28 +292,35 @@ class CommonWidgetInterface(object):
         qdatetimeedit.setMaximumDateTime(self._createDateTimeFromUnix(maxtime))
 
     def _getDateTime(self, qdatetimeedit):
-        qdatetime = widget.dateTime()
+        qdatetime = qdatetimeedit.dateTime()
         # Qt4 does not support toSecsSinceEpoch
-        return qdatetime.toMSecsSinceEpoch() // 1000
+        return int(qdatetime.toMSecsSinceEpoch() // 1000)
 
     # QComboBox
 
-    def _setComboCurrent(self, combo_widget, item_tuple):
-        for idx in range(combo_widget.count()):
-            data = combo_widget.itemData(idx, Qt.UserRole)
-            text = combo_widget.itemText(idx)
-            if (data, text) == item_tuple:
-                self._selectWidgetItem(list_widget, item)
-                return True
-        return False
+    def _setComboCurrent(self, combo_widget, item_data):
+        # for idx in range(combo_widget.count()):
+        #     data = combo_widget.itemData(idx, Qt.UserRole)
+        #     if data == item_data:
+        #         combo_widget.setCurrentIndex(idx)
+        #         return True
+        # return False
+        item_idx = combo_widget.findData(item_data)
+        if item_idx == -1:
+            return False
+        combo_widget.setCurrentIndex(item_idx)
+        return True
 
-    def _getComboCurrent(self, combo_widget):
+    def _getComboCurrent(self, combo_widget, data_only=False):
         cur_idx = combo_widget.currentIndex()
-        cur_text = combo_widget.currentText()
         cur_data = combo_widget.itemData(cur_idx, Qt.UserRole)
+        if data_only:
+            return cur_data
+        cur_text = combo_widget.currentText()
         return (cur_idx, cur_text, cur_data)
 
-    def _addComboValues(self, combo_widget, item_tuples, cur=None, clear=False):
+    def _addComboValues(self, combo_widget, item_tuples, 
+                        cur=None, clear=False):
         if clear:
             combo_widget.clear()
 
@@ -259,13 +342,16 @@ class CommonWidgetInterface(object):
             if (data, text) in item_tuples:
                 combo_widget.removeItem(idx)
 
-    def _getComboValues(self, combo_widget):
-        item_tuples = []
+    def _getComboValues(self, combo_widget, data_only=False):
+        result_list = []
         for idx in range(combo_widget.count()):
             data = combo_widget.itemData(idx, Qt.UserRole)
+            if data_only:
+                result_list.append(data)
+                continue
             text = combo_widget.itemText(idx)
-            item_tuples.append((data, text))
-        return item_tuples
+            result_list.append((data, text))
+        return result_list
 
     # QListWidget
 
@@ -291,28 +377,32 @@ class CommonWidgetInterface(object):
                 # takeItem does not delete the QListWidgetItem:
                 del(item)
 
-    def _getListValues(self, list_widget):
-        item_tuples = []
+    def _getListValues(self, list_widget, data_only=False):
+        result_list = []
         for item in self._getWidgetItems(list_widget):
             data = item.data(Qt.UserRole)
+            if data_only:
+                result_list.append(data)
+                continue
             text = item.text()
-            item_tuples.append((data, text))
-        return item_tuples
+            result_list.append((data, text))
+        return result_list
 
-    def _setListCurrent(self, list_widget, item_tuple):
+    def _setListCurrent(self, list_widget, item_data):
         for item in self._getWidgetItems(list_widget):
             data = item.data(Qt.UserRole)
-            text = item.text()
-            if (data, text) == item_tuple:
+            if data == item_data:
                 self._selectWidgetItem(list_widget, item)
                 return True
         return False
 
-    def _getListCurrent(self, list_widget):
+    def _getListCurrent(self, list_widget, data_only=False):
         cur_idx = list_widget.currentRow()
         cur_item = list_widget.currentItem()
-        cur_text = cur_item.text()
         cur_data = cur_item.data(Qt.UserRole)
+        if data_only:
+            return cur_data
+        cur_text = cur_item.text()
         return (cur_idx, cur_text, cur_data)
 
     # QFontComboBox
@@ -334,17 +424,3 @@ class CommonWidgetInterface(object):
             "italic": font_widget.italic()
         }
         return font_dict
-
-
-INTERFACE_API_BY_KEY = {
-    "value": (CommonWidgetInterface.setValue,
-              CommonWidgetInterface.getValue),
-    "items": (CommonWidgetInterface.setValues,
-              CommonWidgetInterface.getValues),
-    "current": (CommonWidgetInterface.setCurrent,
-                CommonWidgetInterface.getCurrent),
-    "min": (CommonWidgetInterface.setMinValue,
-            None),
-    "max": (CommonWidgetInterface.setMaxValue,
-            None),
-}
