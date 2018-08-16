@@ -12,16 +12,15 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import unicode_literals
 
 import time
-from collections import OrderedDict
 
 from aqt.qt import *
 
 from aqt.studydeck import StudyDeck
 
+from .libaddon.gui.options import OptionsDialog
+
 from .config import (heatmap_colors, heatmap_modes, activity_stats,
                      default_config, default_prefs)
-
-from .libaddon.gui.options import OptionsDialog
 
 from .consts import ANKI21
 
@@ -33,118 +32,90 @@ else:
 
 # Widget <-> config mappings
 
-# order is important as events might fire when setting widget
-# properties
-option_widgets = OrderedDict((
-    ("selHmColor",
-        {
-            "value": {
-                "confPath": ("config", "colors"),
-            },
-            "items": {
-                "getter": "getHeatmapColors"
-            }
-        }
-     ),
-    ("selHmCalMode",
-        {
-            "value": {
-                "confPath": ("config", "mode")
-            },
-            "items": {
-                "getter": "getHeatmapModes"
-            }
-        }
-     ),
-    ("selActivity",
-        {
-            "value": {
-                "confPath": ("config", "stat")
-            },
-            "items": {
-                "getter": "getActivityStats"
-            }
-        }
-     ),
-    ("cbHmMain",
-        {
-            "value": {
-                "confPath": ("prefs", "display", 0)
-            }
-        }
-     ),
-    ("cbHmDeck",
-        {
-            "value": {
-                "confPath": ("prefs", "display", 1)
-            }
-        }
-     ),
-    ("cbHmStats",
-        {
-            "value": {
-                "confPath": ("prefs", "display", 2)
-            }
-        }
-     ),
-    ("cbStreakAll",
-        {
-            "value": {
-                "confPath": ("prefs", "statsvis")
-            }
-        }
-     ),
-    ("spinLimHist",
-        {
-            "value": {
-                "confPath": ("config", "limhist")
-            }
-        }
-     ),
-    ("spinLimFcst",
-        {
-            "value": {
-                "confPath": ("config", "limfcst")
-            }
-        }
-     ),
-    ("dateLimData",
-        {
-            "value": {
-                "confPath": ("config", "limdate")
-            },
-            "min": {
-                "getter": "getColCreationTime"
-            },
-            "max": {
-                "getter": "getCurrentTime"
-            }
-        }
-     ),
-    ("cbLimDel",
-        {
-            "value": {
-                "confPath": ("config", "limcdel")
-            }
-        }
-     ),
-    ("keyGrabToggle",
-        {
-            "value": {
-                "confPath": ("prefs", "hotkeys", "toggle")
-            }
-        },
-     ),
-    ("listDecks",
-        {
-            "value": {
-                "confPath": ("config", "limdecks"),
-                "getter": "getIgnoredDecks",
-                "setter": "setIgnoredDecks"
-            }
-        }
-     ),
-))
+# order is important (e.g. set items before current value)
+option_widgets = (
+    ("form.selHmColor", (
+        ("items", {
+            "getter": "getHeatmapColors"
+        }),
+        ("value", {
+            "confPath": ("config", "colors"),
+        }),
+    )),
+    ("form.selHmCalMode", (
+        ("items", {
+            "getter": "getHeatmapModes"
+        }),
+        ("value", {
+            "confPath": ("config", "mode")
+        }),
+    )),
+    ("form.selActivity", (
+        ("items", {
+            "getter": "getActivityStats"
+        }),
+        ("value", {
+            "confPath": ("config", "stat")
+        }),
+    )),
+    ("form.cbHmMain", (
+        ("value", {
+            "confPath": ("prefs", "display", 0)
+        }),
+    )),
+    ("form.cbHmDeck", (
+        ("value", {
+            "confPath": ("prefs", "display", 1)
+        }),
+    )),
+    ("form.cbHmStats", (
+        ("value", {
+            "confPath": ("prefs", "display", 2)
+        }),
+    )),
+    ("form.cbStreakAll", (
+        ("value", {
+            "confPath": ("prefs", "statsvis")
+        }),
+    )),
+    ("form.spinLimHist", (
+        ("value", {
+            "confPath": ("config", "limhist")
+        }),
+    )),
+    ("form.spinLimFcst", (
+        ("value", {
+            "confPath": ("config", "limfcst")
+        }),
+    )),
+    ("form.dateLimData", (
+        ("value", {
+            "confPath": ("config", "limdate")
+        }),
+        ("min", {
+            "getter": "getColCreationTime"
+        }),
+        ("max", {
+            "getter": "getCurrentTime"
+        }),
+    )),
+    ("form.cbLimDel", (
+        ("value", {
+            "confPath": ("config", "limcdel")
+        }),
+    )),
+    ("form.keyGrabToggle", (
+        ("value", {
+            "confPath": ("prefs", "hotkeys", "toggle")
+        }),
+    )),
+    ("form.listDecks", (
+        ("value", {
+            "confPath": ("config", "limdecks"),
+            "getter": "getIgnoredDecks",
+        }),
+    )),
+)
 
 
 class RevHmOptions(OptionsDialog):
@@ -164,7 +135,7 @@ class RevHmOptions(OptionsDialog):
         super(RevHmOptions, self).setupEvents()
         self.form.btnDeckAdd.clicked.connect(self.onAddIgnoredDeck)
         self.form.btnDeckDel.clicked.connect(self.onDeleteIgnoredDeck)
-    
+
     # Actions:
 
     def onAddIgnoredDeck(self):
@@ -174,24 +145,25 @@ class RevHmOptions(OptionsDialog):
                         parent=self, geomKey="selectDeck")
         deck_name = ret.name
         deck_id = self.mw.col.decks.id(deck_name)
-        
+
         item_tuple = (deck_name, deck_id)
 
-        if not self.setCurrent(list_widget, item_tuple):
-            self.setValuesAndCurrent(list_widget, [item_tuple], item_tuple)
+        if not self.interface.setCurrent(list_widget, item_tuple):
+            self.interface.setValuesAndCurrent(
+                list_widget, [item_tuple], item_tuple)
 
     def onDeleteIgnoredDeck(self):
         list_widget = self.form.listDecks
-        selected = self.getSelected(list_widget)
-        self.removeValues(list_widget, selected)
+        selected = self.interface.getSelected(list_widget)
+        self.interface.removeValues(list_widget, selected)
 
     # Config Getters/Setters:
 
     def getColCreationTime(self):
         return self.mw.col.crt
-    
+
     def getCurrentTime(self):
-        return round(time.time())
+        return int(round(time.time()))
 
     def getComboItems(self, dct):
         return list((val["label"], key) for key, val in dct.items())
@@ -213,9 +185,6 @@ class RevHmOptions(OptionsDialog):
                 continue
             item_tuples.append((name, did))
         return item_tuples
-            
-    def setIgnoredDecks(self, list_items):
-        return list(list_items.keys())
 
 
 def invokeOptionsDialog(mw):
