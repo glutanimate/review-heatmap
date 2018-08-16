@@ -45,18 +45,20 @@ heatmap_colors = OrderedDict((
 ))
 
 heatmap_modes = OrderedDict((
-    ("year", {"label": "Continuous year",
-              "domain": 'year',
-              "subDomain": 'day',
-              "range": 1,
-              "domLabForm": "%Y"}
-     ),
-    ("months", {"label": "Split into months",
-                "domain": 'month',
-                "subDomain": 'day',
-                "range": 12,
-                "domLabForm": "%b '%y"}
-     )
+    ("year", {
+        "label": "Continuous year",
+        "domain": 'year',
+        "subDomain": 'day',
+        "range": 1,
+        "domLabForm": "%Y"
+    }),
+    ("months", {
+        "label": "Split into months",
+        "domain": 'month',
+        "subDomain": 'day',
+        "range": 12,
+        "domLabForm": "%b '%y"
+    })
 ))
 
 activity_stats = OrderedDict((
@@ -75,14 +77,15 @@ default_config = {
     "limhist": 0,
     "limfcst": 0,
     "limcdel": False,
-    "limdecks": ()
+    "limdecks": []
 }
 
 # use local prefs for settings that might be device-specific
 default_prefs = {
     "display": [True, True, True],
     "statsvis": True,
-    "hotkeys": {"toggle": "Ctrl+R"}
+    "hotkeys": {"toggle": "Ctrl+R"},
+    "decks": {}
 }
 
 
