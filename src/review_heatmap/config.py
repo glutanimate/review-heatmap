@@ -73,7 +73,7 @@ default_config = {
     "colors": "lime",
     "mode": "year",
     "stat": "a",
-    "limdate": None,
+    "limdate": 0,
     "limhist": 0,
     "limfcst": 0,
     "limcdel": False,
