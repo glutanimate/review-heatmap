@@ -8,13 +8,14 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from .qt import QPushButton, QColorDialog, QPixmap, QColor, QIcon, QSize
 
 class QColorButton(QPushButton):
-    def __init__(self, color="#000000", parent=None):
+    def __init__(self, parent=None, color="#000000"):
         super(QColorButton, self).__init__(parent=parent)
         self._updateButtonColor(color)
         self.clicked.connect(self._chooseColor)
 
     def _chooseColor(self):
-        dialog = QColorDialog(self.color)
+        qcolour = QColor(self.color)
+        dialog = QColorDialog(qcolour, parent=self)
         color = dialog.getColor()
         if not color.isValid():
             return False
