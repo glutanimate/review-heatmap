@@ -666,7 +666,7 @@ with a coffee</string>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QPushButton" name="keyGrabToggle">
+          <widget class="QKeyGrabButton" name="keyGrabToggle">
            <property name="focusPolicy">
             <enum>Qt::TabFocus</enum>
            </property>
@@ -726,7 +726,17 @@ with a coffee</string>
                <string>Add new deck exclusion rule</string>
               </property>
               <property name="text">
-               <string>+</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/review_heatmap/icons/plus.svg</normaloff>:/review_heatmap/icons/plus.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
               </property>
               <property name="shortcut">
                <string>Ctrl+D</string>
@@ -745,7 +755,11 @@ with a coffee</string>
                <string>Delete deck exclusion rule</string>
               </property>
               <property name="text">
-               <string>–</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/review_heatmap/icons/minus.svg</normaloff>:/review_heatmap/icons/minus.svg</iconset>
               </property>
               <property name="shortcut">
                <string>Ctrl+Del, Ctrl+S</string>
@@ -819,6 +833,13 @@ with a coffee</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QKeyGrabButton</class>
+   <extends>QPushButton</extends>
+   <header>..libaddon.gui.basic.widgets.qkeygrabber</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>btnPatreon</tabstop>
