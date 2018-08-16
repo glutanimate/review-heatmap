@@ -2,39 +2,38 @@
 from .widgets.qt import *
 from .interface import CommonWidgetInterface
 
-class BasicDialog(QDialog, CommonWidgetInterface):
+class BasicDialog(QDialog):
     def __init__(self, form=None, parent=None, **kwargs):
         super(BasicDialog, self).__init__(parent=parent, **kwargs)
         self.parent = parent
         # Set up UI from pre-generated UI form:
+        self.interface = CommonWidgetInterface(self)
         if form:
             self.form = form.Ui_Dialog()
             self.form.setupUi(self)
 
-    # HELPER
-
-    def nameToWidget(self, name):
-        return getattr(self, name, None) or getattr(self.form, name, None)
-
     # DIALOG OPEN/CLOSE
 
     def onClose(self):
+        """Executed whenever dialog closed"""
         pass
 
     def onAccept(self):
+        """Executed only if dialog confirmed"""
         pass
 
     def onReject(self):
+        """Executed only if dialog dismissed"""
         pass
 
     def accept(self):
-        """Apply changes on OK button press"""
+        """Overwrites default accept() to control close actions"""
         self.onClose()
         self.onAccept()
         super(BasicDialog, self).accept()
 
     def reject(self):
-        """Dismiss changes on Close button press"""
+        """Overwrites default reject() to control close actions"""
         self.onClose()
         self.onReject()
         super(BasicDialog, self).reject()
