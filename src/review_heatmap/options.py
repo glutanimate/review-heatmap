@@ -18,8 +18,7 @@ from aqt import mw
 from aqt.studydeck import StudyDeck
 
 from .libaddon.gui.options import OptionsDialog
-from .config import (heatmap_colors, heatmap_modes, activity_stats)
-from . import config
+from .config import (config, heatmap_colors, heatmap_modes, activity_stats)
 from .consts import ANKI21
 
 if ANKI21:
@@ -187,5 +186,7 @@ class RevHmOptions(OptionsDialog):
 
 def invokeOptionsDialog():
     """Call settings dialog"""
-    dialog = RevHmOptions(config.config, mw)
+    dialog = RevHmOptions(config, mw)
     return dialog.exec_()
+
+config.setConfigAction(invokeOptionsDialog)

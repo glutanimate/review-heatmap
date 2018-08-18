@@ -29,8 +29,7 @@ from anki.hooks import wrap
 
 from .options import invokeOptionsDialog
 from .contrib import invokeContributionsDialog
-from .config import heatmap_colors, heatmap_modes
-from . import config
+from .config import config, heatmap_colors, heatmap_modes
 from .web import (streak_css, streak_div, heatmap_boilerplate,
                   heatmap_css, heatmap_element, ov_body)
 from .consts import ANKI21
@@ -43,7 +42,7 @@ BRIDGE = "pycmd" if ANKI21 else "py.link"
 def report_activity(self, limhist, limfcst, smode=False):
     """Calculate stats and generate report"""
     # self is anki.stats.CollectionStats
-    synced_conf = config.config["synced"]
+    synced_conf = config["synced"]
     limhist = None if limhist == 0 else limhist
     limfcst = None if limfcst == 0 else limfcst
     # get data
@@ -266,8 +265,8 @@ def my_render_page_ov(self):
     We use this instead of _body() in order to stay compatible
     with other add-ons"""
     # self is overview
-    synced_conf = config.config["synced"]
-    prefs = config.config["profile"]
+    synced_conf = config["synced"]
+    prefs = config["profile"]
     self._body = ov_body  # modified body with stats section
     report = ""
     if prefs["display"][1] or prefs["statsvis"]:
@@ -311,8 +310,8 @@ def my_render_page_ov(self):
 def add_heatmap_db(self, _old):
     """Add heatmap to _renderStats() return"""
     #self is deckbrowser
-    synced_conf = config.config["synced"]
-    prefs = config.config["profile"]
+    synced_conf = config["synced"]
+    prefs = config["profile"]
     ret = _old(self)
     smode = False
     if not prefs["display"][0]:
@@ -344,8 +343,8 @@ def my_reps_graph(self, _old):
     """Wraps dueGraph and adds our heatmap to the stats screen"""
     #self is anki.stats.CollectionStats
     ret = _old(self)
-    synced_conf = config.config["synced"]
-    prefs = config.config["profile"]
+    synced_conf = config["synced"]
+    prefs = config["profile"]
     smode = False
     if not prefs["display"][2]:
         if not prefs["statsvis"]:

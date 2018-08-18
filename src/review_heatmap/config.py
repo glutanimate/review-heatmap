@@ -14,7 +14,6 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 
 from aqt import mw
-from anki.hooks import addHook
 
 from .libaddon.utils.config import ConfigManager
 
@@ -90,14 +89,5 @@ config_defaults = {
     }
 }
 
-# TODO: more elegant solution
-
-config = None
-
-def onProfileLoaded():
-    global config
-    from .options import invokeOptionsDialog
-    config = ConfigManager(mw, config_dict=config_defaults, conf_key="heatmap",
-                           conf_action=invokeOptionsDialog, reset_req=True)
-
-addHook("profileLoaded", onProfileLoaded)
+config = ConfigManager(mw, config_dict=config_defaults,
+                       conf_key="heatmap", reset_req=True)
