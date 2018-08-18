@@ -113,7 +113,7 @@ from .basic.dialog import BasicDialog
 from ..consts import (ADDON_NAME, ADDON_VERSION, ADDON_HELP,
                       LINK_PATREON, LINK_COFFEE, LINK_RATE,
                       LINK_TWITTER, LINK_YOUTUBE)
-from ..utils.config import getNestedValue, setNestedValue
+from ..utils.utils import getNestedValue, setNestedValue
 from ..utils.about import get_about_string  # noqa: E402
 
 # Options dialog and associated classes
@@ -138,16 +138,15 @@ class OptionsDialog(BasicDialog):
 
     """
 
-    def __init__(self, form, widgets, conf, defaults, parent=None):
+    def __init__(self, form, widgets, config, parent=None):
         super(OptionsDialog, self).__init__(form=form, parent=parent)
         self.widgets = widgets
-        self.conf = conf
-        self.defaults = defaults
+        self.config = config
         # Perform any subsequent setup steps:
         self.setupCustomWidgets()
         self.setupLabels()
         self.setupEvents()
-        self.setConfig(conf)
+        self.setConfig(config)
 
     # Addon-specific widget setups go here:
 
@@ -186,7 +185,7 @@ class OptionsDialog(BasicDialog):
 
     def restore(self):
         """Restore widgets back to defaults"""
-        self.setConfig(self.defaults)
+        self.setConfig(self.config.defaults)
 
     # Utility functions to translate config into widget state and vice versa
 
@@ -244,16 +243,17 @@ class OptionsDialog(BasicDialog):
 
         return conf_val
 
-    def setConfig(self, conf):
+    def setConfig(self, config):
         """Set up widget data based on provided config dict"""
         for widget_name, properties in self.widgets:
             for key, property_dict in properties:
-                value = self.confToWidgetVal(conf, property_dict)
+                value = self.confToWidgetVal(config, property_dict)
                 self.interface.set(widget_name, key, value)
 
 
-    def getConfig(self, conf):
+    def saveConfig(self):
         """Get data from dialog and write it to config"""
+        config = self.config
         for widget_name, properties in self.widgets:
             for key, property_dict in properties:
                 conf_path = property_dict.get("confPath", None)
@@ -261,5 +261,9 @@ class OptionsDialog(BasicDialog):
                     continue
                 widget_val = self.interface.get(widget_name, key)
                 conf_val = self.widgetToConfVal(property_dict, widget_val)
-                setNestedValue(conf, conf_path, conf_val)
-        return conf
+                setNestedValue(config, conf_path, conf_val)
+        config.save()
+
+    def onAccept(self):
+        self.saveConfig()
+        super(OptionsDialog, self).onAccept()
