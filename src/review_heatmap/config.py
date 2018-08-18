@@ -12,9 +12,12 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import unicode_literals
 
 from collections import OrderedDict
-from copy import deepcopy
 
 from aqt import mw
+from anki.hooks import addHook
+
+from .libaddon.utils.config import ConfigManager
+
 
 heatmap_colors = OrderedDict((
     ("olive", {
@@ -68,49 +71,33 @@ activity_stats = OrderedDict((
     ("c", {"label": "Cards added"})
 ))
 
-# use synced conf for settings that are device-agnostic
-default_config = {
-    "colors": "lime",
-    "mode": "year",
-    "stat": "a",
-    "limdate": 0,
-    "limhist": 0,
-    "limfcst": 0,
-    "limcdel": False,
-    "limdecks": []
+config_defaults = {
+    "synced": {
+        "colors": "lime",
+        "mode": "year",
+        "stat": "a",
+        "limdate": 0,
+        "limhist": 0,
+        "limfcst": 0,
+        "limcdel": False,
+        "limdecks": []
+    },
+    "profile": {
+        "display": [True, True, True],
+        "statsvis": True,
+        "hotkeys": {"toggle": "Ctrl+R"},
+        "decks": {}
+    }
 }
 
-# use local prefs for settings that might be device-specific
-default_prefs = {
-    "display": [True, True, True],
-    "statsvis": True,
-    "hotkeys": {"toggle": "Ctrl+R"},
-    "decks": {}
-}
+# TODO: more elegant solution
 
+config = None
 
-def load_config(ret=None):
-    """Load and/or create add-on preferences"""
-    configs = [
-        (mw.col.conf, default_config),
-        (mw.pm.profile, default_prefs)
-    ]
-    for conf, default in configs:
-        if 'heatmap' not in conf:
-            # create initial configuration
-            conf['heatmap'] = default
-            mw.col.setMod()
+def onProfileLoaded():
+    global config
+    from .options import invokeOptionsDialog
+    config = ConfigManager(mw, config_dict=config_defaults, conf_key="heatmap",
+                           conf_action=invokeOptionsDialog, reset_req=True)
 
-        else:
-            # FIXME: This is a very inefficient approach
-            temp_default = deepcopy(default)
-            temp_default.update(conf["heatmap"])
-            conf["heatmap"] = temp_default
-            # insert other update actions here:
-            mw.col.setMod()
-
-    if ret == "conf":
-        return mw.col.conf['heatmap']
-    if ret == "prefs":
-        return mw.pm.profile['heatmap']
-    return mw.col.conf['heatmap'], mw.pm.profile['heatmap']
+addHook("profileLoaded", onProfileLoaded)

@@ -14,14 +14,12 @@ from __future__ import unicode_literals
 import time
 
 from aqt.qt import *
-
+from aqt import mw
 from aqt.studydeck import StudyDeck
 
 from .libaddon.gui.options import OptionsDialog
-
-from .config import (heatmap_colors, heatmap_modes, activity_stats,
-                     default_config, default_prefs)
-
+from .config import (heatmap_colors, heatmap_modes, activity_stats)
+from . import config
 from .consts import ANKI21
 
 if ANKI21:
@@ -39,7 +37,7 @@ option_widgets = (
             "getter": "getHeatmapColors"
         }),
         ("value", {
-            "confPath": ("config", "colors"),
+            "confPath": ("synced", "colors"),
         }),
     )),
     ("form.selHmCalMode", (
@@ -47,7 +45,7 @@ option_widgets = (
             "getter": "getHeatmapModes"
         }),
         ("value", {
-            "confPath": ("config", "mode")
+            "confPath": ("synced", "mode")
         }),
     )),
     ("form.selActivity", (
@@ -55,42 +53,42 @@ option_widgets = (
             "getter": "getActivityStats"
         }),
         ("value", {
-            "confPath": ("config", "stat")
+            "confPath": ("synced", "stat")
         }),
     )),
     ("form.cbHmMain", (
         ("value", {
-            "confPath": ("prefs", "display", 0)
+            "confPath": ("profile", "display", 0)
         }),
     )),
     ("form.cbHmDeck", (
         ("value", {
-            "confPath": ("prefs", "display", 1)
+            "confPath": ("profile", "display", 1)
         }),
     )),
     ("form.cbHmStats", (
         ("value", {
-            "confPath": ("prefs", "display", 2)
+            "confPath": ("profile", "display", 2)
         }),
     )),
     ("form.cbStreakAll", (
         ("value", {
-            "confPath": ("prefs", "statsvis")
+            "confPath": ("profile", "statsvis")
         }),
     )),
     ("form.spinLimHist", (
         ("value", {
-            "confPath": ("config", "limhist")
+            "confPath": ("synced", "limhist")
         }),
     )),
     ("form.spinLimFcst", (
         ("value", {
-            "confPath": ("config", "limfcst")
+            "confPath": ("synced", "limfcst")
         }),
     )),
     ("form.dateLimData", (
         ("value", {
-            "confPath": ("config", "limdate")
+            "confPath": ("synced", "limdate")
         }),
         ("min", {
             "getter": "getColCreationTime"
@@ -101,17 +99,17 @@ option_widgets = (
     )),
     ("form.cbLimDel", (
         ("value", {
-            "confPath": ("config", "limcdel")
+            "confPath": ("synced", "limcdel")
         }),
     )),
     ("form.keyGrabToggle", (
         ("value", {
-            "confPath": ("prefs", "hotkeys", "toggle")
+            "confPath": ("profile", "hotkeys", "toggle")
         }),
     )),
     ("form.listDecks", (
         ("value", {
-            "confPath": ("config", "limdecks"),
+            "confPath": ("synced", "limdecks"),
             "getter": "getIgnoredDecks",
         }),
     )),
@@ -124,10 +122,10 @@ class RevHmOptions(OptionsDialog):
     Add-on-specific options dialog implementation
     """
 
-    def __init__(self, conf, defaults, mw):
+    def __init__(self, config, mw):
         self.mw = mw
         super(RevHmOptions, self).__init__(option_qtform, option_widgets,
-                                           conf, defaults, parent=mw)
+                                           config, parent=mw)
 
     # Events:
 
@@ -187,19 +185,7 @@ class RevHmOptions(OptionsDialog):
         return item_tuples
 
 
-def invokeOptionsDialog(mw):
+def invokeOptionsDialog():
     """Call settings dialog"""
-    conf = {"config": mw.col.conf['heatmap'],
-            "prefs": mw.pm.profile['heatmap']}
-    defaults = {"config": default_config,
-                "prefs": default_prefs}
-    dialog = RevHmOptions(conf, defaults, mw)
-    ret = dialog.exec_()
-    if not ret:
-        return
-    new_conf = dialog.getConfig(conf)
-    del(dialog)
-    mw.col.conf['heatmap'] = new_conf["config"]
-    mw.pm.profile['heatmap'] = new_conf["prefs"]
-    mw.col.setMod()
-    mw.reset()
+    dialog = RevHmOptions(config.config, mw)
+    return dialog.exec_()

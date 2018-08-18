@@ -29,7 +29,8 @@ from anki.hooks import wrap
 
 from .options import invokeOptionsDialog
 from .contrib import invokeContributionsDialog
-from .config import load_config, heatmap_colors, heatmap_modes
+from .config import heatmap_colors, heatmap_modes
+from . import config
 from .web import (streak_css, streak_div, heatmap_boilerplate,
                   heatmap_css, heatmap_element, ov_body)
 from .consts import ANKI21
@@ -42,7 +43,7 @@ BRIDGE = "pycmd" if ANKI21 else "py.link"
 def report_activity(self, limhist, limfcst, smode=False):
     """Calculate stats and generate report"""
     # self is anki.stats.CollectionStats
-    config = mw.col.conf["heatmap"]
+    synced_conf = config.config["synced"]
     limhist = None if limhist == 0 else limhist
     limfcst = None if limfcst == 0 else limfcst
     # get data
@@ -113,7 +114,7 @@ def report_activity(self, limhist, limfcst, smode=False):
         self.col.hm_avg = avg
 
     if smode:
-        return streak_css + gen_streak(scur, smax, avg_cur, pdays, config)
+        return streak_css + gen_streak(scur, smax, avg_cur, pdays, synced_conf)
 
     # forecast of due cards
     if today_unix not in revs_by_day:  # include forecast for today if no reviews, yet
@@ -132,16 +133,16 @@ def report_activity(self, limhist, limfcst, smode=False):
     last_year = max(time.gmtime(col_crt + last_day *
                                 86400).tm_year, time.gmtime().tm_year)
     heatmap = gen_heatmap(revs_by_day, self.col.hm_leg,
-                          first_year, last_year, config)
-    streak = gen_streak(scur, smax, avg_cur, pdays, config)
+                          first_year, last_year, synced_conf)
+    streak = gen_streak(scur, smax, avg_cur, pdays, synced_conf)
     return heatmap + streak
 
 
 
-def gen_heatmap(data, legend, start, stop, config):
+def gen_heatmap(data, legend, start, stop, synced_conf):
     """Create heatmap script and markup"""
-    mode = heatmap_modes[config["mode"]]
-    colors = heatmap_colors[config["colors"]]["colors"]
+    mode = heatmap_modes[synced_conf["mode"]]
+    colors = heatmap_colors[synced_conf["colors"]]["colors"]
     rng = mode["range"]
     domlabform = mode["domLabForm"]
 
@@ -157,9 +158,9 @@ def gen_heatmap(data, legend, start, stop, config):
     return heatmap_boilerplate + css + heatmap
 
 
-def gen_streak(scur, smax, avg_cur, pdays, config):
+def gen_streak(scur, smax, avg_cur, pdays, synced_conf):
     """Create heatmap markup"""
-    colors = heatmap_colors[config["colors"]]["colors"]
+    colors = heatmap_colors[synced_conf["colors"]]["colors"]
     
     col_cur, str_cur = dayS(scur, colors)
     col_max, str_max = dayS(smax, colors)
@@ -215,9 +216,9 @@ def my_link_handler(self, url, _old=None):
         return None if not _old else _old(self, url)
     
     if cmd == "revhm_opts":
-        return invokeOptionsDialog(mw)
+        return invokeOptionsDialog()
     elif cmd == "revhm_contrib":
-        return invokeContributionsDialog(mw)
+        return invokeContributionsDialog()
     
     
     if cmd == "revhm_seen":
@@ -265,7 +266,8 @@ def my_render_page_ov(self):
     We use this instead of _body() in order to stay compatible
     with other add-ons"""
     # self is overview
-    config, prefs = load_config()
+    synced_conf = config.config["synced"]
+    prefs = config.config["profile"]
     self._body = ov_body  # modified body with stats section
     report = ""
     if prefs["display"][1] or prefs["statsvis"]:
@@ -273,7 +275,7 @@ def my_render_page_ov(self):
             smode = True
         else:
             smode = False
-        limhist, limfcst = config['limhist'], config['limfcst']
+        limhist, limfcst = synced_conf['limhist'], synced_conf['limfcst']
         stats = self.mw.col.stats()
         stats.wholeCollection = False
         report = stats.report_activity(limhist, limfcst, smode=smode)
@@ -309,14 +311,15 @@ def my_render_page_ov(self):
 def add_heatmap_db(self, _old):
     """Add heatmap to _renderStats() return"""
     #self is deckbrowser
-    config, prefs = load_config()
+    synced_conf = config.config["synced"]
+    prefs = config.config["profile"]
     ret = _old(self)
     smode = False
     if not prefs["display"][0]:
         if not prefs["statsvis"]:
             return ret
         smode = True
-    limhist, limfcst = config['limhist'], config['limfcst']
+    limhist, limfcst = synced_conf['limhist'], synced_conf['limfcst']
     stats = self.mw.col.stats()
     stats.wholeCollection = True
     report = stats.report_activity(limhist, limfcst, smode=smode)
@@ -341,7 +344,8 @@ def my_reps_graph(self, _old):
     """Wraps dueGraph and adds our heatmap to the stats screen"""
     #self is anki.stats.CollectionStats
     ret = _old(self)
-    config, prefs = load_config()
+    synced_conf = config.config["synced"]
+    prefs = config.config["profile"]
     smode = False
     if not prefs["display"][2]:
         if not prefs["statsvis"]:
@@ -405,11 +409,8 @@ def deckStatsInit20(self, mw):
 
 # Set up menus and hooks
 options_action = QAction("Review &Heatmap Options...", mw)
-options_action.triggered.connect(lambda _, o=mw: invokeOptionsDialog(o))
+options_action.triggered.connect(invokeOptionsDialog)
 mw.form.menuTools.addAction(options_action)
-if ANKI21:
-    mw.addonManager.setConfigAction(
-        __name__, lambda: invokeOptionsDialog(mw))
 
 toggle_action = QAction(mw, triggered=toggle_heatmap)
 toggle_action.setShortcut(QKeySequence(_("Ctrl+R")))
