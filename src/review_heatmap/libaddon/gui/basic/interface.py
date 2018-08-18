@@ -7,7 +7,8 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 
 from collections import MutableSequence, MutableSet, MutableMapping
 
-from ...utils.config import getNestedAttribute
+from ...utils.utils import getNestedAttribute
+from ...utils.platform import PYTHON3
 
 
 from .widgets.qt import *
@@ -89,10 +90,11 @@ class CommonWidgetInterface(object):
         try:
             if isinstance(widget, QColorButton):
                 assert isinstance(value, dict)
-                widget.setColor(color)
+                widget.setColor(value)
             elif isinstance(widget, QKeyGrabButton):
-                assert isinstance(value, str) or isinstance(value, unicode)
-                widget.setKey(color)
+                assert (isinstance(value, str) or
+                        (not PYTHON3 and isinstance(value, unicode)))
+                widget.setKey(value)
             elif isinstance(widget, (QCheckBox, QRadioButton)):
                 assert isinstance(value, bool)
                 widget.setChecked(value)
@@ -111,13 +113,16 @@ class CommonWidgetInterface(object):
                 assert isinstance(value, int)
                 self._setDateTime(widget, value)
             elif isinstance(widget, (QLineEdit, QLabel, QPushButton)):
-                assert isinstance(value, str) or isinstance(value, unicode)
+                assert (isinstance(value, str) or
+                        (not PYTHON3 and isinstance(value, unicode)))
                 widget.setText(value)
             elif isinstance(widget, QTextEdit):
-                assert isinstance(value, str) or isinstance(value, unicode)
+                assert (isinstance(value, str) or
+                        (not PYTHON3 and isinstance(value, unicode)))
                 widget.setHtml(value)
             elif isinstance(widget, QPlainTextEdit):
-                assert isinstance(value, str) or isinstance(value, unicode)
+                assert (isinstance(value, str) or
+                        (not PYTHON3 and isinstance(value, unicode)))
                 widget.setPlainText(value)
             elif isinstance(widget, QFontComboBox):
                 self._setFontComboCurrent(value)
@@ -319,7 +324,7 @@ class CommonWidgetInterface(object):
         cur_text = combo_widget.currentText()
         return (cur_idx, cur_text, cur_data)
 
-    def _addComboValues(self, combo_widget, item_tuples, 
+    def _addComboValues(self, combo_widget, item_tuples,
                         cur=None, clear=False):
         if clear:
             combo_widget.clear()
