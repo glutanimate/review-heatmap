@@ -39,7 +39,13 @@ class ConfigManager(object):
             self._setupLocalHooks()
         if self._conf_action:
             self._setupConfigButtonHook(self._conf_action)
-        self._setupSaveHook()
+        self._setupSaveHooks()
+        self._maybeLoad()
+
+    def _maybeLoad(self):
+        if "synced" or "profile" in self._storages and self.mw.col is None:
+            # Profile not ready. Defer config loading.
+            return addHook("profileLoaded", self.load)
         self.load()
 
     # Dictionary interface
@@ -121,7 +127,7 @@ class ConfigManager(object):
             raise AttributeError(
                 "Config storage not available for this add-on: ", key)
 
-    def _setupSaveHook(self):
+    def _setupSaveHooks(self):
         addHook("config_changed_{}".format(ADDON_MODULE),
                 self.save)
         addHook("unloadProfile", self.onProfileUnload)
