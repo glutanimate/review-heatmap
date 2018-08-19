@@ -12,7 +12,7 @@ from copy import deepcopy
 from anki.utils import json
 from anki.hooks import addHook
 
-from ..utils.utils import mergeDictsRecursively
+from .utils import mergeDictsRecursively
 from .platform import ANKI21, ADDON_PATH, ADDON_MODULE
 
 DEFAULT_LOCAL_CONFIG_PATH = os.path.join(ADDON_PATH, "config.json")
@@ -34,6 +34,7 @@ class ConfigManager(object):
         self._reset_req = reset_req
         self._config = {}
         self._dirty = False
+        self._loaded = False
         if "local" in self._storages:
             self._defaults["local"] = self._getLocalDefaults()
             self._setupLocalHooks()
@@ -71,6 +72,9 @@ class ConfigManager(object):
             self._checkStorage(name)
             getter = getattr(self, "_get" + name.capitalize())
             self._config[name] = getter()
+        
+        if not storage_name:
+            self._loaded = True
 
     def save(self, storage_name=None, profile_unload=False):
         storages = (storage_name) if storage_name else self._storages
@@ -122,10 +126,10 @@ class ConfigManager(object):
     def _checkStorage(self, key):
         if key not in self._supported_storages:
             raise NotImplementedError(
-                "Config storage not implemented: ", key)
+                "Config storage type not implemented in libaddon: ", key)
         elif key not in self._storages:
             raise AttributeError(
-                "Config storage not available for this add-on: ", key)
+                "Config storage type not available for this add-on: ", key)
 
     def _setupSaveHooks(self):
         addHook("config_changed_{}".format(ADDON_MODULE),
