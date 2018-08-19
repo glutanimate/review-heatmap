@@ -40,3 +40,5 @@ docs/*.todo
 docs/description.html
 tools
 Makefile
+designer/web/cal-heatmap.min_orig.js
+designer/web/cal-heatmap_orig.css
