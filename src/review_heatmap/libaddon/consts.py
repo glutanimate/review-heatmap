@@ -54,6 +54,7 @@ LINK_YOUTUBE = "https://www.youtube.com/c/glutanimate"
 # Credits
 
 PATRONS = ("Blacky 372", "Peter Benisch",
-           "Sebastián Ortega", "Edan Maor",
-           "Shawn Lesniak", "spiraldancing",
-           "Jørgen Rahbek", "Rob Alexander")
+           "Sebastián Ortega", "Steven Nevers",
+           "Alex M", "Shawn Lesniak", "Edan Maor",
+           "Jørgen Rahbek", "Rob Alexander",
+           "spiraldancing")
