@@ -115,8 +115,10 @@ from ..consts import (ADDON_NAME, ADDON_VERSION, ADDON_HELP,
                       LINK_TWITTER, LINK_YOUTUBE)
 from ..utils.utils import getNestedValue, setNestedValue
 from ..utils.about import get_about_string  # noqa: E402
+from ..utils.platform import PLATFORM
 
 # Options dialog and associated classes
+
 
 class OptionsDialog(BasicDialog):
 
@@ -144,7 +146,9 @@ class OptionsDialog(BasicDialog):
         self.config = config
         # Perform any subsequent setup steps:
         self.setupCustomWidgets()
-        self.setupLabels()
+        if PLATFORM == "mac":
+            self.setupTabs()
+        self.setupInfo()
         self.setupEvents()
         self.setConfig(config)
 
@@ -155,11 +159,26 @@ class OptionsDialog(BasicDialog):
 
     # Static widget setup
 
-    def setupLabels(self):
+    def setupTabs(self):
+        """
+        Decrease tab margins on macOS
+        """
+        tab_widget = getattr(self.form, "tabWidget")
+        if not tab_widget:
+            return
+        for idx in range(tab_widget.count()):
+            tab = tab_widget.widget(idx)
+            layout = tab.layout()
+            layout.setContentsMargins(3, 3, 3, 3)
+
+    def setupInfo(self):
+        """
+        Fill out info & about text elements
+        """
         info_string = "{} v{}".format(ADDON_NAME, ADDON_VERSION)
         about_string = get_about_string()
         self.form.labInfo.setText(info_string)
-        self.form.labAbout.setText(about_string)
+        self.form.htmlAbout.setHtml(about_string)
 
     # Events
 
@@ -249,7 +268,6 @@ class OptionsDialog(BasicDialog):
             for key, property_dict in properties:
                 value = self.confToWidgetVal(config, property_dict)
                 self.interface.set(widget_name, key, value)
-
 
     def saveConfig(self):
         """Get data from dialog and write it to config"""

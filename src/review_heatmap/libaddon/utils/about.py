@@ -10,7 +10,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import unicode_literals
 
 from ..consts import (ADDON_NAME, LICENSE, LIBRARIES,
-                     AUTHORS, CONTRIBUTORS, PATRONS)
+                      AUTHORS, CONTRIBUTORS, PATRONS)
 
 
 libs_header = ("<p>The development of this add-on was made possible "
@@ -32,7 +32,7 @@ html_template = """\
         }}
     </style>
 </head>
-<body style="font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;">
+<body>
     <p><span style=" font-weight:600;">Credits and License</span> </p>
     {authors_string}
     <p>With code contributions from: {contributors_string}</p>
