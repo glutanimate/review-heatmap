@@ -137,7 +137,8 @@ class ConfigManager(object):
         addHook("unloadProfile", self.onProfileUnload)
     
     def _setupConfigButtonHook(self, action):
-        self.mw.addonManager.setConfigAction(ADDON_MODULE, action)
+        if ANKI21:
+            self.mw.addonManager.setConfigAction(ADDON_MODULE, action)
 
     def _setupLocalHooks(self):
         self.mw.addonManager.setConfigUpdatedAction(
