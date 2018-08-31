@@ -88,6 +88,8 @@ class CommonWidgetInterface(object):
             NotImplementedError -- [description]
         """
         try:
+            # custom widgets need to be listed first as they usually inherit
+            # from default Qt widgets
             if isinstance(widget, QColorButton):
                 assert isinstance(value, dict)
                 widget.setColor(value)
@@ -151,7 +153,13 @@ class CommonWidgetInterface(object):
 
         """
 
-        if isinstance(widget, (QCheckBox, QRadioButton)):
+        # custom widgets need to be listed first as they usually inherit
+        # from default Qt widgets
+        if isinstance(widget, QColorButton):
+            return widget.color()
+        elif isinstance(widget, QKeyGrabButton):
+            return widget.key()
+        elif isinstance(widget, (QCheckBox, QRadioButton)):
             return widget.isChecked()
         elif isinstance(widget, (QSpinBox, QDoubleSpinBox)):
             return widget.value()
@@ -169,10 +177,6 @@ class CommonWidgetInterface(object):
             return widget.toPlainText()
         elif isinstance(widget, QFontComboBox):
             return self._getFontComboCurrent(widget)
-        elif isinstance(widget, QColorButton):
-            return widget.color()
-        elif isinstance(widget, QKeyGrabButton):
-            return widget.key()
         else:
             raise NotImplementedError(
                 "getValue not implemented for widget ", widget)
