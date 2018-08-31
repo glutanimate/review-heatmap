@@ -271,6 +271,9 @@
                <bold>false</bold>
               </font>
              </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
+             </property>
              <property name="toolTip">
               <string>Each coffee helps. Thank you!</string>
              </property>
@@ -310,6 +313,9 @@ with a coffee</string>
                <italic>false</italic>
                <bold>false</bold>
               </font>
+             </property>
+             <property name="focusPolicy">
+              <enum>Qt::NoFocus</enum>
              </property>
              <property name="toolTip">
               <string>Perks include access to Patron-only add-ons, &lt;br&gt;exclusive blog posts, mentions in the credits, and more!</string>
