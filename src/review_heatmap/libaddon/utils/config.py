@@ -19,46 +19,50 @@ DEFAULT_LOCAL_CONFIG_PATH = os.path.join(ADDON_PATH, "config.json")
 DEFAULT_LOCAL_META_PATH = os.path.join(ADDON_PATH, "meta.json")
 
 
+class ConfigError(Exception):
+    pass
+
+
 class ConfigManager(object):
 
     _supported_storages = ("local", "synced", "profile")
 
     def __init__(self, mw, config_dict={"local": None},
                  conf_key=ADDON_MODULE, conf_action=None,
-                 reset_req=False):
+                 reset_req=False, preload=False):
         self.mw = mw
-        self._storages = config_dict.keys()
-        self._defaults = config_dict
-        self._conf_key = conf_key
-        self._conf_action = conf_action
         self._reset_req = reset_req
+        self._conf_key = conf_key
+        self._storages = {
+            key: {"default": value, "dirty": False, "loaded": False}
+            for key, value in config_dict.items()
+        }
         self._config = {}
-        self._dirty = False
-        self._loaded = False
         if "local" in self._storages:
-            self._defaults["local"] = self._getLocalDefaults()
+            self._storages["local"]["default"] = self._getLocalDefaults()
             self._setupLocalHooks()
-        if self._conf_action:
-            self._setupConfigButtonHook(self._conf_action)
         self._setupSaveHooks()
-        self._maybeLoad()
-
-    def _maybeLoad(self):
-        if "synced" or "profile" in self._storages and self.mw.col is None:
-            # Profile not ready. Defer config loading.
-            return addHook("profileLoaded", self.load)
-        self.load()
+        if ANKI21 and conf_action:
+            self.setConfigAction(conf_action)
+        if preload:
+            self._maybeLoad()
 
     # Dictionary interface
 
-    def __getitem__(self, key):
-        self._checkStorage(key)
-        return self._config[key]
+    def __getitem__(self, name):
+        self._checkStorage(name)
+        try:
+            config = self._config[name]
+        except KeyError:
+            # attempt to load storage on demand
+            self.load(storage_name=name)
+            config = self._config[name]
+        return config
 
-    def __setitem__(self, key, value):
-        self._checkStorage(key)
-        self._config[key] = value
-        self._dirty = True
+    def __setitem__(self, name, value):
+        self._checkStorage(name)
+        self._config[name] = value
+        self._storages[name]["dirty"] = True
     
     def __str__(self):
         return self._config.__str__()
@@ -66,56 +70,53 @@ class ConfigManager(object):
     # Regular API
 
     def load(self, storage_name=None):
-        storages = (storage_name) if storage_name else self._storages
-
-        for name in storages:
+        for name in ([storage_name] if storage_name else self._storages):
             self._checkStorage(name)
             getter = getattr(self, "_get" + name.capitalize())
             self._config[name] = getter()
-        
-        if not storage_name:
-            self._loaded = True
+            self._storages[name]["loaded"] = True
 
     def save(self, storage_name=None, profile_unload=False):
-        storages = (storage_name) if storage_name else self._storages
-
-        for name in storages:
+        for name in ([storage_name] if storage_name else self._storages):
             self._checkStorage(name)
             saver = getattr(self, "_save" + name.capitalize())
             saver(self._config[name])
-
-        if not storage_name:
-            self._dirty = False
+            self._storages[name]["dirty"] = True
         
         if self._reset_req and not profile_unload:
             self.mw.reset()
-
 
     @property
     def all(self):
         return self._config
 
     @all.setter
-    def all(self, conf_dict):
-        self._config = conf_dict
-        self._storages = conf_dict.keys()
-        self._dirty = True
+    def all(self, config_dict):
+        self._config = config_dict
+        self._storages = {
+            name: {"default": {}, "dirty": False, "loaded": False} for name in config_dict
+        }
 
     @property
     def defaults(self):
-        return self._defaults
+        return {name: storage_dict["default"]
+                for name, storage_dict in self._storages.items()}
     
     @defaults.setter
-    def defaults(self, conf_dict):
-        self._defaults = conf_dict
-    
+    def defaults(self, config_dict):
+        for name in config_dict:
+            self._storages[name]["default"] = config_dict[name]
+
     def restoreDefaults(self):
-        self._config = self._defaults
+        for name in self._storages:
+            self._config[name] = self._storages[name]["default"]
         self.save()
 
     def onProfileUnload(self):
-        if self._dirty:
-            self.save()
+        for name, storage_dict in self._storages.items():
+            if not storage_dict["dirty"]:
+                continue
+            self.save(name)
     
     def setConfigAction(self, action):
         self._conf_action = action
@@ -123,12 +124,18 @@ class ConfigManager(object):
 
     # General helper methods
 
+    def _maybeLoad(self):
+        if "synced" or "profile" in self._storages and self.mw.col is None:
+            # Profile not ready. Defer config loading.
+            return addHook("profileLoaded", self.load)
+        self.load()
+
     def _checkStorage(self, key):
         if key not in self._supported_storages:
             raise NotImplementedError(
                 "Config storage type not implemented in libaddon: ", key)
         elif key not in self._storages:
-            raise AttributeError(
+            raise ConfigError(
                 "Config storage type not available for this add-on: ", key)
 
     def _setupSaveHooks(self):
@@ -137,8 +144,7 @@ class ConfigManager(object):
         addHook("unloadProfile", self.onProfileUnload)
     
     def _setupConfigButtonHook(self, action):
-        if ANKI21:
-            self.mw.addonManager.setConfigAction(ADDON_MODULE, action)
+        self.mw.addonManager.setConfigAction(ADDON_MODULE, action)
 
     def _setupLocalHooks(self):
         self.mw.addonManager.setConfigUpdatedAction(
@@ -155,8 +161,8 @@ class ConfigManager(object):
         else:
             config = self._addonConfigDefaults20()
             meta = self._addonMeta20()
-            userConf = meta.get("config", {})
-            config.update(userConf)
+            user_conf = meta.get("config", {})
+            config.update(user_conf)
             return config
 
     def _getLocalDefaults(self):
@@ -176,35 +182,39 @@ class ConfigManager(object):
     # python dictionary
 
     def _getSynced(self):
-        storage_obj = self.mw.col.conf
-        if self._conf_key not in storage_obj:
-            self._setupAnkiStorage("synced", storage_obj)
-        return storage_obj[self._conf_key]
+        return self._getStorageObj("synced")[self._conf_key]
 
     def _saveSynced(self, config):
-        storage_obj = self.mw.pm.profile
-        if self._conf_key not in storage_obj:
-            self._setupAnkiStorage("synced", storage_obj)
-        return storage_obj[self._conf_key]
+        self._getStorageObj("synced")[self._conf_key] = config
 
     # Local config stored in profile database
     # backend: pickle string in sqlite database, exposed as
     # python dictionary
 
     def _getProfile(self):
-        if self._conf_key not in self.mw.pm.profile:
-            self._setupAnkiStorage("synced", self.mw.col.conf)
-        return self.mw.pm.profile[self._conf_key]
-
+        return self._getStorageObj("profile")[self._conf_key]
 
     def _saveProfile(self, config):
-        self.mw.pm.profile[self._conf_key] = config
-
+        self._getStorageObj("profile")[self._conf_key] = config
 
     # Helper methods for synced & profile storage
 
-    def _setupAnkiStorage(self, name, storage_obj):
-        storage_obj[self._conf_key] = self._defaults[name]
+    def _getStorageObj(self, name):
+        try:
+            if name == "synced":
+                storage_obj = self.mw.col.conf
+            elif name == "profile":
+                storage_obj = self.mw.pm.profile
+            else:
+                raise NotImplementedError(
+                    "Storage object not implemented: ", name)
+        except AttributeError:
+            raise ConfigError("Config object is not ready, yet: ", name)
+        
+        if self._conf_key not in storage_obj:
+            storage_obj[self._conf_key] = self._defaults[name]
+        
+        return storage_obj
     
     def _updateAnkiStorage(self):
         raise NotImplementedError()
@@ -262,8 +272,9 @@ class ConfigManager(object):
         """
 
         with io.open(DEFAULT_LOCAL_META_PATH, 'w', encoding="utf-8") as f:
-            f.write(unicode(json.dumps(meta, indent=4, sort_keys=True,
-                                       ensure_ascii=False)))
+            content = json.dumps(meta, indent=4, sort_keys=True,
+                                 ensure_ascii=False)
+            f.write(unicode(content))  # noqa: F821
 
     def _addonConfigDefaults20(self):
         """Get default config dictionary
@@ -275,7 +286,7 @@ class ConfigManager(object):
             dict: config dictionary
 
         Raises:
-            Exception: If config.json cannot be parsed correctly.
+            ConfigError: If config.json cannot be parsed correctly.
                 (The assumption being that we would end up in an
                 inconsistent state if we were to return an empty
                 config dictionary. This should never happen.)
@@ -286,5 +297,4 @@ class ConfigManager(object):
             return json.load(io.open(DEFAULT_LOCAL_CONFIG_PATH,
                                      encoding="utf-8"))
         except (IOError, OSError, ValueError) as e:
-            print("Could not read config.json: " + str(e))
-            raise Exception("Config file could not be read: " + str(e))
+            raise ConfigError("Config file could not be read: " + str(e))
