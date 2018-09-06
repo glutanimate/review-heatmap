@@ -159,12 +159,14 @@ heatmap_element = r"""
             </div>
         </div>
         <div class="alignright">
+            <!--
             <select class="hm-sel" onchange="onHmSelChange(this)" title="Choose statistic">
                 <option value="a" class="hm-sel-itm" selected>All cards studied</option>
                 <option value="n" class="hm-sel-itm">New cards studied</option>
                 <option value="r" class="hm-sel-itm">Review cards studied&nbsp;&nbsp;&nbsp;&nbsp;</option>
                 <option value="c" class="hm-sel-itm">Cards added</option>
             </select>
+            -->
             <div class="hm-btn opts-btn" title="Options" onclick="%(bridge)s('revhm_opts')">
                 <img src="qrc:/review_heatmap/icons/options.svg" />
             </div>

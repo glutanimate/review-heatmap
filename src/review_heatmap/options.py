@@ -125,6 +125,12 @@ class RevHmOptions(OptionsDialog):
         self.mw = mw
         super(RevHmOptions, self).__init__(option_qtform, option_widgets,
                                            config, parent=mw)
+        self.adjustUI()
+
+    # UI adjustments
+
+    def adjustUI(self):
+        self.form.activitiesBox.hide()
 
     # Events:
 
