@@ -7,12 +7,15 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 
 import os
 import io
-from copy import deepcopy
+
+# have to use local stdlib workaround because 'version' is missing
+# from Anki's 'distutils'
+from stdlib.distutils.version import LooseVersion
 
 from anki.utils import json
 from anki.hooks import addHook
 
-from .utils import mergeDictsRecursively
+from .utils import deepMergeDicts
 from .platform import ANKI21, ADDON_PATH, ADDON_MODULE
 
 DEFAULT_LOCAL_CONFIG_PATH = os.path.join(ADDON_PATH, "config.json")
@@ -29,7 +32,7 @@ class ConfigError(Exception):
 class ConfigManager(object):
 
     """
-    Generic configuration manager for Anki
+    Generic add-on configuration manager for Anki
 
     Supports the following configuration storages:
 
@@ -53,6 +56,8 @@ class ConfigManager(object):
                  reset_req=False, preload=False):
         """
         Initialize a new config manager object with the provided storages
+        
+        Defaults to initializing local storage.
 
         Arguments:
             mw {QMainWindow} -- Anki main window object
@@ -63,26 +68,32 @@ class ConfigManager(object):
                 limited to the ones listed in _supported_storages. Each
                 key, with the exception of the local storage type, should
                 be mapped to a dictionary of default config values.
+                
                 There is no need to supply a default dictionary for the
                 local storage type, as it will automatically be read
                 from the config.json file.
                 (default: {{"local": None}})
+            
             conf_key {str}:
                 Dictionary key to use when saving storage types that use Anki's
                 databases. Set to the topmost add-on module name by default.
                 (e.g. "review_heatmap")
                 (default: {ADDON_MODULE})
+            
             conf_action {function}:
                 Function/method to call when user clicks on configure button
                 (2.1-specific) (default: {None})
+            
             reset_req {bool}:
                 Whether we should fire a reset event when the
                 configuration is saved (e.g. to update parts of Anki's UI)
                 (default: {False})
+            
             preload {bool}:
                 Whether or not to load all available configuration storages
                 at profile load time. By default storages will only
                 be loaded on demand. (default: {False})
+        
         """
         self.mw = mw
         self._reset_req = reset_req
@@ -102,6 +113,7 @@ class ConfigManager(object):
             self._maybeLoad()
 
     # Dictionary interface
+    ######################################################################
 
     def __getitem__(self, name):
         """
@@ -138,7 +150,8 @@ class ConfigManager(object):
         """
         return self._config.__str__()
 
-    # Regular API
+    # Regular interface
+    ######################################################################
 
     def load(self, storage_name=None):
         """
@@ -205,7 +218,8 @@ class ConfigManager(object):
         """
         self._config = config_dict
         self._storages = {
-            name: {"default": {}, "dirty": False, "loaded": False} for name in config_dict
+            name: {"default": {}, "dirty": False, "loaded": False}
+            for name in config_dict
         }
 
     @property
@@ -262,10 +276,13 @@ class ConfigManager(object):
         Arguments:
             action {function} -- Function to call
         """
+        if not ANKI21:
+            return False
         self._conf_action = action
         self._setupConfigButtonHook(action)
 
     # General helper methods
+    ######################################################################
 
     def _maybeLoad(self):
         """
@@ -323,6 +340,7 @@ class ConfigManager(object):
             ADDON_MODULE, lambda: self.save(storage="local"))
 
     # Local storage
+    ######################################################################
 
     def _getLocal(self):
         """
@@ -372,6 +390,7 @@ class ConfigManager(object):
             self._writeAddonMeta20({"config": config})
 
     # Synced storage
+    ######################################################################
 
     def _getSynced(self):
         """
@@ -390,8 +409,10 @@ class ConfigManager(object):
             dict -- Dictionary of synced config values
         """
         self._getStorageObj("synced")[self._conf_key] = config
+        self.mw.col.setMod()
 
     # Profile storage
+    ######################################################################
 
     def _getProfile(self):
         """
@@ -410,12 +431,15 @@ class ConfigManager(object):
             dict -- Dictionary of profile config values
         """
         self._getStorageObj("profile")[self._conf_key] = config
+        self.mw.col.setMod()
 
     # Helper methods for synced & profile storage
+    ######################################################################
 
     def _getStorageObj(self, name):
         """
         Get Anki storage dictionary for synced and profile storages.
+        (e.g. mw.col.conf["review_heatmap"])
 
         Storage objects:
             - synced: mw.col.conf
@@ -432,6 +456,7 @@ class ConfigManager(object):
         Returns:
             dict -- Anki storage dictionary
         """
+        conf_key = self._conf_key
         try:
             if name == "synced":
                 storage_obj = self.mw.col.conf
@@ -443,24 +468,30 @@ class ConfigManager(object):
         except AttributeError:
             raise ConfigError("Config object is not ready, yet: ", name)
 
-        if self._conf_key not in storage_obj:
-            storage_obj[self._conf_key] = self._defaults[name]
+        default_dict = self._storages[name]["default"]
+
+        # Initialize config
+        if conf_key not in storage_obj:
+            storage_obj[conf_key] = default_dict
+        
+        storage_dict = storage_obj[conf_key]
+        dict_version = str(storage_dict.get("version", "0.0.0"))
+        default_version = default_dict["version"]
+
+        # Upgrade config version if necessary
+        if (LooseVersion(dict_version) < LooseVersion(default_version)):
+            storage_obj[conf_key] = deepMergeDicts(
+                default_dict, storage_dict, new=True)
+            storage_obj[conf_key]["version"] = default_version
+            self.mw.col.setMod()
 
         return storage_obj
 
-    def _updateAnkiStorage(self):
-        raise NotImplementedError()
-
-    def _migrateProfileToLocal(self):
-        self._migrateStorageToLocal("profile", self.mw.pm.profile)
-
-    def _migrateSyncedToLocal(self):
-        self._migrateStorageToLocal("synced", self.mw.col.conf)
-
-    def _migrateStorageToLocal(self, name, storage_obj):
+    def _migrateStorage(self, src_storage, dst_storage):
         raise NotImplementedError()
 
     # Helper methods for local storage on Anki 2.0
+    ######################################################################
 
     def _addonMeta20(self):
         """Get meta dictionary
