@@ -15,6 +15,7 @@ from collections import OrderedDict
 
 from aqt import mw
 
+from .consts import ADDON_VERSION
 from .libaddon.utils.config import ConfigManager
 
 
@@ -79,13 +80,15 @@ config_defaults = {
         "limhist": 0,
         "limfcst": 0,
         "limcdel": False,
-        "limdecks": []
+        "limdecks": [],
+        "version": ADDON_VERSION
     },
     "profile": {
         "display": [True, True, True],
         "statsvis": True,
         "hotkeys": {"toggle": "Ctrl+R"},
-        "decks": {}
+        "decks": {},
+        "version": ADDON_VERSION
     }
 }
 
