@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>471</width>
-    <height>368</height>
+    <height>428</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -109,8 +109,8 @@
         <string>Perks include access to Patron-only add-ons, &lt;br&gt;exclusive blog posts, mentions in the credits, and more!</string>
        </property>
        <property name="text">
-        <string>Become a Patron 
- and receive cool perks!</string>
+        <string>Become a Patron and receive 
+exclusive add-ons &amp;&amp; other content!</string>
        </property>
        <property name="icon">
         <iconset resource="icons.qrc">

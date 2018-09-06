@@ -494,7 +494,7 @@ with a coffee</string>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_6">
+        <widget class="QGroupBox" name="activitiesBox">
          <property name="title">
           <string>Activities</string>
          </property>
