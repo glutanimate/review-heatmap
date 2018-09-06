@@ -6,7 +6,6 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
 from functools import reduce
-from collections import Mapping
 from copy import deepcopy
 
 # Utility functions for operating with nested objects
@@ -69,15 +68,88 @@ def getNestedAttribute(obj, attr, *args):
     return reduce(_getattr, [obj] + attr.split('.'))
 
 
+def deepMergeLists(original, incoming, new=False):
+    """
+    Deep merge two lists. Optionally leaves original intact.
+    
+    Procedure:
+        Reursively call deep merge on each correlated element of list.
+        If item type in both elements are
+            a. dict: Call deepMergeDicts on both values.
+            b. list: Call deepMergeLists on both values.
+            c. any other type: Value is overridden.
+            d. conflicting types: Value is overridden.
 
-def mergeDictsRecursively(d, u):
-    for k, v in u.items():
-        if isinstance(d, Mapping):
-            if isinstance(v, Mapping):
-                r = mergeDictsRecursively(d.get(k, {}), v)
-                d[k] = r
-            else:
-                d[k] = u[k]
+        If incoming list longer than original then extra values are appended.
+    
+    Arguments:
+        original {list} -- original list
+        incoming {list} -- list with updated values
+        new {bool} -- whether or not to create a new list instead of
+                      updating original
+
+    Returns:
+        list -- Merged list
+    
+    Credits:
+        https://stackoverflow.com/a/50773244/1708932
+    """
+    result = original if not new else deepcopy(original)
+    
+    common_length = min(len(original), len(incoming))  
+    for idx in range(common_length):
+        if (isinstance(result[idx], dict) and
+                isinstance(incoming[idx], dict)):
+            deepMergeDicts(result[idx], incoming[idx])
+        elif (isinstance(result[idx], list) and
+                isinstance(incoming[idx], list)):
+            deepMergeLists(result[idx], incoming[idx])
         else:
-            d = {k: u[k]}
-    return d
+            result[idx] = incoming[idx]
+
+    for idx in range(common_length, len(incoming)):
+        result.append(incoming[idx])
+    
+    return result
+
+
+def deepMergeDicts(original, incoming, new=False):
+    """
+    Deep merge two dictionaries. Optionally leaves original intact.
+
+    Procedure:
+        For key conflicts if both values are:
+            a. dict: Recursively call deepMergeDicts on both values.
+            b. list: Call deepMergeLists on both values.
+            c. any other type: Value is overridden.
+            d. conflicting types: Value is overridden.
+
+    Arguments:
+        original {list} -- original dictionary
+        incoming {list} -- dictionary with updated values
+        new {bool} -- whether or not to create a new dictionary instead of
+                      updating original
+
+    Returns:
+        dict -- Merged dictionaries
+
+    Credits:
+        https://stackoverflow.com/a/50773244/1708932
+
+    """
+    result = original if not new else deepcopy(original)
+
+    for key in incoming:
+        if key in result:
+            if (isinstance(result[key], dict) and
+                    isinstance(incoming[key], dict)):
+                deepMergeDicts(result[key], incoming[key])
+            elif (isinstance(result[key], list) and
+                    isinstance(incoming[key], list)):
+                deepMergeLists(result[key], incoming[key])
+            else:
+                result[key] = incoming[key]
+        else:
+            result[key] = incoming[key]
+
+    return result
