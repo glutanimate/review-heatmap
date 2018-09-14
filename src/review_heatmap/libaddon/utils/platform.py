@@ -11,6 +11,10 @@ from aqt import mw
 from anki import version
 from anki.utils import isMac, isWin
 
+__all__ = ["PYTHON3", "ANKI21", "SYS_ENCODING", "ADDON_MODULE",
+           "LIBADDON_NAME", "ADDON_DIR", "JSPY_BRIDGE",
+           "ADDON_PATH", "PLATFORM"]
+
 PYTHON3 = sys.version_info[0] == 3
 ANKI21 = version.startswith("2.1.")
 SYS_ENCODING = sys.getfilesystemencoding()

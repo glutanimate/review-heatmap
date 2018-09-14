@@ -16,7 +16,8 @@ from __future__ import unicode_literals
 from aqt.qt import *
 from aqt.utils import openLink
 
-from ..consts import (ADDON_NAME, LINK_PATREON, LINK_COFFEE, MAIL_AUTHOR)
+from ..consts import (ADDON_NAME, LINKS, MAIL_AUTHOR)
+
 
 class ContribDialog(QDialog):
     """
@@ -27,10 +28,10 @@ class ContribDialog(QDialog):
     def __init__(self, form, parent=None):
         """
         Initialize contrib dialog with provided form
-        
+
         Arguments:
             form {PyQt form module} -- PyQt dialog form outlining the UI
-        
+
         Keyword Arguments:
             parent {QWidget} -- Parent Qt widget (default: {None})
         """
@@ -58,6 +59,9 @@ class ContribDialog(QDialog):
         Connect button presses to actions
         """
         mail_string = "mailto:{}".format(MAIL_AUTHOR)
-        self.form.btnMail.clicked.connect(lambda: openLink(mail_string))
-        self.form.btnCoffee.clicked.connect(lambda: openLink(LINK_COFFEE))
-        self.form.btnPatreon.clicked.connect(lambda: openLink(LINK_PATREON))
+        self.form.btnMail.clicked.connect(
+            lambda: openLink(mail_string))
+        self.form.btnCoffee.clicked.connect(
+            lambda: openLink(LINKS["coffee"]))
+        self.form.btnPatreon.clicked.connect(
+            lambda: openLink(LINKS["patreon"]))

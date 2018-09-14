@@ -12,6 +12,9 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 
 from __future__ import unicode_literals
 
+__all__ = ["ADDON_NAME", "ADDON_ID", "ADDON_VERSION", "LICENSE",
+           "LIBRARIES", "AUTHORS", "CONTRIBUTORS", "SPONSORS",
+           "MAIL_AUTHOR", "LINKS", "PATRONS"]
 
 # ADD-ON SPECIFIC CONSTANTS
 
@@ -25,15 +28,15 @@ LIBRARIES = ()
 AUTHORS = (
     {"name": "Aristotelis P. (Glutanimate)", "years": "2018",
      "contact": "https://glutanimate.com"},
-)
-CONTRIBUTORS = ()
+)  # main developers
+CONTRIBUTORS = ()  # single code contributions
+SPONSORS = ()  # sponsors / development commissions
 
 # Merge in add-on specific consts:
 
 try:
-    from ..consts import (ADDON_NAME, ADDON_ID, ADDON_VERSION,  # noqa: F401
-                          ADDON_HELP, LICENSE, LIBRARIES,
-                          AUTHORS, CONTRIBUTORS)
+    from ..consts import *  # noqa: F401
+    from ..consts import LINKS as ADDON_LINKS
 except ImportError:
     pass
 
@@ -44,12 +47,15 @@ except ImportError:
 
 _mail_author_snippets = ["ankiglutanimate", "ατ", "gmail.com"]  # anti-spam
 MAIL_AUTHOR = "".join(_mail_author_snippets).replace("ατ", "@")
-LINK_PATREON = "https://www.patreon.com/glutanimate"
-LINK_COFFEE = "https://www.buymeacoffee.com/glutanimate"
-LINK_DESCRIPTION = "https://ankiweb.net/shared/info/{}".format(ADDON_ID)
-LINK_RATE = "https://ankiweb.net/shared/review/{}".format(ADDON_ID)
-LINK_TWITTER = "https://twitter.com/glutanimate"
-LINK_YOUTUBE = "https://www.youtube.com/c/glutanimate"
+LINKS = {
+    "patreon": "https://www.patreon.com/glutanimate",
+    "coffee": "https://www.buymeacoffee.com/glutanimate",
+    "description": "https://ankiweb.net/shared/info/{}".format(ADDON_ID),
+    "rate": "https://ankiweb.net/shared/review/{}".format(ADDON_ID),
+    "twitter": "https://twitter.com/glutanimate",
+    "youtube": "https://www.youtube.com/c/glutanimate"
+}
+LINKS.update(ADDON_LINKS)
 
 # Credits
 

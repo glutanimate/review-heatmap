@@ -110,9 +110,7 @@ from aqt.utils import openLink
 
 from .basic.dialog import BasicDialog
 
-from ..consts import (ADDON_NAME, ADDON_VERSION, ADDON_HELP,
-                      LINK_PATREON, LINK_COFFEE, LINK_RATE,
-                      LINK_TWITTER, LINK_YOUTUBE)
+from ..consts import ADDON_NAME, ADDON_VERSION, LINKS
 from ..utils.utils import getNestedValue, setNestedValue
 from ..utils.about import get_about_string  # noqa: E402
 from ..utils.platform import PLATFORM

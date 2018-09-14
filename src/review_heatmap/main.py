@@ -27,12 +27,14 @@ from anki.stats import CollectionStats
 from anki.find import Finder
 from anki.hooks import wrap
 
+from .libaddon.utils.platform import ANKI21
+
 from .options import invokeOptionsDialog
 from .contrib import invokeContributionsDialog
 from .config import config, heatmap_colors, heatmap_modes
 from .web import (streak_css, streak_div, heatmap_boilerplate,
                   heatmap_css, heatmap_element, ov_body)
-from .consts import ANKI21
+
 
 BRIDGE = "pycmd" if ANKI21 else "py.link"
 

@@ -13,7 +13,7 @@ from __future__ import unicode_literals
 from aqt import mw
 
 from .libaddon.gui.contrib import ContribDialog
-from .consts import ANKI21
+from .libaddon.utils.platform import ANKI21
 
 if ANKI21:
     from .forms5 import contrib as qtform_contrib  # noqa: F401
@@ -24,11 +24,12 @@ else:
 class RevHmContrib(ContribDialog):
 
     """
-    Add-on-specific options dialog implementation
+    Add-on-specific contrib dialog implementation
     """
 
     def __init__(self, parent):
         super(RevHmContrib, self).__init__(qtform_contrib, parent=parent)
+
 
 def invokeContributionsDialog():
     dialog = RevHmContrib(mw)

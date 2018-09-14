@@ -17,9 +17,10 @@ from aqt.qt import *
 from aqt import mw
 from aqt.studydeck import StudyDeck
 
+from .libaddon.utils.platform import ANKI21
 from .libaddon.gui.options import OptionsDialog
+
 from .config import (config, heatmap_colors, heatmap_modes, activity_stats)
-from .consts import ANKI21
 
 if ANKI21:
     from .forms5 import options as option_qtform  # noqa: F401
