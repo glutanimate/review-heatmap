@@ -148,18 +148,18 @@ class RevHmOptions(OptionsDialog):
                         title=_("Choose Deck"), help="",
                         parent=self, geomKey="selectDeck")
         deck_name = ret.name
+        if not deck_name:
+            return False
         deck_id = self.mw.col.decks.id(deck_name)
 
         item_tuple = (deck_name, deck_id)
 
-        if not self.interface.setCurrent(list_widget, item_tuple):
-            self.interface.setValuesAndCurrent(
-                list_widget, [item_tuple], item_tuple)
+        if not self.interface.setCurrentByData(list_widget, deck_id):
+            self.interface.addValueAndMakeCurrent(list_widget, item_tuple)
 
     def onDeleteIgnoredDeck(self):
         list_widget = self.form.listDecks
-        selected = self.interface.getSelected(list_widget)
-        self.interface.removeValues(list_widget, selected)
+        self.interface.removeSelected(list_widget)
 
     # Config Getters/Setters:
 
