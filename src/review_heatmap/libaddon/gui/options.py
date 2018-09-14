@@ -161,7 +161,7 @@ class OptionsDialog(BasicDialog):
         """
         Decrease tab margins on macOS
         """
-        tab_widget = getattr(self.form, "tabWidget")
+        tab_widget = getattr(self.form, "tabWidget", None)
         if not tab_widget:
             return
         for idx in range(tab_widget.count()):
@@ -173,10 +173,12 @@ class OptionsDialog(BasicDialog):
         """
         Fill out info & about text elements
         """
-        info_string = "{} v{}".format(ADDON_NAME, ADDON_VERSION)
-        about_string = get_about_string()
-        self.form.labInfo.setText(info_string)
-        self.form.htmlAbout.setHtml(about_string)
+        if hasattr(self.form, "labInfo"):
+            info_string = "{} v{}".format(ADDON_NAME, ADDON_VERSION)
+            self.form.labInfo.setText(info_string)
+        if hasattr(self.form, "htmlAbout"):
+            about_string = get_about_string()
+            self.form.htmlAbout.setHtml(about_string)
 
     # Events
 
@@ -190,15 +192,17 @@ class OptionsDialog(BasicDialog):
         super(OptionsDialog, self).keyPressEvent(evt)
 
     def setupEvents(self):
-        self.form.btnCoffee.clicked.connect(lambda: openLink(LINK_COFFEE))
-        self.form.btnPatreon.clicked.connect(lambda: openLink(LINK_PATREON))
-        self.form.btnRate.clicked.connect(lambda: openLink(LINK_RATE))
-        self.form.btnTwitter.clicked.connect(lambda: openLink(LINK_TWITTER))
-        self.form.btnYoutube.clicked.connect(lambda: openLink(LINK_YOUTUBE))
-        self.form.btnHelp.clicked.connect(lambda: openLink(ADDON_HELP))
-        restore_btn = self.form.buttonBox.button(
-            QDialogButtonBox.RestoreDefaults)
-        restore_btn.clicked.connect(self.restore)
+        for name, link in LINKS.items():
+            btn_widget = getattr(self.form, "btn" + name.capitalize(), None)
+            if not btn_widget:
+                continue
+            btn_widget.clicked.connect(lambda: openLink(link))
+
+        if getattr(self.form, "buttonBox", None):
+            restore_btn = self.form.buttonBox.button(
+                QDialogButtonBox.RestoreDefaults)
+            if restore_btn:
+                restore_btn.clicked.connect(self.restore)
 
     def restore(self):
         """Restore widgets back to defaults"""
