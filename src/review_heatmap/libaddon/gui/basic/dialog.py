@@ -1,6 +1,14 @@
+# -*- coding: utf-8 -*-
+
+"""
+Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
+License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
+"""
 
 from .widgets.qt import *
 from .interface import CommonWidgetInterface
+
+__all__ = ["BasicDialog"]
 
 class BasicDialog(QDialog):
     def __init__(self, form=None, parent=None, **kwargs):

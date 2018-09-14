@@ -18,9 +18,10 @@ from ...utils.utils import getNestedAttribute
 from ...utils.platform import PYTHON3
 
 from .widgets.qt import *
-# TODO: Switch to QKeySequenceEdit once Qt4 support dropped
 from .widgets.qkeygrabber import QKeyGrabButton
 from .widgets.qcolorbutton import QColorButton
+# TODO: Switch to QKeySequenceEdit once Qt4 support dropped
+# TODO: add support for QSlider
 
 __all__ = ["CommonWidgetInterface"]
 

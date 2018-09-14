@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
+TODO: complete
 
 Icons: plus.svg, minus.svg
 

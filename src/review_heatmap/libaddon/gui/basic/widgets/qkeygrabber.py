@@ -9,6 +9,14 @@ from ....utils.platform import PLATFORM
 
 from .qt import QDialog, QPushButton, QVBoxLayout, QLabel, Qt, QKeySequence
 
+PLATFORM_MODKEY_NAMES = {
+    "lin": {"meta": "Meta", "ctrl": "Ctrl",
+            "alt": "Alt", "shift": "Shift"},
+    "win": {"meta": "Win", "ctrl": "Ctrl", "alt":
+            "Alt", "shift": "Shift"},
+    "mac": {"meta": "Control", "ctrl": "Command",
+            "alt": "Option", "shift": "Shift"}
+}
 
 class QKeyGrabButton(QPushButton):
     def __init__(self, parent=None, key_string=""):
@@ -44,17 +52,8 @@ class QKeyGrab(QDialog):
     Based in part on ImageResizer by searene
     (https://github.com/searene/Anki-Addons)
     """
-
-    platform_modkey_names = {
-        "lin": {"meta": "Meta", "ctrl": "Ctrl",
-                "alt": "Alt", "shift": "Shift"},
-        "win": {"meta": "Win", "ctrl": "Ctrl", "alt":
-                "Alt", "shift": "Shift"},
-        "mac": {"meta": "Control", "ctrl": "Command",
-                "alt": "Option", "shift": "Shift"}
-    }
-
-    modkey_names = platform_modkey_names[PLATFORM]
+    
+    modkey_names = PLATFORM_MODKEY_NAMES[PLATFORM]
 
     def __init__(self, parent):
         """
