@@ -112,7 +112,7 @@ from .basic.dialog import BasicDialog
 
 from ..consts import ADDON_NAME, ADDON_VERSION, LINKS
 from ..utils.utils import getNestedValue, setNestedValue
-from ..utils.about import get_about_string  # noqa: E402
+from .about import get_about_string
 from ..utils.platform import PLATFORM
 
 # Options dialog and associated classes

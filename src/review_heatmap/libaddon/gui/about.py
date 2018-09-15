@@ -40,9 +40,9 @@ html_template = """\
     {libs_string}
     <p><img src=":/review_heatmap/icons/heart_small.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
     <p>Thank you very much to all of you who have decided to support my work through your tips and contributions. I really appreciate it!</p>
-    <p>Thanks in particular to all of my past and present <a href="https://www.patreon.com/glutanimate"><span style="text-decoration: underline; color:#0000ff;">Patreon</span></a> supporters:</p>
-    <p><span style="color:#aa0000;">{patrons_string}</span></p>
-    <p>You guys rock!</p>
+    <p>Thanks in particular to all of my past and present <a href="https://www.patreon.com/glutanimate">
+        <span style="text-decoration: underline; color:#0000ff;">Patreon</span></a> supporters. You guys rock!:</p>
+    <p><i><span style="color:#aa2a4c;">{patrons_string}</span></i></p>
 </body>
 </html>\
 """
