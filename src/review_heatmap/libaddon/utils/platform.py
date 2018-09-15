@@ -11,9 +11,9 @@ from aqt import mw
 from anki import version
 from anki.utils import isMac, isWin
 
-__all__ = ["PYTHON3", "ANKI21", "SYS_ENCODING", "ADDON_MODULE",
-           "LIBADDON_NAME", "ADDON_DIR", "JSPY_BRIDGE",
-           "ADDON_PATH", "PLATFORM"]
+__all__ = ["PYTHON3", "ANKI21", "SYS_ENCODING", "MODULE_ADDON",
+           "MODULE_LIBADDON", "DIRECTORY_ADDONS", "JSPY_BRIDGE",
+           "PATH_ADDON", "PATH_USERFILES", "PLATFORM"]
 
 PYTHON3 = sys.version_info[0] == 3
 ANKI21 = version.startswith("2.1.")
@@ -21,19 +21,20 @@ SYS_ENCODING = sys.getfilesystemencoding()
 
 name_components = __name__.split(".")
 
-ADDON_MODULE = name_components[0]
-LIBADDON_NAME = name_components[1]
+MODULE_ADDON = name_components[0]
+MODULE_LIBADDON = name_components[1]
 
 if ANKI21:
-    ADDON_DIR = mw.addonManager.addonsFolder()
+    DIRECTORY_ADDONS = mw.addonManager.addonsFolder()
     JSPY_BRIDGE = "pycmd"
 else:
-    ADDON_DIR = mw.pm.addonFolder()
+    DIRECTORY_ADDONS = mw.pm.addonFolder()
     if isWin:
-        ADDON_DIR = ADDON_DIR.encode(SYS_ENCODING)
+        DIRECTORY_ADDONS = DIRECTORY_ADDONS.encode(SYS_ENCODING)
     JSPY_BRIDGE = "py.link"
 
-ADDON_PATH = os.path.join(ADDON_DIR, ADDON_MODULE)
+PATH_ADDON = os.path.join(DIRECTORY_ADDONS, MODULE_ADDON)
+PATH_USERFILES = os.path.join(PATH_ADDON, "user_files")
 
 if isMac:
     PLATFORM = "mac"

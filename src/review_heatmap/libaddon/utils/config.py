@@ -16,10 +16,10 @@ from anki.utils import json
 from anki.hooks import addHook
 
 from .utils import deepMergeDicts
-from .platform import ANKI21, ADDON_PATH, ADDON_MODULE
+from .platform import ANKI21, PATH_ADDON, MODULE_ADDON
 
-DEFAULT_LOCAL_CONFIG_PATH = os.path.join(ADDON_PATH, "config.json")
-DEFAULT_LOCAL_META_PATH = os.path.join(ADDON_PATH, "meta.json")
+DEFAULT_LOCAL_CONFIG_PATH = os.path.join(PATH_ADDON, "config.json")
+DEFAULT_LOCAL_META_PATH = os.path.join(PATH_ADDON, "meta.json")
 
 
 class ConfigError(Exception):
@@ -52,7 +52,7 @@ class ConfigManager(object):
     _supported_storages = ("local", "synced", "profile")
 
     def __init__(self, mw, config_dict={"local": None},
-                 conf_key=ADDON_MODULE, conf_action=None,
+                 conf_key=MODULE_ADDON, conf_action=None,
                  reset_req=False, preload=False):
         """
         Initialize a new config manager object with the provided storages
@@ -78,7 +78,7 @@ class ConfigManager(object):
                 Dictionary key to use when saving storage types that use Anki's
                 databases. Set to the topmost add-on module name by default.
                 (e.g. "review_heatmap")
-                (default: {ADDON_MODULE})
+                (default: {MODULE_ADDON})
             
             conf_action {function}:
                 Function/method to call when user clicks on configure button
@@ -320,7 +320,7 @@ class ConfigManager(object):
         Adds hooks for various events that should trigger saving the config
         """
         # Custom add-on-specifc hook that can be run by this/other add-ons
-        addHook("config_changed_{}".format(ADDON_MODULE),
+        addHook("config_changed_{}".format(MODULE_ADDON),
                 self.save)
         # Hook run on unloading Anki profile. Ensures that any unsaved changes
         # are saved to the corresponding storages
@@ -333,11 +333,11 @@ class ConfigManager(object):
         Arguments:
             action {function} -- Function to call
         """
-        self.mw.addonManager.setConfigAction(ADDON_MODULE, action)
+        self.mw.addonManager.setConfigAction(MODULE_ADDON, action)
 
     def _setupLocalHooks(self):
         self.mw.addonManager.setConfigUpdatedAction(
-            ADDON_MODULE, lambda: self.save(storage="local"))
+            MODULE_ADDON, lambda: self.save(storage="local"))
 
     # Local storage
     ######################################################################
@@ -357,7 +357,7 @@ class ConfigManager(object):
             dict -- Dictionary of config values
         """
         if ANKI21:
-            return self.mw.addonManager.getConfig(ADDON_MODULE)
+            return self.mw.addonManager.getConfig(MODULE_ADDON)
         else:
             config = self._addonConfigDefaults20()
             meta = self._addonMeta20()
@@ -373,7 +373,7 @@ class ConfigManager(object):
             dict -- Dictionary of default config values
         """
         if ANKI21:
-            return self.mw.addonManager.addonConfigDefaults(ADDON_MODULE)
+            return self.mw.addonManager.addonConfigDefaults(MODULE_ADDON)
         else:
             return self._addonConfigDefaults20()
 
@@ -385,7 +385,7 @@ class ConfigManager(object):
             dict -- Dictionary of local config values
         """
         if ANKI21:
-            self.mw.addonManager.writeConfig(ADDON_MODULE, config)
+            self.mw.addonManager.writeConfig(MODULE_ADDON, config)
         else:
             self._writeAddonMeta20({"config": config})
 

@@ -11,7 +11,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 
 from .qt import *
 
-from ....utils.platform import ADDON_MODULE
+from ....utils.platform import MODULE_ADDON
 
 class QListEditor(QGroupBox):
 
@@ -33,7 +33,7 @@ class QListEditor(QGroupBox):
             btn.setMinimumSize(QSize(32, 0))
             iconAdd = QIcon()
             iconAdd.addPixmap(QPixmap(":/{}/icons/{}.svg".format(
-                ADDON_MODULE, icon)), QIcon.Normal, QIcon.Off)
+                MODULE_ADDON, icon)), QIcon.Normal, QIcon.Off)
             btn.setIcon(iconAdd)
             btn.setIconSize(QtCore.QSize(16, 16))
 
