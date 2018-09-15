@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
 """
-Add-on agnostic constants
+Global constants
 
-Also tries to import parent-level consts file to supply
-add-on-specific constants to modules of this package.
+In addition to defining a number of constants specific to libaddon, this
+module also provides access to all constants in the parent add-on
+(if any). Add-on specific constants take precedence and overwrite
+constants in this module.
 
-Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
+Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
@@ -59,8 +61,9 @@ LINKS.update(ADDON_LINKS)
 
 # Credits
 
-PATRONS = ("Blacky 372", "Peter Benisch",
-           "Sebastián Ortega", "Steven Nevers",
-           "Alex M", "Shawn Lesniak", "Edan Maor",
-           "Jørgen Rahbek", "Rob Alexander",
-           "spiraldancing")
+# https://www.patreon.com/glutanimate
+PATRONS = ("Alex M", "Blacky 372", "Devin Beecher", "Edan Maor", "Itai Efrat",
+           "Jørgen Rahbek", "Man Duong", "Nicolas Curi", "PapelMagico",
+           "Paul McManus", "Peter Benisch", "Rob Alexander", "Scott Barnett",
+           "Sebastián Ortega", "Shawn Lesniak",
+           "spiraldancing", "Steven Nevers")
