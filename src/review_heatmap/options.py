@@ -30,7 +30,7 @@ else:
 
 # Widget <-> config mappings
 
-# order is important (e.g. set items before current value)
+# order is important (e.g. to set-up items before current item)
 option_widgets = (
     ("form.selHmColor", (
         ("items", {
@@ -123,10 +123,11 @@ class RevHmOptions(OptionsDialog):
     """
 
     def __init__(self, config, mw):
-        self.mw = mw
         super(RevHmOptions, self).__init__(option_qtform, option_widgets,
                                            config, parent=mw)
+        self.mw = mw
         self.adjustUI()
+        self.setupDialog()
 
     # UI adjustments
 

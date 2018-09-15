@@ -128,16 +128,19 @@ class OptionsDialog(BasicDialog):
         >     ))
         > )
         """
-        super(OptionsDialog, self).__init__(form=form_module, parent=parent)
+        super(OptionsDialog, self).__init__(
+            form_module=form_module, parent=parent)
         self.widgets = widgets_tuple
         self.config = config
+
+    def setupDialog(self):
         # Perform any subsequent setup steps:
         self.setupCustomWidgets()
         if PLATFORM == "mac":
             self.setupTabs()
         self.setupInfo()
         self.setupEvents()
-        self.setConfig(config)
+        self.setConfig(self.config)
 
     # Addon-specific widget setups go here:
 
