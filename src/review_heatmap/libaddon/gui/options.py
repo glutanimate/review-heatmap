@@ -1,106 +1,12 @@
 # -*- coding: utf-8 -*-
 
 """
-Add-on agnostic options dialog module
-
-Depends on presence of the following parent-level modules:
-    
-    consts, about
-
----------------------------------------------------------------
-
-OptionsDialog specifications:
-
-1.) Widget tuple
-
-Each member of the tuple should be a dictionary defining one
-widget and its value <-> config key mappings.
-
-Required dictionary entries:
-    - "name": object name of the widget (e.g. `cbMain`)
-    - "type": Qt type of the widget (e.g. `checkbox`)
-    - "current": Mapping dictionary for the current value/state
-                 of the widget
-
-Optional dictionary entries:
-    - Any number of additional mappings for other widget
-      properties, e.g. minimum and maximum value, may be specified
-      (depending on which ones are supported by the widget type).
-      These follow the same specifications as the "current" entry
-
-2.) Mapping dictionaries:
-
-A widget's properties can be assigned either by specifying
-a configuration path, or by specifying a callable to either
-parse the value beforehand or return a valid widget value
-without parsing the config directly.
-
-Similarly, when writing a config value changes may either be
-performed directly, or the value may be pre-processed by a
-specified callable.
-
-Paths to a config value in the provided conf collection
-are specified through the `confPath` key and provided
-as tuples of dictionary keys / list indices
-(e.g. `("config", "main", 0)`).
-
-Callables for processing a config value before setting
-a widget property to it are specified with the `getter`
-key.
-
-Callables for processing widget values to valid config values
-may be specified with the `setter` key.
-
-Example of a fully realized widget dictionary:
-
-> {
->     "name": "listDecks",
->     "type": "list",
->     "current": {
->         "confPath": ("config", "ignoredDecks"),
->         "getter": "getIgnoredDecks",
->         "setter": "setIgnoredDecks"
->     }
-> },
-
-3.) Supported Qt widgets:
-
-What follows is a list of all supported Qt widgets, the keywords they
-are designated by, and the supported properties that can be assigned
-through mapping dictionaries:
-
-Qt Widget       type keyword            properties       input value
-====================================================================
-QCheckBox        "checkbox"           current              boolean
-QComboBox        "combobox"           current, items        
-QSpinBox         "spinbox"            current
-QListWIdget      "list"               current, items
-custom           "keygrabber"         current
-
-2.) Widget form specifications:
-
-The form needs to contain a number of prespecified widgets:
-
-- Buttons for social media links, etc.:
-
-    btnCoffee, btnPatreon, btnRate, btnTwitter, btnYoutube, btnHelp
-
-- A buttonBox with one button for each of the following roles:
-
-    AcceptRole, RejectRole, ResetRole
-
-- Two label areas for showing version info and credits:
-
-    labInfo, labAbout
+Generic options dialog for Anki add-ons
 
 Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
-# TODO: add support for QLineEdit/QPlainTextEdit, QRadioButton,
-#       QPushButton, QDoubleSpinBox, QSlider, QFontSelectionDialog,
-#       custom color selectors
-# TODO: migrate to QKeySequenceEdit once support for anki20 is dropped
 
 from __future__ import unicode_literals
 
@@ -115,32 +21,115 @@ from ..utils.utils import getNestedValue, setNestedValue
 from .about import get_about_string
 from ..utils.platform import PLATFORM
 
-# Options dialog and associated classes
+# TODO: consider more elegant implementation of widgets_tuple
+#       (perhaps doing away with it entirely)
 
+# Options dialog and associated classes
 
 class OptionsDialog(BasicDialog):
 
-    """
-    Add-on agnostic options dialog
+    def __init__(self, form_module, widgets_tuple, config, parent=None):
 
-    Creates an options dialog with provided form and widgets, and
-    sets widget values based on provided conf dict.
+        """
+        Creates an options dialog with the provided Qt form and populates its
+        widgets from a ConfigManager config object.
 
-    Arguments:
-        form {PyQt form module} -- PyQt dialog form outlining the UI
-        widgets {tuple} -- Tuple of dictionaries containing
-                           widget <-> config key mappings
-        conf {dict} -- Dictionary of user config values
-        defaults {dict} -- Dictionary of default config values
+        Arguments:
+            form_module {PyQt form module} -- Dialog form module generated
+                                              through pyuic
+            widgets_tuple {tuple} -- A tuple of mappings between widget names,
+                                     config value names, and special methods
+                                     to act as mediators (see below for specs)
+            config {ConfigManager} -- ConfigManager object providing access to
+                                      add-on config values
 
-    Keyword Arguments:
-        parent {QWidget} -- Parent Qt widget (default: {None})
+        Keyword Arguments:
+            parent {QWidget} -- Parent Qt widget (default: {None})
 
-    """
+        ------- Detailed Information -------
 
-    def __init__(self, form, widgets, config, parent=None):
-        super(OptionsDialog, self).__init__(form=form, parent=parent)
-        self.widgets = widgets
+        --- Widgets tuple specifications ---
+
+        The widgets tuple should consist of a series of tuples
+        of the form:
+
+        > ("widget_object_name", property_mapping_tuple)
+
+        where widget_object_name is the valid object name of a widget
+        found in the options dialog, or a qualified dot-separated attribute
+        path leading to it (e.g. "form.selHmlCol" for self.form.selHmCol)
+
+        Each property mapping tuple should be phrased as follows:
+
+        > ("property_descriptor", assignment_dictionary)
+
+        where property_descriptor is a valid name as per the keys defined
+        in CommonWidgetInterface.methods_by_key
+        (as of writing: "value", "items", "current", "min", "max")
+
+        The key, value pairs defined in the assignment dictionary determine
+        the way in which config values are applied to and read from their
+        corresponding widgets.
+
+        The following key, value pairs are supported:
+
+            "confPath" {tuple} -- Sequence of dictionary keys / sequence
+                                    indices pointing to valid config value
+                                    to be used for specified widget property
+                                    (e.g. ("synced", "mode", 1) for getting
+                                    self.config["synced"]["mode"][1]) )
+            "getter" {str} -- Name of method called to either process
+                                config value before being applied to the
+                                widget property, or to return a config value
+                                through other means
+            "setter" {str} -- Name of method called to either process
+                                widget value before being applied to the
+                                configuration, or to return a widget value
+                                through other means
+
+        Only the following combinations of the above are supported:
+
+            "confPath" only:
+                Values are read from and written to self.config
+                with no processing applied
+            "confPath" and "getter" / "setter":
+                Values are processed after reading and/or before writing
+            "getter" / "setter":
+                Reading and/or writing the values is delegated to the
+                provided methods
+                        
+        The string values provided for the "getter" and "setter" keys
+        describe instance methods of this class or classes inheriting
+        from it.
+
+        In summary, an example of a valid widgets tuple could look as
+        follows:
+        
+        > (
+        >     ("form.dateLimData", (
+        >         ("value", {
+        >             "confPath": ("synced", "limdate")
+        >         }),
+        >         ("min", {
+        >             "getter": "getColCreationTime"
+        >         }),
+        >         ("max", {
+        >             "getter": "getCurrentTime"
+        >         }),
+        >     )),
+        >     ("form.selHmCalMode", (
+        >         ("items", {
+        >             "getter": "getHeatmapModes"
+        >         }),
+        >         ("value", {
+        >             "confPath": ("synced", "mode"),
+        >             "getter": "getHeatmapModeValue"
+        >         }),
+        >     ))
+        > )
+        """
+        super(OptionsDialog, self).__init__(form=form_module, parent=parent)
+        self.widgets = widgets_tuple
         self.config = config
         # Perform any subsequent setup steps:
         self.setupCustomWidgets()
