@@ -66,10 +66,10 @@ class QKeyGrab(QDialog):
         self.parent = parent
         # self.active is used to trace whether there's any key held now:
         self.active = 0
-        self.resetDialog()
-        self.setupUI()
+        self._resetDialog()
+        self._setupUI()
 
-    def setupUI(self):
+    def _setupUI(self):
         """Basic UI setup"""
         mainLayout = QVBoxLayout()
         self.label = QLabel("Please press the key combination\n"
@@ -79,7 +79,7 @@ class QKeyGrab(QDialog):
         self.setLayout(mainLayout)
         self.setWindowTitle("Grab key combination")
 
-    def resetDialog(self):
+    def _resetDialog(self):
         self.extra = self.key_string = None
         self.meta = self.ctrl = self.alt = self.shift = False
 
@@ -137,7 +137,7 @@ class QKeyGrab(QDialog):
 
         if msg:
             self.label.setText(msg)
-            self.resetDialog()
+            self._resetDialog()
             return
 
         combo = []
