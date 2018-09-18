@@ -8,9 +8,15 @@ state from various Qt widgets. This allows for easier translation
 between stored values and widget state, while also catching
 type errors and other problems early on.
 
+Subclassing each respective Qt widget would be the more elegant way,
+but that is not feasible when primarily working with Qt designer generated
+UIs.
+
 Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
+
+from __future__ import unicode_literals
 
 from collections import MutableSequence, MutableSet, MutableMapping
 
@@ -173,10 +179,11 @@ class CommonWidgetInterface(object):
     # Property names assigned in this dictionary are used by set() / get()
     # to determine the correct 'meta' setter/getter to call
     #
-    # Each value should be a tuple of (setter_method, getter_method)
+    # Each value should be a tuple of
+    # (setter_method_name {str}, getter_method_name {str})
+    # where each name corresponds to a method of CommonWidgetInterface
     #
-    # If either setter or getter is undefined they should be replaced
-    # by None instead.
+    # In case of an undefined setter or getter None should be used, instead.
     methods_by_key = {
         "value": ("setValue", "getValue"),
         "items": ("setValueList", "getValueList"),
@@ -202,12 +209,14 @@ class CommonWidgetInterface(object):
         Sets widget data for given widget name, property name, and data
         
         Arguments:
-            widget_name {str} -- Object name of Qt widget. Dot-separated
-                                 attribute names are resolved automatically
-                                 (e.g. "form.button" would resolve to
-                                  self.parent.form.button)
-            property_name {str} -- Name of the property to update. Currently
-                                   supported: value, items, current, min, max
+            widget_name {str} -- Object name of Qt widget found in parent.
+                                 Dot-separated attribute names are resolved
+                                 automatically (e.g. "form.button" would
+                                 be evaluated as self.parent.form.button)
+            property_name {str} -- Name of the property to update, as defined
+                                   in CommonWidgetInterface.methods_by_key.
+                                   Currently supported:
+                                   value, items, current, min, max
             data {obj} -- Data to set widget property to. Has to follow correct
                           type specs (see class-level docstring)
         
@@ -215,12 +224,18 @@ class CommonWidgetInterface(object):
             object -- Setter return value
         """
         widget = self.nameToWidget(widget_name)
+        
         try:
             setter = getattr(self, self.methods_by_key[property_name][0])
         except KeyError as error:
-            error.args += ("Setting following propery not implemented: ",
+            error.args += ("Unrecognized widget property name: ",
                            property_name)
             raise
+        except TypeError as error:
+            error.args += ("Setter not defined for widget property name: ",
+                           property_name)
+            raise
+
         return setter(widget, data)
 
     def get(self, widget_name, property_name):
@@ -240,12 +255,18 @@ class CommonWidgetInterface(object):
                       defined in class-level docstring.
         """
         widget = self.nameToWidget(widget_name)
+
         try:
             getter = getattr(self, self.methods_by_key[property_name][1])
         except KeyError as error:
-            error.args += ("Getting following property not implemented: ",
+            error.args += ("Unrecognized widget property name: ",
                            property_name)
             raise
+        except TypeError as error:  # raised when method name is None
+            error.args += ("Setter not defined for widget property name: ",
+                           property_name)
+            raise
+        
         return getter(widget)
 
     # Regular interface
