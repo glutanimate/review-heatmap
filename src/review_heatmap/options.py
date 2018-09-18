@@ -20,100 +20,12 @@ from aqt.studydeck import StudyDeck
 from .libaddon.utils.platform import ANKI21
 from .libaddon.gui.options import OptionsDialog
 
-from .config import (config, heatmap_colors, heatmap_modes, activity_stats)
+from .config import config, heatmap_colors, heatmap_modes, activity_stats
 
 if ANKI21:
-    from .forms5 import options as option_qtform  # noqa: F401
+    from .forms5 import options as form_options  # noqa: F401
 else:
-    from .forms4 import options as option_qtform  # noqa: F401
-
-
-# Widget <-> config mappings
-
-# order is important (e.g. to set-up items before current item)
-option_widgets = (
-    ("form.selHmColor", (
-        ("items", {
-            "getter": "getHeatmapColors"
-        }),
-        ("value", {
-            "confPath": ("synced", "colors"),
-        }),
-    )),
-    ("form.selHmCalMode", (
-        ("items", {
-            "getter": "getHeatmapModes"
-        }),
-        ("value", {
-            "confPath": ("synced", "mode")
-        }),
-    )),
-    ("form.selActivity", (
-        ("items", {
-            "getter": "getActivityStats"
-        }),
-        ("value", {
-            "confPath": ("synced", "stat")
-        }),
-    )),
-    ("form.cbHmMain", (
-        ("value", {
-            "confPath": ("profile", "display", 0)
-        }),
-    )),
-    ("form.cbHmDeck", (
-        ("value", {
-            "confPath": ("profile", "display", 1)
-        }),
-    )),
-    ("form.cbHmStats", (
-        ("value", {
-            "confPath": ("profile", "display", 2)
-        }),
-    )),
-    ("form.cbStreakAll", (
-        ("value", {
-            "confPath": ("profile", "statsvis")
-        }),
-    )),
-    ("form.spinLimHist", (
-        ("value", {
-            "confPath": ("synced", "limhist")
-        }),
-    )),
-    ("form.spinLimFcst", (
-        ("value", {
-            "confPath": ("synced", "limfcst")
-        }),
-    )),
-    ("form.dateLimData", (
-        ("value", {
-            "confPath": ("synced", "limdate")
-        }),
-        ("min", {
-            "getter": "getColCreationTime"
-        }),
-        ("max", {
-            "getter": "getCurrentTime"
-        }),
-    )),
-    ("form.cbLimDel", (
-        ("value", {
-            "confPath": ("synced", "limcdel")
-        }),
-    )),
-    ("form.keyGrabToggle", (
-        ("value", {
-            "confPath": ("profile", "hotkeys", "toggle")
-        }),
-    )),
-    ("form.listDecks", (
-        ("value", {
-            "confPath": ("synced", "limdecks"),
-            "getter": "getIgnoredDecks",
-        }),
-    )),
-)
+    from .forms4 import options as form_options  # noqa: F401
 
 
 class RevHmOptions(OptionsDialog):
@@ -122,28 +34,123 @@ class RevHmOptions(OptionsDialog):
     Add-on-specific options dialog implementation
     """
 
-    def __init__(self, config, mw):
-        super(RevHmOptions, self).__init__(option_qtform, option_widgets,
-                                           config, parent=mw)
+    _mapped_widgets = (
+        ("form.selHmColor", (
+            # order is important (e.g. to set-up items before current item)
+            ("items", {
+                "setter": "_setSelHmColorItems"
+            }),
+            ("value", {
+                "dataPath": "synced/colors",
+            }),
+        )),
+        ("form.selHmCalMode", (
+            ("items", {
+                "setter": "_setSelHmCalModeItems"
+            }),
+            ("value", {
+                "dataPath": "synced/mode"
+            }),
+        )),
+        ("form.selActivity", (
+            ("items", {
+                "setter": "_setSelActivityItems"
+            }),
+            ("value", {
+                "dataPath": "synced/stat"
+            }),
+        )),
+        ("form.cbHmMain", (
+            ("value", {
+                "dataPath": "profile/display/0"
+            }),
+        )),
+        ("form.cbHmDeck", (
+            ("value", {
+                "dataPath": "profile/display/1"
+            }),
+        )),
+        ("form.cbHmStats", (
+            ("value", {
+                "dataPath": "profile/display/2"
+            }),
+        )),
+        ("form.cbStreakAll", (
+            ("value", {
+                "dataPath": "profile/statsvis"
+            }),
+        )),
+        ("form.spinLimHist", (
+            ("value", {
+                "dataPath": "synced/limhist"
+            }),
+        )),
+        ("form.spinLimFcst", (
+            ("value", {
+                "dataPath": "synced/limfcst"
+            }),
+        )),
+        ("form.dateLimData", (
+            ("value", {
+                "dataPath": "synced/limdate"
+            }),
+            ("min", {
+                "setter": "_setDateLimDataMin"
+            }),
+            ("max", {
+                "setter": "_setDateLimDataMax"
+            }),
+        )),
+        ("form.cbLimDel", (
+            ("value", {
+                "dataPath": "synced/limcdel"
+            }),
+        )),
+        ("form.keyGrabToggle", (
+            ("value", {
+                "dataPath": "profile/hotkeys/toggle"
+            }),
+        )),
+        ("form.listDecks", (
+            ("value", {
+                "dataPath": "synced/limdecks",
+                "setter": "_setListDecksValue",
+            }),
+        )),
+    )
+
+    def __init__(self, config, mw, **kwargs):
+        # Mediator methods defined in mapped_widgets might need access to
+        # certain instance attributes. As super().__init__ calls these
+        # mediator methods it is important that we set the attributes
+        # beforehand:
         self.mw = mw
-        self.adjustUI()
-        self.setupDialog()
+        super(RevHmOptions, self).__init__(self._mapped_widgets, config,
+                                           form_module=form_options,
+                                           parent=mw, **kwargs)
+        # Instance methods that modify the initialized UI should either be
+        # called from self._setupUI or from here
 
     # UI adjustments
 
-    def adjustUI(self):
+    def _setupUI(self):
+        super(RevHmOptions, self)._setupUI()
+        # Hide unused widgets for now:
         self.form.activitiesBox.hide()
 
     # Events:
 
-    def setupEvents(self):
-        super(RevHmOptions, self).setupEvents()
-        self.form.btnDeckAdd.clicked.connect(self.onAddIgnoredDeck)
-        self.form.btnDeckDel.clicked.connect(self.onDeleteIgnoredDeck)
+    def _setupEvents(self):
+        super(RevHmOptions, self)._setupEvents()
+        self.form.btnDeckAdd.clicked.connect(self._onAddIgnoredDeck)
+        self.form.btnDeckDel.clicked.connect(self._onDeleteIgnoredDeck)
 
     # Actions:
 
-    def onAddIgnoredDeck(self):
+    # Deck list buttons
+    # TODO: Migrate to custom widget
+
+    def _onAddIgnoredDeck(self):
         list_widget = self.form.listDecks
         ret = StudyDeck(self.mw, accept=_("Choose"),
                         title=_("Choose Deck"), help="",
@@ -158,31 +165,33 @@ class RevHmOptions(OptionsDialog):
         if not self.interface.setCurrentByData(list_widget, deck_id):
             self.interface.addValueAndMakeCurrent(list_widget, item_tuple)
 
-    def onDeleteIgnoredDeck(self):
+    def _onDeleteIgnoredDeck(self):
         list_widget = self.form.listDecks
         self.interface.removeSelected(list_widget)
 
-    # Config Getters/Setters:
+    # Helpers:
 
-    def getColCreationTime(self):
-        return self.mw.col.crt
-
-    def getCurrentTime(self):
-        return int(round(time.time()))
-
-    def getComboItems(self, dct):
+    def _getComboItems(self, dct):
         return list((val["label"], key) for key, val in dct.items())
 
-    def getHeatmapColors(self):
-        return self.getComboItems(heatmap_colors)
+    # Config setters:
 
-    def getHeatmapModes(self):
-        return self.getComboItems(heatmap_modes)
+    def _setDateLimDataMin(self, data_val):
+        return self.mw.col.crt
 
-    def getActivityStats(self):
-        return self.getComboItems(activity_stats)
+    def _setDateLimDataMax(self, data_val):
+        return int(round(time.time()))
 
-    def getIgnoredDecks(self, dids):
+    def _setSelHmColorItems(self, data_val):
+        return self._getComboItems(heatmap_colors)
+
+    def _setSelHmCalModeItems(self, data_val):
+        return self._getComboItems(heatmap_modes)
+
+    def _setSelActivityItems(self, data_val):
+        return self._getComboItems(activity_stats)
+
+    def _setListDecksValue(self, dids):
         item_tuples = []
         for did in dids:
             name = self.mw.col.decks.nameOrNone(did)
