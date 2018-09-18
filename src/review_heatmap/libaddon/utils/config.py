@@ -217,6 +217,9 @@ class ConfigManager(object):
                 be provided instead of defaults)
         """
         self._config = config_dict
+        # Reminder: setting self.all resets defaults, so it's important
+        # that it's followed up by setting self.defaults
+        # TODO: Think of a better way to handle this
         self._storages = {
             name: {"default": {}, "dirty": False, "loaded": False}
             for name in config_dict
