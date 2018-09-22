@@ -36,7 +36,7 @@ research
 # Docs and tools
 docs/specs.md
 docs/todo.md
-docs/*.todo
 docs/description.html
 designer/web/cal-heatmap.min_orig.js
 designer/web/cal-heatmap_orig.css
+todo
