@@ -27,7 +27,7 @@ from anki.stats import CollectionStats
 from anki.find import Finder
 from anki.hooks import wrap
 
-from .libaddon.utils.platform import ANKI21
+from .libaddon.platform import ANKI21
 
 from .options import invokeOptionsDialog
 from .contrib import invokeContributionsDialog

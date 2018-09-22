@@ -16,7 +16,7 @@ from collections import OrderedDict
 from aqt import mw
 
 from .consts import ADDON_VERSION
-from .libaddon.utils.config import ConfigManager
+from .libaddon.anki.configmanager import ConfigManager
 
 
 heatmap_colors = OrderedDict((

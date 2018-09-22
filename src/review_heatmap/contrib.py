@@ -12,8 +12,8 @@ from __future__ import unicode_literals
 
 from aqt import mw
 
-from .libaddon.gui.contrib import ContribDialog
-from .libaddon.utils.platform import ANKI21
+from .libaddon.gui.dialog_contrib import ContribDialog
+from .libaddon.platform import ANKI21
 
 if ANKI21:
     from .forms5 import contrib as qtform_contrib  # noqa: F401

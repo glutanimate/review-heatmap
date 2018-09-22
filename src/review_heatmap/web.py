@@ -11,7 +11,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 
 from __future__ import unicode_literals
 
-from .libaddon.utils.platform import ANKI21
+from .libaddon.platform import ANKI21
 
 # Initialize Qt web resources
 if ANKI21:

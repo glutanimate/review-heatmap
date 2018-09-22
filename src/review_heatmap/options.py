@@ -17,8 +17,8 @@ from aqt.qt import *
 from aqt import mw
 from aqt.studydeck import StudyDeck
 
-from .libaddon.utils.platform import ANKI21
-from .libaddon.gui.options import OptionsDialog
+from .libaddon.platform import ANKI21
+from .libaddon.gui.dialog_options import OptionsDialog
 
 from .config import config, heatmap_colors, heatmap_modes, activity_stats
 
