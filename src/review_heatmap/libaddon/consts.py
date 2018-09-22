@@ -12,7 +12,8 @@ Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
-from __future__ import unicode_literals
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 __all__ = ["ADDON_NAME", "ADDON_ID", "ADDON_VERSION", "LICENSE",
            "LIBRARIES", "AUTHORS", "CONTRIBUTORS", "SPONSORS",
@@ -41,7 +42,6 @@ try:
     from ..consts import LINKS as ADDON_LINKS
 except ImportError:
     pass
-
 
 # ADD-ON AGNOSTIC CONSTANTS
 

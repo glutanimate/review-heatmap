@@ -9,6 +9,9 @@ Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 from .qt import *
 
 from ....utils.platform import MODULE_ADDON

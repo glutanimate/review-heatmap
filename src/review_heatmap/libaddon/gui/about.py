@@ -7,7 +7,8 @@ Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
-from __future__ import unicode_literals
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 from ..consts import (ADDON_NAME, LICENSE, LIBRARIES,
                       AUTHORS, CONTRIBUTORS, PATRONS)
