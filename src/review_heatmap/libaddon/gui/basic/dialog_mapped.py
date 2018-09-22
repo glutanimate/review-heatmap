@@ -7,7 +7,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 
 from __future__ import unicode_literals
 
-from ...utils.utils import getNestedValue, setNestedValue
+from ...utils import getNestedValue, setNestedValue
 
 from .widgets.qt import *
 from .dialog_basic import BasicDialog

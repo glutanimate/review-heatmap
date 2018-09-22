@@ -5,7 +5,7 @@ Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
-from ....utils.platform import PLATFORM
+from ....platform import PLATFORM
 
 from .qt import QDialog, QPushButton, QVBoxLayout, QLabel, Qt, QKeySequence
 

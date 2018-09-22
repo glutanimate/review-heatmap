@@ -19,8 +19,8 @@ import os
 
 from ._version import __version__  # noqa: F401
 
-from .utils.platform import PATH_ADDON, MODULE_LIBADDON
-from .utils.packaging import addSubdirPathToModuleLookup
+from .platform import PATH_ADDON, MODULE_LIBADDON
+from .packaging import addSubdirPathToModuleLookup
 
 
 __all__ = [

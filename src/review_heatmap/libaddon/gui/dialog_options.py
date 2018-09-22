@@ -13,11 +13,11 @@ from aqt.qt import Qt
 
 from aqt.utils import openLink
 
-from .basic.dialog_mapped import MappedDialog
-
 from ..consts import ADDON_NAME, ADDON_VERSION, LINKS
+from ..platform import PLATFORM
+
+from .basic.dialog_mapped import MappedDialog
 from .about import get_about_string
-from ..utils.platform import PLATFORM
 
 
 class OptionsDialog(MappedDialog):

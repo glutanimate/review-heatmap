@@ -20,8 +20,8 @@ from __future__ import unicode_literals
 
 from collections import MutableSequence, MutableSet, MutableMapping
 
-from ...utils.utils import getNestedAttribute
-from ...utils.platform import PYTHON3
+from ...utils import getNestedAttribute
+from ...platform import PYTHON3
 
 from .widgets.qt import *
 from .widgets.qkeygrabber import QKeyGrabButton

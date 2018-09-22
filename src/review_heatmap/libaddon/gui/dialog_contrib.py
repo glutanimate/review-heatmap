@@ -16,7 +16,7 @@ from __future__ import unicode_literals
 from aqt.qt import *
 from aqt.utils import openLink
 
-from ..consts import (ADDON_NAME, LINKS, MAIL_AUTHOR)
+from ..consts import ADDON_NAME, LINKS, MAIL_AUTHOR
 
 
 class ContribDialog(QDialog):

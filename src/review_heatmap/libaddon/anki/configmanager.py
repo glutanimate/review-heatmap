@@ -15,8 +15,8 @@ from stdlib.distutils.version import LooseVersion
 from anki.utils import json
 from anki.hooks import addHook
 
-from .utils import deepMergeDicts
-from .platform import ANKI21, PATH_ADDON, MODULE_ADDON
+from ..utils import deepMergeDicts
+from ..platform import ANKI21, PATH_ADDON, MODULE_ADDON
 
 DEFAULT_LOCAL_CONFIG_PATH = os.path.join(PATH_ADDON, "config.json")
 DEFAULT_LOCAL_META_PATH = os.path.join(PATH_ADDON, "meta.json")
