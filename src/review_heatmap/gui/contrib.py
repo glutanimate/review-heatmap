@@ -12,14 +12,10 @@ from __future__ import unicode_literals
 
 from aqt import mw
 
-from .libaddon.gui.dialog_contrib import ContribDialog
-from .libaddon.platform import ANKI21
+from ..libaddon.gui.dialog_contrib import ContribDialog
+from ..libaddon.packaging import platformAwareImport
 
-if ANKI21:
-    from .forms5 import contrib as qtform_contrib  # noqa: F401
-else:
-    from .forms4 import contrib as qtform_contrib  # noqa: F401
-
+qtform_contrib = platformAwareImport(".forms", "contrib", __name__)
 
 class RevHmContrib(ContribDialog):
 

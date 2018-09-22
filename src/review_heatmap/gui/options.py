@@ -17,15 +17,12 @@ from aqt.qt import *
 from aqt import mw
 from aqt.studydeck import StudyDeck
 
-from .libaddon.platform import ANKI21
-from .libaddon.gui.dialog_options import OptionsDialog
+from ..libaddon.gui.dialog_options import OptionsDialog
+from ..libaddon.packaging import platformAwareImport
 
-from .config import config, heatmap_colors, heatmap_modes, activity_stats
+from ..config import config, heatmap_colors, heatmap_modes, activity_stats
 
-if ANKI21:
-    from .forms5 import options as form_options  # noqa: F401
-else:
-    from .forms4 import options as form_options  # noqa: F401
+qtform_options = platformAwareImport(".forms", "options", __name__)
 
 
 class RevHmOptions(OptionsDialog):
@@ -126,7 +123,7 @@ class RevHmOptions(OptionsDialog):
         # beforehand:
         self.mw = mw
         super(RevHmOptions, self).__init__(self._mapped_widgets, config,
-                                           form_module=form_options,
+                                           form_module=qtform_options,
                                            parent=mw, **kwargs)
         # Instance methods that modify the initialized UI should either be
         # called from self._setupUI or from here

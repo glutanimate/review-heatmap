@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Description: Generate PyQt forms from QtDesigner project files
-# Usage: build_ui.sh <project_prefix> <qt_version>
+# Usage: build_ui.sh <project_prefix> <anki_version>
 # Dependencies: pyuic4 pyuic5 pyrcc4 pyrcc5
 #
 # Copyright: (c) 2017-2018 Glutanimate <https://glutanimate.com/>
@@ -11,8 +11,12 @@
 shopt -s nullglob
 
 project_prefix="$1"
-qt_version="$2"
+anki_version="$2"
 src_folder="src/${project_prefix}"
+
+declare -A qt_versions_by_anki
+qt_versions_by_anki[anki20]="4"
+qt_versions_by_anki[anki21]="5"
 
 declare -A pyuic_opts
 pyuic_opts[4]=""
@@ -23,8 +27,8 @@ if [[ -z "$project_prefix" ]]; then
     exit 1
 fi
 
-if [[ -z "$qt_version" ]]; then
-    echo "Please specify the qt version."
+if [[ -z "$anki_version" ]]; then
+    echo "Please specify the anki version."
     exit 1
 fi
 
@@ -43,11 +47,19 @@ if [[ -z "$(find designer -name '*.ui')" ]]; then
     exit 0
 fi
 
-function build_for_qt_version () {
-    version="$1"
-    pyuic_exec="pyuic${version}"
-    pyrcc_exec="pyrcc${version}"
-    form_dir="${src_folder}/forms${version}"
+function build_for_anki_version () {
+
+    anki_version="$1"
+    qt_version="${qt_versions_by_anki[$anki_version]}"
+
+    if [[ -z "$qt_version" ]]; then
+        echo "Invalid anki version. Supported versions: ${!qt_versions_by_anki[@]}"
+        exit 1
+    fi
+
+    pyuic_exec="pyuic${qt_version}"
+    pyrcc_exec="pyrcc${qt_version}"
+    form_dir="${src_folder}/gui/forms/${anki_version}"
     if ! type "$pyuic_exec" >/dev/null 2>&1; then
         echo "${pyuic_exec} not found. Skipping generation."
         return 0
@@ -67,7 +79,7 @@ function build_for_qt_version () {
         base="${name%.*}"
         outfile="$form_dir/${base}.py"
         echo "Generating ${outfile}"
-        "$pyuic_exec" ${pyuic_opts[$version]} "$i" -o "${outfile}"
+        "$pyuic_exec" ${pyuic_opts[$qt_version]} "$i" -o "${outfile}"
     done
     echo "Building resources.."
     for i in designer/*.qrc; do
@@ -79,6 +91,8 @@ function build_for_qt_version () {
     done
 }
 
-build_for_qt_version "${qt_version}"
+# Main
+
+build_for_anki_version "${anki_version}"
 
 echo "Done."
