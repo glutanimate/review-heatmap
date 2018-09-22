@@ -5,10 +5,15 @@ Copyright: (c) 2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import sys
 import os
+import importlib
 
 from .platform import PYTHON3
+from .platform import ANKI21
 
 __all__ = [
     "addPathToModuleLookup",
@@ -16,7 +21,19 @@ __all__ = [
 ]
 
 STRINGTYPES = (str,) if PYTHON3 else (str, unicode)  # noqa: F821
-LOOKUP_SUBDIRS = ["libs", "python3" if PYTHON3 else "python2"]
+LOOKUP_SUBDIRS = ["common", "python3" if PYTHON3 else "python2"]
+
+# Resolving version-specific module imports
+######################################################################
+
+def platformAwareImport(target_package, target_module, origin_module):
+    package = origin_module.rsplit(".", 1)[0]
+
+    components = [target_package, "anki21" if ANKI21 else "anki20",
+                  target_module]
+    relative_path = ".".join(components)
+
+    return importlib.import_module(relative_path, package=package)
 
 
 # Registering external libraries & modules
@@ -63,6 +80,7 @@ def addSubdirPathToModuleLookup(path):
     """
     assert isinstance(path, STRINGTYPES)
     assert os.path.isdir(path)
+    # TODO: refactor
     for path in [os.path.join(path, subdir) for subdir in LOOKUP_SUBDIRS]:
         if not os.path.isdir(path):
             continue

@@ -9,15 +9,15 @@ Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 """
 
-from __future__ import unicode_literals
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
 
 from .libaddon.platform import ANKI21
+from .libaddon.packaging import platformAwareImport
 
 # Initialize Qt web resources
-if ANKI21:
-    from .forms5 import web_rc  # noqa: F401
-else:
-    from .forms4 import web_rc  # noqa: F401
+web_rc = platformAwareImport(".gui.forms", "web_rc", __name__)
+
 
 heatmap_boilerplate = r"""
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
