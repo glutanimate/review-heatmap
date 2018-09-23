@@ -17,7 +17,7 @@ from __future__ import (absolute_import, division,
 
 __all__ = ["ADDON_NAME", "ADDON_ID", "ADDON_VERSION", "LICENSE",
            "LIBRARIES", "AUTHORS", "CONTRIBUTORS", "SPONSORS",
-           "MAIL_AUTHOR", "LINKS", "PATRONS"]
+           "MAIL_AUTHOR", "LINKS", "PATRONS", "PATRONS_TOP"]
 
 # ADD-ON SPECIFIC CONSTANTS
 
@@ -62,8 +62,9 @@ LINKS.update(ADDON_LINKS)
 # Credits
 
 # https://www.patreon.com/glutanimate
-PATRONS = ("Alex M", "Blacky 372", "Devin Beecher", "Edan Maor", "Itai Efrat",
+PATRONS = ("Alex M", "Devin Beecher", "Edan Maor", "Itai Efrat",
            "Jørgen Rahbek", "Man Duong", "Nicolas Curi", "PapelMagico",
            "Paul McManus", "Peter Benisch", "Rob Alexander", "Scott Barnett",
            "Sebastián Ortega", "Shawn Lesniak",
            "spiraldancing", "Steven Nevers")
+PATRONS_TOP = ("Paul Bake", "Blacky 372")

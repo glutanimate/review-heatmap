@@ -11,11 +11,10 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 from ..consts import (ADDON_NAME, LICENSE, LIBRARIES,
-                      AUTHORS, CONTRIBUTORS, PATRONS)
+                      AUTHORS, CONTRIBUTORS, PATRONS, PATRONS_TOP)
 
 
-libs_header = ("<p>The development of this add-on was made possible "
-               "through the following third-party open-source libraries:</p>")
+libs_header = ("<p>{} ships with the following open-source libraries:</p>".format(ADDON_NAME))
 
 html_template = """\
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
@@ -34,26 +33,28 @@ html_template = """\
     </style>
 </head>
 <body>
-    <p><span style=" font-weight:600;">Credits and License</span> </p>
+    <p><span style="font-weight:600;">Credits</span></p>
     {authors_string}
-    <p>With code contributions from: {contributors_string}</p>
-    <p><span style="font-style:italic;">{display_name}</span> is licensed under the {license}.</p>
+    <p>With patches from: <i>{contributors_string}</i></p>
     {libs_string}
+    
     <p><img src=":/review_heatmap/icons/heart_small.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
-    <p>Thank you very much to all of you who have decided to support my work through your tips and contributions. I really appreciate it!</p>
-    <p>Thanks in particular to all of my past and present <a href="https://www.patreon.com/glutanimate">
-        <span style="text-decoration: underline; color:#0000ff;">Patreon</span></a> supporters. You guys rock!:</p>
+    <p>My heartfelt thanks go out to everyone who has supported this add-on through their tips, contributions, or any other means. You guys rock!</p>
+    <p>In particular I would like to thank all of the awesome people who support me on <a href="https://www.patreon.com/glutanimate">Patreon</a>, including:</p>
     <p><i><span style="color:#aa2a4c;">{patrons_string}</span></i></p>
+    
+    <p><span style="font-weight:600;">License</span></p>
+    <p>{display_name} is licensed under the {license} license. Please see the license file in the add-on directory for more information.</p>
 </body>
 </html>\
 """
 
 authors_template = """\
-<p>© {years} <a href="{contact}"><span style=" text-decoration: underline; color:#0000ff;">{name}</span></a></p>\
+<p>© {years} <a href="{contact}">{name}</a></p>\
 """
 
 libs_item_template = """\
-<li>{name} ({version}), © {author}, {license}</li>\
+<li><a href="{url}">{name}</a> ({version}), © {author}, {license}</li>\
 """
 
 
@@ -67,7 +68,9 @@ def get_about_string():
     else:
         libs_string = ""
     contributors_string = ", ".join(CONTRIBUTORS)
-    patrons_string = ", ".join(PATRONS)
+    patrons_top_string = "<b>{}</b>".format(", ".join(sorted(PATRONS_TOP)))
+    patrons_all_string = ", ".join(sorted(PATRONS))
+    patrons_string = ", ".join((patrons_top_string, patrons_all_string))
 
     return html_template.format(display_name=ADDON_NAME,
                                 license=LICENSE,
