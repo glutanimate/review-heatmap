@@ -207,10 +207,16 @@ cal.init({
     legend: %(leg)s,
     displayLegend: false,
     domainLabelFormat: "%(domLabForm)s",
-    subDomainTitleFormat: {
-            empty: "No reviews on {date}",
-            filled: "{count} {name} {connector} {date}"
-        },
+    tooltip: true,
+    subDomainTitleFormat: function(isEmpty, fmt, rawData){
+        if (isEmpty) {
+            return `No activity on ${fmt.date}`
+        } else if (rawData.v < 0) {
+            return `${-1 * fmt.count} ${rawData.v == -1 ? "card" : "cards"} due ${fmt.connector} ${fmt.date}`
+        } else {
+            return `${fmt.count} ${rawData.v == 1 ? "card" : "cards"} ${fmt.connector} ${fmt.date}`
+        }
+    },
     onClick: function(date, nb){
         // call link handler
         if (nb === null || nb == 0){
