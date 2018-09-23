@@ -88,6 +88,20 @@ heatmap_css = """
 .cal-heatmap-container .q18{fill: %%s}
 .cal-heatmap-container .q19{fill: %%s}
 .cal-heatmap-container .q20{fill: %%s}
+.ch-tooltip {
+    animation: 0.5s ease 0s normal forwards 1 fadein;
+    -webkit-animation: 0.5s ease 0s normal forwards 1 fadein;
+}
+@keyframes fadein {
+    0%%%% { opacity:0; }
+    66%%%% { opacity:0; }
+    100%%%% { opacity:0.9; }
+}
+@-webkit-keyframes fadein {
+    0%%%% { opacity:0; }
+    66%%%% { opacity:0; }
+    100%%%% { opacity:0.9; }
+}
 .alignleft {
     float: left;
     width:33.33333%%%%;
