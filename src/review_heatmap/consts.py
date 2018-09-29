@@ -39,5 +39,5 @@ AUTHORS = (
     {"name": "Aristotelis P. (Glutanimate)", "years": "2016-2018",
      "contact": "https://glutanimate.com"},
 )  # trailing comma required for single-element tuples
-CONTRIBUTORS = ("hehu80", "David Bailey")
+CONTRIBUTORS = ("David Bailey", "hehu80")
 SPONSORS = ()
