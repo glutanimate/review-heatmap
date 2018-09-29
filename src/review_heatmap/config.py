@@ -49,6 +49,17 @@ heatmap_colors = OrderedDict((
     })
 ))
 
+heatmap_colors_fcst = {
+    "light": (
+        "#525252", "#616161", "#707070", "#7F7F7F", "#8E8E8E",
+        "#9D9D9D", "#ACACAC", "#BBBBBB", "#CACACA", "#D9D9D9"
+    ),
+    "dark": (
+        "#5d5f5f", "#585a5a", "#535555", "#4e5050", "#494b4b",
+        "#444646", "#3f4141", "#3a3c3c", "#353737", "#313232"
+    )
+}
+
 heatmap_modes = OrderedDict((
     ("year", {
         "label": "Yearly Overview",

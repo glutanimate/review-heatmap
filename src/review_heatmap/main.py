@@ -12,8 +12,6 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-import time
-
 import aqt
 from aqt.qt import *
 from aqt import mw
@@ -32,10 +30,10 @@ from .libaddon.platform import ANKI21
 
 from .gui.options import invokeOptionsDialog
 from .gui.contrib import invokeContributionsDialog
-from .config import config, heatmap_colors, heatmap_modes
+from .config import (config, heatmap_colors,
+                     heatmap_colors_fcst, heatmap_modes)
 from .web import (streak_css, streak_div, heatmap_boilerplate,
                   heatmap_css, heatmap_element, ov_body)
-
 
 BRIDGE = "pycmd" if ANKI21 else "py.link"
 
@@ -148,7 +146,16 @@ def gen_heatmap(data, legend, start, stop, synced_conf):
     rng = mode["range"]
     domlabform = mode["domLabForm"]
 
-    css = heatmap_css % colors
+    # TODO: switch to CSS-based styling once implemented in Night Mode
+    # Until then, users will have to perform a restart for theming to change
+    if mw.pm.profile and mw.pm.profile.get("nm_state_on", False):
+        rectbg = "#222222"
+        colors_fcst = heatmap_colors_fcst["dark"]
+    else:
+        rectbg = "#eaeaea"
+        colors_fcst = heatmap_colors_fcst["light"]
+
+    css = heatmap_css % (rectbg, *colors_fcst, *colors)
 
     heatmap = heatmap_element % {"dom": mode["domain"],
                                  "subdom": mode["subDomain"],
@@ -156,7 +163,6 @@ def gen_heatmap(data, legend, start, stop, synced_conf):
                                  "domLabForm": domlabform, "leg": legend,
                                  "bridge": BRIDGE, "data": data}
 
-    
     return heatmap_boilerplate + css + heatmap
 
 

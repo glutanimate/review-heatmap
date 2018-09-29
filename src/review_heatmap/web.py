@@ -65,21 +65,21 @@ heatmap_css = """
 .cal-heatmap-container rect.highlight {
     stroke: #E9002E;}
 .cal-heatmap-container .graph-rect {
-    fill: #eaeaea}
+    fill: %%s}
 .streak {margin-top: 0.5em;}
 .streak-info {margin-left: 1em;}
 .sstats {font-weight: bold;}
 /* future reviews (shades of grey): */
-.cal-heatmap-container .q1{fill: #525252}
-.cal-heatmap-container .q2{fill: #616161}
-.cal-heatmap-container .q3{fill: #707070}
-.cal-heatmap-container .q4{fill: #7F7F7F}
-.cal-heatmap-container .q5{fill: #8E8E8E}
-.cal-heatmap-container .q6{fill: #9D9D9D}
-.cal-heatmap-container .q7{fill: #ACACAC}
-.cal-heatmap-container .q8{fill: #BBBBBB}
-.cal-heatmap-container .q9{fill: #CACACA}
-.cal-heatmap-container .q10{fill: #D9D9D9}
+.cal-heatmap-container .q1{fill: %%s}
+.cal-heatmap-container .q2{fill: %%s}
+.cal-heatmap-container .q3{fill: %%s}
+.cal-heatmap-container .q4{fill: %%s}
+.cal-heatmap-container .q5{fill: %%s}
+.cal-heatmap-container .q6{fill: %%s}
+.cal-heatmap-container .q7{fill: %%s}
+.cal-heatmap-container .q8{fill: %%s}
+.cal-heatmap-container .q9{fill: %%s}
+.cal-heatmap-container .q10{fill: %%s}
 /* past reviews (shades of green): */
 .cal-heatmap-container .q11{fill: %%s}
 .cal-heatmap-container .q12{fill: %%s}
