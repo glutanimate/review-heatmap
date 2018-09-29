@@ -63,6 +63,8 @@ heatmap_css = """
     stroke: black;}
 .cal-heatmap-container rect.highlight {
     stroke: #E9002E;}
+.cal-heatmap-container .graph-rect {
+    fill: #eaeaea}
 .streak {margin-top: 0.5em;}
 .streak-info {margin-left: 1em;}
 .sstats {font-weight: bold;}
