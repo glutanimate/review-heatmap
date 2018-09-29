@@ -20,7 +20,6 @@ from .libaddon.anki.configmanager import ConfigManager
 
 from .consts import ADDON_VERSION
 
-
 heatmap_colors = OrderedDict((
     ("olive", {
         "label": "Olive",
@@ -72,7 +71,7 @@ heatmap_modes = OrderedDict((
         "label": "Continuous Timeline",
         "domain": 'month',
         "subDomain": 'day',
-        "range": 12,
+        "range": 9,
         "domLabForm": "%b '%y"
     })
 ))

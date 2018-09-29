@@ -56,7 +56,6 @@ heatmap_css = """
 .graph-label {fill: #808080;}
 .heatmap {
     margin-top: 1em;
-    min-width: 640px;
     display:inline-block;
 }
 .heatmap-controls {margin-bottom: 0;}
