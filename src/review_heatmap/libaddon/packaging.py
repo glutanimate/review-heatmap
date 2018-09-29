@@ -37,6 +37,31 @@ def platformAwareImport(target_package, target_module, origin_module):
     return importlib.import_module(relative_path, package=package)
 
 
+# Third-party add-on imports
+######################################################################
+
+def importAny(*modules):
+    """
+    Import by name, providing multiple alternative names
+
+    Common use case: Support all the different package names found
+    on between 2.0 add-ons, 2.1 AnkiWeb releases, and 2.1 dev releases
+    
+    Raises:
+        ImportError -- Module not found
+    
+    Returns:
+        module -- Imported python module
+    """
+    for mod in modules:
+        try:
+            return __import__(mod)
+        except ImportError:
+            pass
+    raise ImportError("Requires one of " + ', '.join(modules))
+
+
+
 # Registering external libraries & modules
 ######################################################################
 
