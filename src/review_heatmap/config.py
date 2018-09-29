@@ -16,8 +16,9 @@ from collections import OrderedDict
 
 from aqt import mw
 
-from .consts import ADDON_VERSION
 from .libaddon.anki.configmanager import ConfigManager
+
+from .consts import ADDON_VERSION
 
 
 heatmap_colors = OrderedDict((
@@ -50,14 +51,14 @@ heatmap_colors = OrderedDict((
 
 heatmap_modes = OrderedDict((
     ("year", {
-        "label": "Continuous year",
+        "label": "Yearly Overview",
         "domain": 'year',
         "subDomain": 'day',
         "range": 1,
         "domLabForm": "%Y"
     }),
     ("months", {
-        "label": "Split into months",
+        "label": "Continuous Timeline",
         "domain": 'month',
         "subDomain": 'day',
         "range": 12,
@@ -65,18 +66,10 @@ heatmap_modes = OrderedDict((
     })
 ))
 
-activity_stats = OrderedDict((
-    ("a", {"label": "All reviews"}),
-    ("n", {"label": "New cards"}),
-    ("r", {"label": "Review cards"}),
-    ("c", {"label": "Cards added"})
-))
-
 config_defaults = {
     "synced": {
         "colors": "lime",
         "mode": "year",
-        "stat": "a",
         "limdate": 0,
         "limhist": 0,
         "limfcst": 0,
