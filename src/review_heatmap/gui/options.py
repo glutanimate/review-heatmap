@@ -20,7 +20,7 @@ from aqt.studydeck import StudyDeck
 from ..libaddon.gui.dialog_options import OptionsDialog
 from ..libaddon.packaging import platformAwareImport
 
-from ..config import config, heatmap_colors, heatmap_modes, activity_stats
+from ..config import config, heatmap_colors, heatmap_modes
 
 qtform_options = platformAwareImport(".forms", "options", __name__)
 
@@ -47,14 +47,6 @@ class RevHmOptions(OptionsDialog):
             }),
             ("value", {
                 "dataPath": "synced/mode"
-            }),
-        )),
-        ("form.selActivity", (
-            ("items", {
-                "setter": "_setSelActivityItems"
-            }),
-            ("value", {
-                "dataPath": "synced/stat"
             }),
         )),
         ("form.cbHmMain", (
@@ -132,8 +124,6 @@ class RevHmOptions(OptionsDialog):
 
     def _setupUI(self):
         super(RevHmOptions, self)._setupUI()
-        # Hide unused widgets for now:
-        self.form.activitiesBox.hide()
 
     # Events:
 
@@ -184,9 +174,6 @@ class RevHmOptions(OptionsDialog):
 
     def _setSelHmCalModeItems(self, data_val):
         return self._getComboItems(heatmap_modes)
-
-    def _setSelActivityItems(self, data_val):
-        return self._getComboItems(activity_stats)
 
     def _setListDecksValue(self, dids):
         item_tuples = []
