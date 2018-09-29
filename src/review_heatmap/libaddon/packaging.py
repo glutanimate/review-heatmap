@@ -10,7 +10,6 @@ from __future__ import (absolute_import, division,
 
 import sys
 import os
-import importlib
 
 from .platform import PYTHON3
 from .platform import ANKI21
@@ -27,6 +26,8 @@ LOOKUP_SUBDIRS = ["common", "python3" if PYTHON3 else "python2"]
 ######################################################################
 
 def platformAwareImport(target_package, target_module, origin_module):
+    # TODO: fix function-level import
+    from stdlib import importlib  # not available at module import time
     package = origin_module.rsplit(".", 1)[0]
 
     components = [target_package, "anki21" if ANKI21 else "anki20",
