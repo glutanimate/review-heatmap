@@ -18,6 +18,7 @@ from .libaddon.packaging import platformAwareImport
 # Initialize Qt web resources
 web_rc = platformAwareImport(".gui.forms", "web_rc", __name__)
 
+# TODO: Look into moving more web components to designer/web
 
 heatmap_boilerplate = r"""
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
@@ -165,25 +166,17 @@ heatmap_element = r"""
             <span>&nbsp;</span>
         </div>
         <div class="aligncenter">
-            <div title="Go to previous year" onclick="cal.previous(%(rng)d);" class="hm-btn">
+            <div title="Go backward" onclick="cal.previous(%(rng)d);" class="hm-btn">
                 <img height="10px" src="qrc:/review_heatmap/icons/left.svg" />
             </div>
             <div title="Today" onclick="cal.rewind();" class="hm-btn">
                 <img height="10px" src="qrc:/review_heatmap/icons/circle.svg" />
             </div>
-            <div title="Go to next year" onclick="cal.next(%(rng)d);" class="hm-btn">
+            <div title="Go forward" onclick="cal.next(%(rng)d);" class="hm-btn">
                 <img height="10px" src="qrc:/review_heatmap/icons/right.svg" />
             </div>
         </div>
         <div class="alignright">
-            <!--
-            <select class="hm-sel" onchange="onHmSelChange(this)" title="Choose statistic">
-                <option value="a" class="hm-sel-itm" selected>All cards studied</option>
-                <option value="n" class="hm-sel-itm">New cards studied</option>
-                <option value="r" class="hm-sel-itm">Review cards studied&nbsp;&nbsp;&nbsp;&nbsp;</option>
-                <option value="c" class="hm-sel-itm">Cards added</option>
-            </select>
-            -->
             <div class="hm-btn opts-btn" title="Options" onclick="%(bridge)s('revhm_opts')">
                 <img src="qrc:/review_heatmap/icons/options.svg" />
             </div>
@@ -294,16 +287,16 @@ cal.init({
 streak_div = r"""
 <div class="streak">
     <span class="streak-info">Daily average:</span>
-    <span title="Average counts on active days"
+    <span title="Average reviews on active days"
         style="color: %s;" class="sstats">%s</span>
-    <span class="streak-info">Days active:</span>
-    <span title="Percentage of days with card activity over entire history"
+    <span class="streak-info">Days learned:</span>
+    <span title="Percentage of days with review activity over entire review history"
         style="color: %s;" class="sstats">%s%%</span>
     <span class="streak-info">Longest streak:</span>
-    <span title="Longest continuous streak of card activity."
+    <span title="Longest continuous streak of review activity. All types of repetitions included."
         style="color: %s;" class="sstats">%s</span>
     <span class="streak-info">Current streak:</span>
-    <span title="Current card activity streak."
+    <span title="Current card review activity streak. All types of repetitions included."
         style="color: %s;" class="sstats">%s</span>
 </div>
 """
