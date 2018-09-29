@@ -272,7 +272,7 @@ class ConfigManager(object):
         for name, storage_dict in self._storages.items():
             if not storage_dict["dirty"]:
                 continue
-            self.save(name)
+            self.save(name, profile_unload=True)
 
     def setConfigAction(self, action):
         """
