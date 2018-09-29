@@ -204,17 +204,43 @@ function onHmSelChange(selector) {
 }
 
 var calStartDate = new Date();
-calStartDate.setMonth(calStartDate.getMonth() - 6);
-calStartDate.setDate(1);
+var calMinDate = new Date(%(start)s);
+var calMaxDate = new Date(%(stop)s);
+
+// Running overview of 6-month activity in month view:
+if ("%(dom)s" === "month") {
+    padding = %(rng)d / 2;
+    // 6 months of past activity, current month, 5 months of future activity
+    paddingLower = Math.round(padding + 1);
+    paddingUpper = Math.round(padding - 1);
+
+    calStartDate.setMonth(calStartDate.getMonth() - paddingLower);
+    calStartDate.setDate(1);
+
+    // Start at first data point if history < 6 months
+    if (calMinDate.getTime() > calStartDate.getTime()) {
+        calStartDate = calMinDate;
+    }
+
+    tempDate = new Date()
+    tempDate.setMonth(tempDate.getMonth() + paddingUpper)
+    tempDate.setDate(1);
+
+    // Always go back to centered view after scrolling back then forward
+    if (tempDate.getTime() > calMaxDate.getTime()) {
+        calMaxDate = tempDate;
+    }
+}
 
 var cal = new CalHeatMap();
 cal.init({
     domain: "%(dom)s",
     subDomain: "%(subdom)s",
     range: %(rng)d,
-    minDate: new Date(%(start)s, 01),
-    maxDate: new Date(%(stop)s, 01),
+    minDate: calMinDate,
+    maxDate: calMaxDate,
     cellSize: 10,
+    verticalOrientation: false,
     dayLabel: true,
     domainMargin: [1, 1, 1, 1],
     itemName: ["card", "cards"],

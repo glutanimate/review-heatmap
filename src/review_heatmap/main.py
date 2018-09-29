@@ -131,11 +131,11 @@ def report_activity(self, limhist, limfcst, smode=False):
         revs_by_day[col_crt + day * 86400] = -due
     last_day = day
 
-    first_year = time.gmtime(col_crt + first_day * 86400).tm_year
-    last_year = max(time.gmtime(col_crt + last_day *
-                                86400).tm_year, time.gmtime().tm_year)
+    hm_range_lower = int((col_crt + first_day * 86400) * 1000)
+    hm_range_upper = int((col_crt + last_day * 86400) * 1000)
+
     heatmap = gen_heatmap(revs_by_day, self.col.hm_leg,
-                          first_year, last_year, synced_conf)
+                          hm_range_lower, hm_range_upper, synced_conf)
     streak = gen_streak(scur, smax, avg_cur, pdays, synced_conf)
     return heatmap + streak
 
