@@ -91,6 +91,7 @@ heatmap_css = """
 .cal-heatmap-container .q19{fill: %%s}
 .cal-heatmap-container .q20{fill: %%s}
 .ch-tooltip {
+    color: rgb(240, 240, 240);
     animation: 0.5s ease 0s normal forwards 1 fadein;
     -webkit-animation: 0.5s ease 0s normal forwards 1 fadein;
 }
@@ -250,13 +251,20 @@ cal.init({
     displayLegend: false,
     domainLabelFormat: "%(domLabForm)s",
     tooltip: true,
+    // TODO: fix 2.0 support ↓
     subDomainTitleFormat: function(isEmpty, fmt, rawData){
+        var timeNow = Date.now();
         if (isEmpty) {
-            return `No activity on ${fmt.date}`
+            if (timeNow < rawData.t) {
+                label = "cards due";
+            } else {
+                label = "reviews";
+            }
+            return `<b>No</b> ${label} on ${fmt.date}`
         } else if (rawData.v < 0) {
-            return `${-1 * fmt.count} ${rawData.v == -1 ? "card" : "cards"} due ${fmt.connector} ${fmt.date}`
+            return `<b>${-1 * fmt.count}</b> ${rawData.v == -1 ? "card" : "cards"} <b>due</b> ${fmt.connector} ${fmt.date}`
         } else {
-            return `${fmt.count} ${rawData.v == 1 ? "card" : "cards"} ${fmt.connector} ${fmt.date}`
+            return `<b>${fmt.count}</b> ${rawData.v == 1 ? "card" : "cards"} <b>reviewed</b> ${fmt.connector} ${fmt.date}`
         }
     },
     onClick: function(date, nb){
