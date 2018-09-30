@@ -20,6 +20,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+# Javascript
+node_modules
 # IDEs
 *.sublime-project
 *.sublime-workspace
