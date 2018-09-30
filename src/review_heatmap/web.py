@@ -55,7 +55,19 @@ heatmap_css = """
 .hm-btn:hover {
     background: #bfbfbf;
 }
-.hm-btn:active {background: #000}
+.hm-btn:active {
+    background: #000;
+}
+.night_mode .hm-btn {
+    background-color: #313d45;
+}
+.night_mode .hm-btn:hover {
+    background-color: #374f5b;
+}
+.night_mode .hm-btn:active {
+    background-color: #433376;
+}
+
 .graph-label {fill: #808080;}
 .heatmap {
     margin-top: 1em;
