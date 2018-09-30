@@ -168,7 +168,7 @@ heatmap_element = r"""
             <span>&nbsp;</span>
         </div>
         <div class="aligncenter">
-            <div title="Go backward" onclick="cal.previous(%(rng)d);" class="hm-btn">
+            <div title="Go back" onclick="cal.previous(%(rng)d);" class="hm-btn">
                 <img height="10px" src="qrc:/review_heatmap/icons/left.svg" />
             </div>
             <div title="Today" onclick="cal.rewind();" class="hm-btn">
@@ -206,9 +206,10 @@ var calMaxDate = new Date(%(stop)s);
 // Running overview of 6-month activity in month view:
 if ("%(dom)s" === "month") {
     padding = %(rng)d / 2;
-    // 6 months of past activity, current month, 5 months of future activity
-    paddingLower = Math.round(padding + 1);
-    paddingUpper = Math.round(padding - 1);
+    // TODO: fix
+    // E.g. 6 months of past activity, current month, 5 months of future activity
+    paddingLower = Math.round(padding - 1);
+    paddingUpper = Math.round(padding + 1);
 
     calStartDate.setMonth(calStartDate.getMonth() - paddingLower);
     calStartDate.setDate(1);
