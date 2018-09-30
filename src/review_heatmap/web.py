@@ -36,6 +36,9 @@ streak_css = """
 
 heatmap_css = """
 <style>
+.cal-heatmap-container .graph {
+    font-family: unset;
+}
 .hm-btn {
     height: 100%%%%;
     display: inline-block;
