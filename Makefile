@@ -30,8 +30,8 @@ cleanbuild:
 	find . \( -name '*.pyc' -o -name '*.pyo' -o -name '__pycache__' \) -delete
 
 ui:
-	PYENV_VERSION=anki20tools ./tools/build_ui.sh "$(ADDONDIR)" 4
-	PYENV_VERSION=anki21tools ./tools/build_ui.sh "$(ADDONDIR)" 5
+	PYENV_VERSION=anki20tools ./tools/build_ui.sh "$(ADDONDIR)" anki20
+	PYENV_VERSION=anki21tools ./tools/build_ui.sh "$(ADDONDIR)" anki21
 
 builddir:
 	mkdir -p build/dist build/dist21
@@ -52,11 +52,11 @@ buildrelease:
 	cp -r build/dist/* build/dist21
 	rm -rf "build/dist/$(ADDONDIR)/forms5" "build/dist21/forms4"
 	cd build/dist &&  \
-		PYENV_VERSION=anki20tools ../../tools/build_ui.sh "$(ADDONDIR)" 4 &&\
+		PYENV_VERSION=anki20tools ../../tools/build_ui.sh "$(ADDONDIR)" anki20 &&\
 		cd src && \
 		zip -r "../../../$(ADDON)-release-$(VERSION)-anki20.zip" "$(ADDONDIR)" *.py
 	cd build/dist21 &&  \
-		PYENV_VERSION=anki21tools ../../tools/build_ui.sh "$(ADDONDIR)" 5 &&\
+		PYENV_VERSION=anki21tools ../../tools/build_ui.sh "$(ADDONDIR)" anki21 &&\
 		cd src/"$(ADDONDIR)" && \
 		zip -r "../../../../$(ADDON)-release-$(VERSION)-anki21.zip" *
 	rm -rf build
