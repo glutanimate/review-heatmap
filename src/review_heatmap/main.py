@@ -145,7 +145,7 @@ def gen_heatmap(data, legend, start, stop, synced_conf):
     colors = heatmap_colors[synced_conf["colors"]]["colors"]
     rng = mode["range"]
     domlabform = mode["domLabForm"]
-
+    
     # TODO: switch to CSS-based styling once implemented in Night Mode
     # Until then, users will have to perform a restart for theming to change
     if mw.pm.profile and mw.pm.profile.get("nm_state_on", False):
@@ -278,8 +278,8 @@ def my_render_page_ov(self):
     prefs = config["profile"]
     self._body = ov_body  # modified body with stats section
     report = ""
-    if prefs["display"][1] or prefs["statsvis"]:
-        if prefs["statsvis"] and not prefs["display"][1]:
+    if prefs["display"]["overview"] or prefs["statsvis"]:
+        if prefs["statsvis"] and not prefs["display"]["overview"]:
             smode = True
         else:
             smode = False
@@ -323,7 +323,7 @@ def add_heatmap_db(self, _old):
     prefs = config["profile"]
     ret = _old(self)
     smode = False
-    if not prefs["display"][0]:
+    if not prefs["display"]["deckbrowser"]:
         if not prefs["statsvis"]:
             return ret
         smode = True
@@ -355,7 +355,7 @@ def my_reps_graph(self, _old):
     synced_conf = config["synced"]
     prefs = config["profile"]
     smode = False
-    if not prefs["display"][2]:
+    if not prefs["display"]["stats"]:
         if not prefs["statsvis"]:
             return ret
         smode = True

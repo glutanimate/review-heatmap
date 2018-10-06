@@ -51,17 +51,17 @@ class RevHmOptions(OptionsDialog):
         )),
         ("form.cbHmMain", (
             ("value", {
-                "dataPath": "profile/display/0"
+                "dataPath": "profile/display/deckbrowser"
             }),
         )),
         ("form.cbHmDeck", (
             ("value", {
-                "dataPath": "profile/display/1"
+                "dataPath": "profile/display/overview"
             }),
         )),
         ("form.cbHmStats", (
             ("value", {
-                "dataPath": "profile/display/2"
+                "dataPath": "profile/display/stats"
             }),
         )),
         ("form.cbStreakAll", (

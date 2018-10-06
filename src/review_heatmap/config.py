@@ -88,10 +88,15 @@ config_defaults = {
         "version": ADDON_VERSION
     },
     "profile": {
-        "display": [True, True, True],
+        "display": {
+            "deckbrowser": True,
+            "overview": True,
+            "stats": True
+        },
         "statsvis": True,
-        "hotkeys": {"toggle": "Ctrl+R"},
-        "decks": {},
+        "hotkeys": {
+            "toggle": "Ctrl+R"
+        },
         "version": ADDON_VERSION
     }
 }
