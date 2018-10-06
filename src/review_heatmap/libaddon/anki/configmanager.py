@@ -272,7 +272,17 @@ class ConfigManager(object):
         for name, storage_dict in self._storages.items():
             if not storage_dict["dirty"]:
                 continue
-            self.save(name, profile_unload=True)
+            
+            try:
+                self.save(name, profile_unload=True)
+            except FileNotFoundError as e:
+                # Corner case: Closing Anki after add-on uninstall
+                # -> local config file no longer exists
+                if name == "local":
+                    print(e)
+                    pass
+                else:
+                    raise
 
     def setConfigAction(self, action):
         """
