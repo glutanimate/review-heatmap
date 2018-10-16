@@ -13,6 +13,7 @@ from copy import deepcopy
 
 # Utility functions for operating with nested objects
 
+
 def getNestedValue(obj, keys):
     """
     Get value out of nested collection by supplying tuple of
@@ -74,7 +75,7 @@ def getNestedAttribute(obj, attr, *args):
 def deepMergeLists(original, incoming, new=False):
     """
     Deep merge two lists. Optionally leaves original intact.
-    
+
     Procedure:
         Reursively call deep merge on each correlated element of list.
         If item type in both elements are
@@ -84,7 +85,7 @@ def deepMergeLists(original, incoming, new=False):
             d. conflicting types: Value is overridden.
 
         If incoming list longer than original then extra values are appended.
-    
+
     Arguments:
         original {list} -- original list
         incoming {list} -- list with updated values
@@ -93,13 +94,13 @@ def deepMergeLists(original, incoming, new=False):
 
     Returns:
         list -- Merged list
-    
+
     Credits:
         https://stackoverflow.com/a/50773244/1708932
     """
     result = original if not new else deepcopy(original)
-    
-    common_length = min(len(original), len(incoming))  
+
+    common_length = min(len(original), len(incoming))
     for idx in range(common_length):
         if (isinstance(result[idx], dict) and
                 isinstance(incoming[idx], dict)):
@@ -112,7 +113,7 @@ def deepMergeLists(original, incoming, new=False):
 
     for idx in range(common_length, len(incoming)):
         result.append(incoming[idx])
-    
+
     return result
 
 
