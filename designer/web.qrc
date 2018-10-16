@@ -1,7 +1,9 @@
 <RCC>
   <qresource prefix="/review_heatmap">
     <file>web/cal-heatmap.css</file>
-    <file>web/cal-heatmap.min.js</file>
+    <file>web/cal-heatmap.js</file>
     <file>web/d3.min.js</file>
+    <file>web/heatmap.js</file>
+    <file>web/heatmap.css</file>
   </qresource>
 </RCC>
