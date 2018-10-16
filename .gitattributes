@@ -7,5 +7,7 @@ screenshots export-ignore
 # Adjust GitHub linguist settings:
 ANKIWEB.md linguist-documentation
 README.md linguist-documentation
-designer/web linguist-vendored
-src/libaddon linguist-vendored
+web/cal-heatmap.js linguist-vendored
+web/cal-heatmap.css linguist-vendored
+web/d3.min.js linguist-vendored
+src/review_heatmap/libaddon linguist-vendored
