@@ -24,8 +24,11 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 /* General layout */
 /* ################################################################### */
 
-.heatmap {
+.rh-container {
     margin-top: 1em;
+}
+
+.heatmap {
     display:inline-block;
 }
 .heatmap-controls {
