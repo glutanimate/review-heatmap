@@ -62,9 +62,11 @@ LINKS.update(ADDON_LINKS)
 # Credits
 
 # https://www.patreon.com/glutanimate
+# automatically sorted:
 PATRONS = ("Alex M", "Devin Beecher", "Edan Maor", "Itai Efrat",
            "Jørgen Rahbek", "Man Duong", "Nicolas Curi", "PapelMagico",
            "Paul McManus", "Peter Benisch", "Rob Alexander", "Scott Barnett",
-           "Sebastián Ortega", "Shawn Lesniak",
-           "spiraldancing", "Steven Nevers")
-PATRONS_TOP = ("Paul Bake", "Blacky 372")
+           "Sebastián Ortega", "Shawn Lesniak", "spiraldancing",
+           "Steven Nevers", "Henrik Giesel", "Jim Sola", "JessC",
+           "Yuniesky Echemendia")
+PATRONS_TOP = ("Paul Bake", "Blacky 372", "Fin Thiessen")
