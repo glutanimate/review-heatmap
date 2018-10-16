@@ -124,8 +124,17 @@ def deepMergeDicts(original, incoming, new=False):
         For key conflicts if both values are:
             a. dict: Recursively call deepMergeDicts on both values.
             b. list: Call deepMergeLists on both values.
-            c. any other type: Value is overridden.
-            d. conflicting types: Value is overridden.
+            c. any other type: Original value is overridden.
+            d. conflicting types: Original value is preserved.
+
+    In the context of Anki config objects:
+        - original should correspond to default config, i.e. the "scheme"
+        of the expected config values
+        - incoming should correspond to the user-specific values
+        - incoming values takes precedence over original values with the
+        exception of:
+        - new values added to the configuration
+        - existing values whose data types have changed (e.g. list → dict)
 
     Arguments:
         original {list} -- original dictionary
@@ -150,7 +159,11 @@ def deepMergeDicts(original, incoming, new=False):
             elif (isinstance(result[key], list) and
                     isinstance(incoming[key], list)):
                 deepMergeLists(result[key], incoming[key])
+            elif (type(result[key]) != type(incoming[key])):
+                # switched to different data type, original takes precedence
+                pass
             else:
+                # type preserved. incoming takes precedence.
                 result[key] = incoming[key]
         else:
             result[key] = incoming[key]
