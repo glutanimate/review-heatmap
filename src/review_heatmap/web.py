@@ -93,5 +93,5 @@ html_streak = """
 """
 
 html_info_nodata = """
-No activity data to show. <a href="" onclick='return pybridge("revhm_opts")'>Heatmap options</a>.
+No activity data to show <a href="" onclick='return pybridge("revhm_opts")'>(options)</a>.
 """
