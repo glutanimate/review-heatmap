@@ -20,44 +20,28 @@ from .libaddon.anki.configmanager import ConfigManager
 
 from .consts import ADDON_VERSION
 
+__all__ = ["heatmap_colors", "heatmap_modes", "config_defaults", "config"]
+
+# Order is important for a predictable selection dropdown (anki20)
+# Preserving the (key, dict) tuple in case we need to provide additional
+# info on each theme in the future.
 heatmap_colors = OrderedDict((
-    ("olive", {
-        "label": "Olive",
-        "colors": ("#dae289", "#bbd179", "#9cc069", "#8ab45d", "#78a851",
-                   "#669d45", "#648b3f", "#637939", "#4f6e30", "#3b6427")
-    }),
     ("lime", {
-        "label": "Lime",
-        "colors": ("#d6e685", "#bddb7a", "#a4d06f", "#8cc665", "#74ba58",
-                   "#5cae4c", "#44a340", "#378f36", "#2a7b2c", "#1e6823")
+        "label": "Lime"
+    }),
+    ("olive", {
+        "label": "Olive"
     }),
     ("ice", {
-        "label": "Ice",
-        "colors": ("#a8d5f6", "#95c8f3", "#82bbf0", "#70afee", "#5da2eb",
-                   "#4a95e8", "#3889e6", "#257ce3", "#126fe0", "#0063de")
+        "label": "Ice"
     }),
     ("magenta", {
-        "label": "Magenta",
-        "colors": ("#fde0dd", "#fcc5c0", "#fa9fb5", "#f768a1", "#ea4e9c",
-                   "#dd3497", "#ae017e", "#7a0177", "#610070", "#49006a")
+        "label": "Magenta"
     }),
     ("flame", {
-        "label": "Flame",
-        "colors": ("#ffeda0", "#fed976", "#feb24c", "#fd8d3c", "#fc6d33",
-                   "#fc4e2a", "#e31a1c", "#d00d21", "#bd0026", "#800026")
+        "label": "Flame"
     })
 ))
-
-heatmap_colors_fcst = {
-    "light": (
-        "#525252", "#616161", "#707070", "#7F7F7F", "#8E8E8E",
-        "#9D9D9D", "#ACACAC", "#BBBBBB", "#CACACA", "#D9D9D9"
-    ),
-    "dark": (
-        "#5d5f5f", "#585a5a", "#535555", "#4e5050", "#494b4b",
-        "#444646", "#3f4141", "#3a3c3c", "#353737", "#313232"
-    )
-}
 
 heatmap_modes = OrderedDict((
     ("year", {
