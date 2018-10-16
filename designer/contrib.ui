@@ -110,7 +110,7 @@
        </property>
        <property name="text">
         <string>Become a Patron and receive 
-exclusive add-ons &amp;&amp; other content!</string>
+exclusive add-ons &amp;&amp; other goodies!</string>
        </property>
        <property name="icon">
         <iconset resource="icons.qrc">
