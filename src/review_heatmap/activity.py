@@ -104,9 +104,10 @@ class ActivityReporter(object):
 
         return {
             "activity": activity_by_day,
+            # cal-heatmap dates need to be in ms:
             "start": int((col_crt + first_day * 86400) * 1000),
             "stop": int((col_crt + last_day * 86400) * 1000),
-            "today": col_crt + today * 86400,
+            "today": int((col_crt + today * 86400) * 1000),
             "stats": {
                 "streak_max": {
                     "type": "streak",

@@ -49,8 +49,7 @@ function initHeatmap(options, data) {
     var calStartDate = new Date();
     var calMinDate = new Date(options.start);
     var calMaxDate = new Date(options.stop);
-    var calTodayDate = new Date()
-    calTodayDate.setDate(calTodayDate.getDate() - 1);
+    var calTodayDate = new Date(options.today)
 
     // Running overview of 6-month activity in month view:
     if (options.domain === "month") {
@@ -90,7 +89,8 @@ function initHeatmap(options, data) {
         dayLabel: true,
         domainMargin: [1, 1, 1, 1],
         itemName: ["card", "cards"],
-        highlight: "now",
+        highlight: calTodayDate,
+        today: calTodayDate,
         start: calStartDate,
         legend: options.legend,
         displayLegend: false,
