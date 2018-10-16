@@ -34,7 +34,7 @@ def toggle_heatmap():
 
 # Set up menus and hooks
 options_action = QAction("Review &Heatmap Options...", mw)
-options_action.triggered.connect(invokeOptionsDialog)
+options_action.triggered.connect(lambda _: invokeOptionsDialog())
 mw.form.menuTools.addAction(options_action)
 
 toggle_action = QAction(mw, triggered=toggle_heatmap)

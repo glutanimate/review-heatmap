@@ -119,7 +119,7 @@ class RevHmOptions(OptionsDialog):
         self.mw = mw
         super(RevHmOptions, self).__init__(self._mapped_widgets, config,
                                            form_module=qtform_options,
-                                           parent=parent, **kwargs)
+                                           parent=self.parent, **kwargs)
         # Instance methods that modify the initialized UI should either be
         # called from self._setupUI or from here
 
@@ -188,7 +188,7 @@ class RevHmOptions(OptionsDialog):
         return item_tuples
 
 
-def invokeOptionsDialog(parent):
+def invokeOptionsDialog(parent=None):
     """Call settings dialog"""
     dialog = RevHmOptions(config, mw, parent=parent)
     return dialog.exec_()
