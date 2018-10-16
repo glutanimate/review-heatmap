@@ -51,40 +51,40 @@ class ActivityReporter(object):
 
         current = total = 0
         activity_by_day = {}
-        
+
         # Activity: history
         for idx, item in enumerate(history):
             current += 1
             days_ago = item[0]  # x days ago
             activity = item[1]  # activity count
-            
+
             try:
                 next_days_ago = history[idx+1][0]
             except IndexError:  # last item
                 streak_last = current
                 next_days_ago = None
-            
+
             if days_ago + 1 != next_days_ago:  # days+1 ago, streak over
                 if current > streak_max:
                     streak_max = current
                 current = 0
-            
+
             day = today + days_ago
-            
+
             if first_day is None:
                 first_day = day
-            
+
             total += activity
-            
+
             activity_by_day[col_crt + day * 86400] = activity  # by unix time
 
         # Stats: current streak
         if history[-1][0] in (0, -1):  # last recorded date today or yesterday?
             streak_cur = streak_last
-        
+
         # Stats: average count on days with activity
         avg_cur = int(round(float(total) / (idx+1)))
-        
+
         # Stats: percentage of days with activity
         dlearn = today - first_day
         if dlearn == 0:
@@ -99,7 +99,7 @@ class ActivityReporter(object):
             # negative counts allow us to apply separate cal-heatmap
             # colorschemes for past and future data:
             activity_by_day[col_crt + day * 86400] = -due
-        
+
         last_day = day
 
         return {
@@ -132,16 +132,39 @@ class ActivityReporter(object):
         # TODO: days since limit_date, return min(limit_days, limit_date_days)
         return limit_days if limit_days != 0 else None
 
+    def _validDecks(self, excluded):
+        all_excluded = []
+
+        for did in excluded:
+            children = [d[1] for d in self.col.decks.children(did)]
+            all_excluded.extend(children)
+
+        all_excluded.extend(excluded)
+
+        return [d['id'] for d in self.col.decks.all()
+                if d['id'] not in all_excluded]
+
     def _limit(self):
+        excluded_dids = self.config["synced"]["limdecks"]
         if self.whole:
-            return ids2str([d['id'] for d in self.col.decks.all()])
+            if excluded_dids:
+                dids = self._validDecks(excluded_dids)
+            else:
+                dids = [d['id'] for d in self.col.decks.all()]
+            return ids2str(dids)
         return self.col.sched._deckLimit()
 
     def _revlogLimit(self):
+        excluded_dids = self.config["synced"]["limdecks"]
         if self.whole:
-            return ""
+            if not excluded_dids:
+                return ""
+            else:
+                dids = self._validDecks(excluded_dids)
+        else:
+            dids = self.col.decks.active()
         return ("cid in (select id from cards where did in %s)" %
-                ids2str(self.col.decks.active()))
+                ids2str(dids))
 
     def _cardsDue(self, start=None, end=None, chunk=1):
         # start, end: days from today (today: 0). Set to None for unlimited.
