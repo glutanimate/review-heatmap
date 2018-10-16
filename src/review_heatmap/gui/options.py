@@ -13,8 +13,9 @@ from __future__ import unicode_literals
 
 import time
 
-from aqt.qt import *
 from aqt import mw
+
+from aqt.qt import *
 from aqt.studydeck import StudyDeck
 
 from ..libaddon.gui.dialog_options import OptionsDialog
@@ -24,6 +25,7 @@ from ..config import config, heatmap_colors, heatmap_modes
 
 qtform_options = platformAwareImport(".forms", "options", __name__)
 
+__all__ = ["RevHmOptions", "invokeOptionsDialog"]
 
 class RevHmOptions(OptionsDialog):
 
@@ -108,15 +110,16 @@ class RevHmOptions(OptionsDialog):
         )),
     )
 
-    def __init__(self, config, mw, **kwargs):
+    def __init__(self, config, mw, parent=None, **kwargs):
         # Mediator methods defined in mapped_widgets might need access to
         # certain instance attributes. As super().__init__ calls these
         # mediator methods it is important that we set the attributes
         # beforehand:
+        self.parent = parent or mw
         self.mw = mw
         super(RevHmOptions, self).__init__(self._mapped_widgets, config,
                                            form_module=qtform_options,
-                                           parent=mw, **kwargs)
+                                           parent=parent, **kwargs)
         # Instance methods that modify the initialized UI should either be
         # called from self._setupUI or from here
 
@@ -185,9 +188,9 @@ class RevHmOptions(OptionsDialog):
         return item_tuples
 
 
-def invokeOptionsDialog():
+def invokeOptionsDialog(parent):
     """Call settings dialog"""
-    dialog = RevHmOptions(config, mw)
+    dialog = RevHmOptions(config, mw, parent=parent)
     return dialog.exec_()
 
 config.setConfigAction(invokeOptionsDialog)

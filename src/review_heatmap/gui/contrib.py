@@ -17,6 +17,8 @@ from ..libaddon.packaging import platformAwareImport
 
 qtform_contrib = platformAwareImport(".forms", "contrib", __name__)
 
+__all__ = ["RevHmContrib", "invokeContributionsDialog"]
+
 class RevHmContrib(ContribDialog):
 
     """
@@ -27,6 +29,6 @@ class RevHmContrib(ContribDialog):
         super(RevHmContrib, self).__init__(qtform_contrib, parent=parent)
 
 
-def invokeContributionsDialog():
-    dialog = RevHmContrib(mw)
+def invokeContributionsDialog(parent):
+    dialog = RevHmContrib(parent)
     dialog.exec_()
