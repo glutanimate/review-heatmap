@@ -8,17 +8,17 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 */
 
 /* Special classes:
-"rh-anki20": Set when run on Anki 2.0.x
-"rh-macos": Set when run on macOS
-"rh-windows": Set when run on Windows
-"rh-linux": Set when run on Linux
-"night_mode": Set when night mode active (provided by Night Mode add-on)
+"rh-anki-20": Set when run on Anki 2.0.x
+"rh-platform-mac": Set when run on macOS
+"rh-platform-win": Set when run on Windows
+"rh-platform-lin": Set when run on Linux
 "rh-theme-olive", "rh-theme-lime", "rh-theme-ice",
-    "rh-theme-magenta", "rh-theme-flame": Set when respective theme active
+"rh-theme-magenta", "rh-theme-flame": Set when respective theme active
 "rh-mode-year": Set when calendar set to year mode
 "rh-mode-month": Set when calendar set to months mode
 "rh-disable-stats": Set when streak stats disabled
 "rh-disable-heatmap": Set when heatmap disabled
+"night_mode": Set when night mode active (provided by Night Mode add-on)
 */
 
 /* General layout */
@@ -167,13 +167,13 @@ select.hm-sel:active, select.hm-sel:focus {
 }
 
 /* Workaround for background images not working on 2.0: */
-.rh-anki20 .hm-sel {
+.rh-anki-20 .hm-sel {
     background: #e6e6e6;
 }
-.rh-anki20 select.hm-sel:hover {
+.rh-anki-20 select.hm-sel:hover {
     background: #bfbfbf;
 }
-.rh-anki20 select.hm-sel:active, select.hm-sel:focus {
+.rh-anki-20 select.hm-sel:active, select.hm-sel:focus {
     background: #e6e6e6;
 }
 

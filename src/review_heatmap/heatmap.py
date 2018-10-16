@@ -14,6 +14,8 @@ from aqt import mw
 
 from anki.utils import json
 
+from .libaddon.platform import ANKI21, PLATFORM
+
 from .activity import ActivityReporter
 from .config import heatmap_modes
 from .web import *
@@ -50,7 +52,7 @@ class HeatmapCreator(object):
     }
 
     def __init__(self, config, whole=False):
-        # TODO: rethink whole support
+        # TODO: rethink "whole" support
         self.config = config
         self.activity = ActivityReporter(mw.col, self.config, whole=whole)
 
@@ -65,20 +67,30 @@ class HeatmapCreator(object):
         stats_legend, heatmap_legend = self._getDynamicLegends(
             data["stats"]["activity_daily_avg"]["value"])
 
+        classes = self._getCSSclasses()
+
         heatmap = stats = ""
         if prefs["display"][view]:
             heatmap = self._generateHeatmapElm(data, heatmap_legend)
+        else:
+            classes.append("rh-disable-heatmap")
+        
         if prefs["display"][view] or prefs["statsvis"]:
             stats = self._generateStatsElm(data, stats_legend)
-
+        else:
+            classes.append("rh-disable-stats")
 
         return html_main_element.format(content=heatmap + stats,
-                                        classes=self._getHeatmapStyling())
+                                        classes=" ".join(classes))
 
-
-    def _getHeatmapStyling(self):
-        # TODO: special classes as defined in heatmap.css
-        return "rh-theme-" + self.config["synced"]["colors"]
+    def _getCSSclasses(self):
+        conf = self.config["synced"]
+        classes = ["rh-platform-{}".format(PLATFORM),
+                   "rh-theme-{}".format(conf["colors"]),
+                   "rh-mode-{}".format(conf["mode"])]
+        if not ANKI21:
+            classes.append("rh-anki-20")
+        return classes
 
     def _generateHeatmapElm(self, data, dynamic_legend):
         mode = heatmap_modes[self.config["synced"]["mode"]]
