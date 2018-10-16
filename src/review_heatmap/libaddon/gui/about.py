@@ -13,8 +13,13 @@ from __future__ import (absolute_import, division,
 from ..consts import (ADDON_NAME, LICENSE, LIBRARIES,
                       AUTHORS, CONTRIBUTORS, PATRONS, PATRONS_TOP)
 
+from ..platform import ANKI21
 
-libs_header = ("<p>{} ships with the following open-source libraries:</p>".format(ADDON_NAME))
+if ANKI21:
+    string = str
+
+libs_header = (
+    "<p>{} ships with the following open-source libraries:</p>".format(ADDON_NAME))
 
 html_template = """\
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
@@ -67,9 +72,10 @@ def get_about_string():
         libs_string = "\n".join((libs_header, "<ul>", libs_entries, "</ul>"))
     else:
         libs_string = ""
-    contributors_string = ", ".join(CONTRIBUTORS)
-    patrons_top_string = "<b>{}</b>".format(", ".join(sorted(PATRONS_TOP)))
-    patrons_all_string = ", ".join(sorted(PATRONS))
+    contributors_string = ", ".join(sorted(CONTRIBUTORS, key=string.lower))
+    patrons_top_string = "<b>{}</b>".format(", ".join(
+        sorted(PATRONS_TOP, key=string.lower)))
+    patrons_all_string = ", ".join(sorted(PATRONS, key=string.lower))
     patrons_string = ", ".join((patrons_top_string, patrons_all_string))
 
     return html_template.format(display_name=ADDON_NAME,
