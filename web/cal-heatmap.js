@@ -1,4 +1,4 @@
-/*! cal-heatmap v3.6.3-anki (Sat Sep 29 2018 16:58:30)
+/*! cal-heatmap v3.6.3.1-anki (Tue Oct 16 2018 05:06:03)
  *  ---------------------------------------------
  *  Fork of Cal-HeatMap for use in the Anki add-on Review Heatmap
  *  https://github.com/glutanimate/cal-heatmap
@@ -74,6 +74,10 @@ var CalHeatMap = function() {
 		minDate: null,
 
 		maxDate: null,
+
+		// Date regarded as today
+		// @default now
+		today: new Date(),
 
 		// ================================================
 		// DATA
@@ -1997,7 +2001,7 @@ CalHeatMap.prototype = {
 	isNow: function(d) {
 		"use strict";
 
-		return this.dateIsEqual(d, new Date());
+		return this.dateIsEqual(d, this.options.today);
 	},
 
 	/**
