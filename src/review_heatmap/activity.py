@@ -162,16 +162,23 @@ class ActivityReporter(object):
                 dids = self._validDecks(excluded_dids)
             else:
                 dids = [d['id'] for d in self.col.decks.all()]
-            return ids2str(dids)
-        return self.col.sched._deckLimit()
+        else:
+            dids = self.col.decks.active()
+        return ids2str(dids)
 
     def _revlogLimit(self):
         excluded_dids = self.config["synced"]["limdecks"]
+        ignore_deleted = self.config["synced"]["limcdel"]
         if self.whole:
-            if not excluded_dids:
-                return ""
-            else:
+            if excluded_dids:
                 dids = self._validDecks(excluded_dids)
+            elif ignore_deleted:
+                # Limiting log entries to cids with assigned dids automatically
+                # excludes deleted entries. In cases where we do not use a deck
+                # limit we specify the following instead:
+                return "cid in (select id from cards)"
+            else:
+                return ""
         else:
             dids = self.col.decks.active()
         return ("cid in (select id from cards where did in %s)" %
