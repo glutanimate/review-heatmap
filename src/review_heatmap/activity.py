@@ -26,7 +26,8 @@ class ActivityReporter(object):
     def getData(self, limhist=None, limfcst=None, mode="reviews"):
         conf = self.config["synced"]
         if limhist is None:
-            limhist = self._getDynamicLimit(conf["limhist"], conf["limdate"])
+            limhist = self._getDynamicLimit(
+                conf["limhist"], conf["limdate"]) or None
         if limfcst is None:
             limfcst = conf["limfcst"] or None  # 0 => None
 
@@ -129,8 +130,18 @@ class ActivityReporter(object):
         }
 
     def _getDynamicLimit(self, limit_days, limit_date):
-        # TODO: days since limit_date, return min(limit_days, limit_date_days)
-        return limit_days if limit_days != 0 else None
+        if limit_date == self.col.crt:
+            # ignore default value (set to collection creation time)
+            return limit_days
+        
+        days_since_date = int(round((
+            (self.col.sched.dayCutoff - limit_date) / 86400)))
+        
+        if limit_days == 0:
+            return days_since_date
+
+        # set whatever limit is more restricting
+        return min(days_since_date, limit_days)
 
     def _validDecks(self, excluded):
         all_excluded = []
