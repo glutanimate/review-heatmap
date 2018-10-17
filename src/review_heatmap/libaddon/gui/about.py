@@ -17,6 +17,8 @@ from ..platform import ANKI21
 
 if ANKI21:
     string = str
+else:
+    import string
 
 libs_header = (
     "<p>{} ships with the following open-source libraries:</p>".format(ADDON_NAME))
