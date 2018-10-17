@@ -62,7 +62,7 @@ html_heatmap = """
             <div class="hm-btn opts-btn" title="Options" onclick="onHmOpts(event, this);">
                 <img src="qrc:/review_heatmap/icons/options.svg" />
             </div>
-            <div class="hm-btn opts-btn" title="Support this add-on" onclick="pybridge('revhm_contrib')">
+            <div class="hm-btn opts-btn" title="Support this add-on" onclick="onHmContrib(event, this);">
                 <img src="qrc:/review_heatmap/icons/heart_bw.svg" />
             </div>
         </div>

@@ -81,6 +81,9 @@ class HeatmapCreator(object):
         else:
             classes.append("rh-disable-stats")
 
+        if self.whole:
+            self._saveCurrentStreaks(data)
+
         return html_main_element.format(content=heatmap + stats,
                                         classes=" ".join(classes))
 
@@ -114,6 +117,7 @@ class HeatmapCreator(object):
             options=json.dumps(options),
             data=json.dumps(data["activity"])
         )
+
 
     def _generateStatsElm(self, data, dynamic_legend):
         stat_levels = {
@@ -164,3 +168,15 @@ class HeatmapCreator(object):
             str(count), term,
             "s" if abs(count) > 1 else ""
         )
+
+    def _saveCurrentStreaks(self, data):
+        """
+        Store current streak in mw object
+
+        TODO: Make data like this available through a proper API
+
+        Just a quick hack that allows us to assess user performance from
+        other distant parts of the code / other add-ons
+        """
+        mw._hmStreakMax = data["stats"]["streak_max"]["value"]
+        mw._hmStreakCur = data["stats"]["streak_cur"]["value"]

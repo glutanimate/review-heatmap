@@ -45,6 +45,14 @@ function onHmOpts(event, button) {
     }
 }
 
+function onHmContrib(event, button) {
+    if (event.shiftKey) {
+        pybridge("revhm_snanki");
+    } else {
+        pybridge("revhm_contrib");
+    }
+}
+
 function initHeatmap(options, data) {
     var calStartDate = new Date();
     var calMinDate = new Date(options.start);

@@ -13,20 +13,22 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 import aqt
-from aqt import mw
+
 from aqt.qt import QWidget
 
-
+from aqt import mw
 from aqt.overview import Overview
 from aqt.deckbrowser import DeckBrowser
-from anki.hooks import wrap
 from aqt.stats import DeckStats
+
+from anki.hooks import wrap
 from anki.find import Finder
 
 from .libaddon.platform import ANKI21
 
 from .gui.options import invokeOptionsDialog
 from .gui.contrib import invokeContributionsDialog
+from .gui.extra import invokeSnanki
 
 from .config import config, heatmap_colors, heatmap_modes
 
@@ -44,7 +46,7 @@ def heatmapLinkHandler(self, url, _old=None):
         cmd, arg = url, ""
     if not cmd or cmd not in ("revhm_browse", "revhm_opts",
                               "revhm_contrib", "revhm_modeswitch",
-                              "revhm_themeswitch"):
+                              "revhm_themeswitch", "revhm_snanki"):
         return None if not _old else _old(self, url)
 
     if isinstance(self, QWidget):
@@ -53,15 +55,17 @@ def heatmapLinkHandler(self, url, _old=None):
         parent = mw
 
     if cmd == "revhm_opts":
-        return invokeOptionsDialog(parent)
+        invokeOptionsDialog(parent)
     elif cmd == "revhm_contrib":
-        return invokeContributionsDialog(parent)
+        invokeContributionsDialog(parent)
     elif cmd == "revhm_browse":
-        return invokeBrowser(arg)
+        invokeBrowser(arg)
     elif cmd == "revhm_modeswitch":
-        return cycleHmModes()
+        cycleHmModes()
     elif cmd == "revhm_themeswitch":
-        return cycleHmThemes()
+        cycleHmThemes()
+    elif cmd == "revhm_snanki":
+        invokeSnanki(parent=parent)
         
 def cycleHmThemes():
     themes = list(heatmap_colors.keys())
@@ -115,7 +119,8 @@ def addSeenFinder(self, col):
 
 
 def initializeLinks():
-    Overview._linkHandler = wrap(Overview._linkHandler, heatmapLinkHandler, "around")
+    Overview._linkHandler = wrap(Overview._linkHandler, heatmapLinkHandler,
+                                 "around")
     DeckBrowser._linkHandler = wrap(
         DeckBrowser._linkHandler, heatmapLinkHandler, "around")
     DeckStats._linkHandler = heatmapLinkHandler
