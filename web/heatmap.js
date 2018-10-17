@@ -119,17 +119,26 @@ function initHeatmap(options, data) {
             }
             today = new Date();
             other = new Date(date);
+
+            if (! options.whole) {
+                cmd = "deck:current "
+            } else {
+                cmd = ""
+            }
+
             // TODO: whole support
             if (nb >= 0) {
                 diff = today.getTime() - other.getTime();
-                cmd = "revhm_seen:"
+                cmd += "seen:"
             } else {
                 diff = other.getTime() - today.getTime();
-                cmd = "revhm_due:"
+                cmd += "prop:due="
             }
-            cal.highlight(["now", date]);
             diffdays = Math.ceil(diff / (1000 * 60 * 60 * 24));
-            pybridge(cmd + diffdays);
+            
+            pybridge("revhm_browse:" + cmd + diffdays);
+            
+            cal.highlight(["now", date]);
         },
         data: data
     });

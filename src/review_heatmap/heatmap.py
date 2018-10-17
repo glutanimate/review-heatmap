@@ -54,6 +54,7 @@ class HeatmapCreator(object):
     def __init__(self, config, whole=False):
         # TODO: rethink "whole" support
         self.config = config
+        self.whole = whole
         self.activity = ActivityReporter(mw.col, self.config, whole=whole)
 
     def generate(self, view="deckbrowser", limhist=None, limfcst=None):
@@ -104,7 +105,8 @@ class HeatmapCreator(object):
             "start": data["start"],
             "stop": data["stop"],
             "today": data["today"],
-            "legend": dynamic_legend
+            "legend": dynamic_legend,
+            "whole": self.whole
         }
 
         return html_heatmap.format(

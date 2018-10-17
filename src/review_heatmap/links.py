@@ -39,10 +39,10 @@ __all__ = ["heatmapLinkHandler", "invokeBrowser", "findSeenOn",
 def heatmapLinkHandler(self, url, _old=None):
     """Launches Browser when clicking on a graph subdomain"""
     if ":" in url:
-        (cmd, arg) = url.split(":")
+        (cmd, arg) = url.split(":", 1)
     else:
         cmd, arg = url, ""
-    if not cmd or cmd not in ("revhm_seen", "revhm_due", "revhm_opts",
+    if not cmd or cmd not in ("revhm_browse", "revhm_opts",
                               "revhm_contrib", "revhm_modeswitch",
                               "revhm_themeswitch"):
         return None if not _old else _old(self, url)
@@ -56,10 +56,8 @@ def heatmapLinkHandler(self, url, _old=None):
         return invokeOptionsDialog(parent)
     elif cmd == "revhm_contrib":
         return invokeContributionsDialog(parent)
-    elif cmd == "revhm_seen":
-        return invokeBrowser("seen:" + arg)
-    elif cmd == "revhm_due":
-        return invokeBrowser("prop:due=" + arg)
+    elif cmd == "revhm_browse":
+        return invokeBrowser(arg)
     elif cmd == "revhm_modeswitch":
         return cycleHmModes()
     elif cmd == "revhm_themeswitch":
