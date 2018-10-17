@@ -96,7 +96,6 @@ function initHeatmap(options, data) {
         displayLegend: false,
         domainLabelFormat: options.domLabForm,
         tooltip: true,
-        // TODO: fix 2.0 support ↓
         subDomainTitleFormat: function (isEmpty, fmt, rawData) {
             // format tooltips
             var timeNow = Date.now();
