@@ -105,6 +105,7 @@ class HeatmapCreator(object):
             "start": data["start"],
             "stop": data["stop"],
             "today": data["today"],
+            "offset": data["offset"],
             "legend": dynamic_legend,
             "whole": self.whole
         }

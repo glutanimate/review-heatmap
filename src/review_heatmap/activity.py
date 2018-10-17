@@ -10,7 +10,11 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
+import datetime
+
 from anki.utils import ids2str
+
+from .libaddon.platform import ANKI21
 
 __all__ = ["ActivityReporter"]
 
@@ -109,6 +113,7 @@ class ActivityReporter(object):
             "start": int((col_crt + first_day * 86400) * 1000),
             "stop": int((col_crt + last_day * 86400) * 1000),
             "today": int((col_crt + today * 86400) * 1000),
+            "offset": self._getColOffset(col_crt),
             "stats": {
                 "streak_max": {
                     "type": "streak",
@@ -128,6 +133,12 @@ class ActivityReporter(object):
                 }
             }
         }
+    
+    def _getColOffset(self, col_crt):
+        if ANKI21 and self.col.schedVer() == 2:
+            return self.col.conf.get("rollover", 4)
+        start_date = datetime.datetime.fromtimestamp(col_crt)
+        return start_date.hour
 
     def _getDynamicLimit(self, limit_days, limit_date):
         if limit_date == self.col.crt:
