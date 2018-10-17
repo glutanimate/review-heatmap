@@ -130,7 +130,7 @@ function initHeatmap(options, data) {
             cmd += nb >= 0 ? "seen:" : "prop:due=";
             
             diffSecs = Math.abs(today.getTime() - clicked.getTime()) / 1000;
-            diffDays = Math.ceil(diffSecs / 86400);
+            diffDays = Math.round(diffSecs / 86400);
             
             pybridge("revhm_browse:" + cmd + diffDays);
             
