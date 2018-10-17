@@ -193,7 +193,7 @@ class ConfigManager(object):
             self.mw.reset()
         
         if not profile_unload:
-            runHook("config_saved_{}".format(MODULE_ADDON))
+            runHook("config_saved_{}".format(self._conf_key))
 
     @property
     def all(self):
@@ -339,7 +339,7 @@ class ConfigManager(object):
         Adds hooks for various events that should trigger saving the config
         """
         # Custom add-on-specifc hook that can be run by this/other add-ons
-        addHook("config_changed_{}".format(MODULE_ADDON),
+        addHook("config_changed_{}".format(self._conf_key),
                 self.save)
         # Hook run on unloading Anki profile. Ensures that any unsaved changes
         # are saved to the corresponding storages
