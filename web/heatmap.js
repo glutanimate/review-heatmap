@@ -103,7 +103,7 @@ function initHeatmap(options, data) {
         legend: options.legend,
         displayLegend: false,
         domainLabelFormat: options.domLabForm,
-        tooltip: true,
+        tooltip: rhAnki21, // disable custom tooltips on anki20
         subDomainTitleFormat: function (isEmpty, fmt, rawData) {
             // format tooltips
             var timeNow = Date.now();
@@ -113,16 +113,25 @@ function initHeatmap(options, data) {
                 } else {
                     label = "reviews";
                 }
-                return "<b>No</b> " + label + " on " + fmt.date;
-            } else if (rawData.v < 0) {
-                count = -1 * fmt.count;
-                action = "due";
+                tip = "<b>No</b> " + label + " on " + fmt.date;
             } else {
-                count = fmt.count;
-                action = "reviewed";
+                if (rawData.v < 0) {
+                    count = -1 * fmt.count;
+                    action = "due";
+                } else {
+                    count = fmt.count;
+                    action = "reviewed";
+                }
+                label = Math.abs(rawData.v) == 1 ? "card" : "cards";
+                tip = "<b>" + count + "</b> " + label + " <b>" + action + "</b> " + fmt.connector + " " + fmt.date;
             }
-            label = Math.abs(rawData.v) == 1 ? "card" : "cards";
-            return "<b>" + count + "</b> " + label + " <b>" + action + "</b> " + fmt.connector + " " + fmt.date;
+
+            if (! cal.options.tooltip) {
+                // quick hack to remove HTML for regular tooltips
+                tip = tip.replace(/<\/?b>/g, "");
+            };
+            
+            return tip;
         },
         onClick: function (date, nb) {
             // browse to date
