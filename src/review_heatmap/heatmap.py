@@ -68,7 +68,7 @@ class HeatmapCreator(object):
         stats_legend, heatmap_legend = self._getDynamicLegends(
             data["stats"]["activity_daily_avg"]["value"])
 
-        classes = self._getCSSclasses()
+        classes = self._getCSSclasses(view)
 
         heatmap = stats = ""
         if prefs["display"][view]:
@@ -87,11 +87,12 @@ class HeatmapCreator(object):
         return html_main_element.format(content=heatmap + stats,
                                         classes=" ".join(classes))
 
-    def _getCSSclasses(self):
+    def _getCSSclasses(self, view):
         conf = self.config["synced"]
         classes = ["rh-platform-{}".format(PLATFORM),
                    "rh-theme-{}".format(conf["colors"]),
-                   "rh-mode-{}".format(conf["mode"])]
+                   "rh-mode-{}".format(conf["mode"]),
+                   "rh-view-{}".format(view)]
         if not ANKI21:
             classes.append("rh-anki-20")
         return classes
