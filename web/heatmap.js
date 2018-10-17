@@ -98,6 +98,7 @@ function initHeatmap(options, data) {
         tooltip: true,
         // TODO: fix 2.0 support ↓
         subDomainTitleFormat: function (isEmpty, fmt, rawData) {
+            // format tooltips
             var timeNow = Date.now();
             if (isEmpty) {
                 if (timeNow < rawData.t) {
@@ -113,32 +114,23 @@ function initHeatmap(options, data) {
             }
         },
         onClick: function (date, nb) {
-            // call link handler
+            // browse to date
             if (nb === null || nb == 0) {
-                cal.highlight("now"); return;
+                cal.highlight(calTodayDate); return;
             }
-            today = new Date();
-            other = new Date(date);
-
-            if (! options.whole) {
-                cmd = "deck:current "
-            } else {
-                cmd = ""
-            }
-
-            // TODO: whole support
-            if (nb >= 0) {
-                diff = today.getTime() - other.getTime();
-                cmd += "seen:"
-            } else {
-                diff = other.getTime() - today.getTime();
-                cmd += "prop:due="
-            }
-            diffdays = Math.ceil(diff / (1000 * 60 * 60 * 24));
+            clicked = new Date(date);
+            today = new Date(calTodayDate);
+            today.setHours(0)
             
-            pybridge("revhm_browse:" + cmd + diffdays);
+            cmd = options.whole ? "" : "deck:current ";
+            cmd += nb >= 0 ? "seen:" : "prop:due=";
             
-            cal.highlight(["now", date]);
+            diffSecs = Math.abs(today.getTime() - clicked.getTime()) / 1000;
+            diffDays = Math.ceil(diffSecs / 86400);
+            
+            pybridge("revhm_browse:" + cmd + diffDays);
+            
+            cal.highlight([calTodayDate, date]);
         },
         data: data
     });
