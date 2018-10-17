@@ -104,6 +104,11 @@ class ActivityReporter(object):
             # negative counts allow us to apply separate cal-heatmap
             # colorschemes for past and future data:
             activity_by_day[col_crt + day * 86400] = -due
+            ################## DEBUG START ########################
+            # date = datetime.datetime.fromtimestamp(col_crt + day * 86400)
+            # print("{} ––– {} due --- fday: {} --- cday: {}".format(
+            #     date.strftime('%d %B %Y %H:%M:%S'), due, item[0], day))
+            ################### DEBUG END #########################
 
         last_day = day
 
