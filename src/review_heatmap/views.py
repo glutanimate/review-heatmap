@@ -12,8 +12,8 @@ from __future__ import (absolute_import, division,
 
 from anki.hooks import wrap
 
-
 from aqt.qt import *
+
 from aqt.overview import Overview
 from aqt.deckbrowser import DeckBrowser
 from aqt.stats import DeckStats
@@ -93,8 +93,7 @@ def overviewRenderPage(self):
 
 def collectionStatsDueGraph(self, _old):
     """Wraps dueGraph and adds our heatmap to the stats screen"""
-    #self is anki.stats.CollectionStats
-    # TODO: consider how to handle cusotm limhist/fcst vals
+    # self is anki.stats.CollectionStats
     ret = _old(self)
     if self.type == 0:
         limhist, limfcst = 31, 31
@@ -116,6 +115,10 @@ def deckStatsInit21(self, mw):
 def deckStatsInit20(self, mw):
     """Custom stats window that uses AnkiWebView instead of QWebView"""
     # self is aqt.stats.DeckWindow
+    import aqt
+    from aqt.webview import AnkiWebView
+    from aqt.utils import restoreGeom, maybeHideClose, addCloseShortcut
+    #########################################################
     QDialog.__init__(self, mw, Qt.Window)
     self.mw = mw
     self.name = "deckStats"
