@@ -16,7 +16,7 @@ import io
 from stdlib.distutils.version import LooseVersion
 
 from anki.utils import json
-from anki.hooks import addHook
+from anki.hooks import addHook, runHook
 
 from ..utils import deepMergeDicts
 from ..platform import ANKI21, PATH_ADDON, MODULE_ADDON
@@ -191,6 +191,9 @@ class ConfigManager(object):
 
         if self._reset_req and not profile_unload:
             self.mw.reset()
+        
+        if not profile_unload:
+            runHook("config_saved_{}".format(MODULE_ADDON))
 
     @property
     def all(self):
