@@ -160,8 +160,10 @@ def deepMergeDicts(original, incoming, new=False):
             elif (isinstance(result[key], list) and
                     isinstance(incoming[key], list)):
                 deepMergeLists(result[key], incoming[key])
-            elif (type(result[key]) != type(incoming[key])):
+            elif (result[key] is not None and
+                    (type(result[key]) != type(incoming[key]))):
                 # switched to different data type, original takes precedence
+                # with the exception of None value in original being replaced
                 pass
             else:
                 # type preserved. incoming takes precedence.
