@@ -13,9 +13,9 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 "rh-platform-win": Set when run on Windows
 "rh-platform-lin": Set when run on Linux
 "rh-theme-olive", "rh-theme-lime", "rh-theme-ice",
-"rh-theme-magenta", "rh-theme-flame": Set when respective theme active
+    "rh-theme-magenta", "rh-theme-flame": Set when respective theme active
 "rh-mode-year": Set when calendar set to year mode
-"rh-mode-month": Set when calendar set to months mode
+"rh-mode-months": Set when calendar set to months mode
 "rh-disable-stats": Set when streak stats disabled
 "rh-disable-heatmap": Set when heatmap disabled
 "night_mode": Set when night mode active (provided by Night Mode add-on)
@@ -33,6 +33,11 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 }
 .heatmap-controls {
     margin-bottom: 0;
+}
+
+/* anki20: workaround for layout issues on Linux under some Qt versions */
+.rh-platform-lin.rh-anki-20 #cal-heatmap {
+    width: 640px;
 }
 
 /* Heatmap graph adjustments */
