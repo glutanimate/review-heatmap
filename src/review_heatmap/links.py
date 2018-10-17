@@ -96,12 +96,12 @@ def findSeenOn(self, val):
     except ValueError:
         return
     days = max(days, 0)
-    # first cutoff at x days ago
-    cutoff1 = (self.col.sched.dayCutoff - 86400*days)*1000
-    # second cutoff at x-1 days ago
-    cutoff2 = cutoff1 + 86400000
+    # upper cutoff set to dayCutOff x days ago
+    cutoff2 = (self.col.sched.dayCutoff - 86400*days)*1000
+    # lower cutoff set to 24 hours before upper cutoff
+    cutoff1 = cutoff2 - 86400000
     # select cards that were seen at some point in that day
-    # results are empty sometimes, possibly because corresponding cards deleted?
+    # empty results expected when cards have been deleted since
     return ("c.id in (select cid from revlog where id between %d and %d)"
             % (cutoff1, cutoff2))
 
