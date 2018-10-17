@@ -247,7 +247,7 @@ def invokeSnanki(parent=None):
         # same day
         if not livesleft:
             tooltip("No more Snanki rounds left for today,<br>"
-                    "but feel free to try again tomorrow :-) !")
+                    "but feel free to check back tomorrow :) !")
             return
         else:
             pass  # play with remaining lives

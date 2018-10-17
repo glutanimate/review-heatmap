@@ -16,6 +16,8 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
     "rh-theme-magenta", "rh-theme-flame": Set when respective theme active
 "rh-mode-year": Set when calendar set to year mode
 "rh-mode-months": Set when calendar set to months mode
+"rh-view-deckbrowser", "rh-view-overview", "rh-view-stats": Set when drawn
+    on respective view
 "rh-disable-stats": Set when streak stats disabled
 "rh-disable-heatmap": Set when heatmap disabled
 "night_mode": Set when night mode active (provided by Night Mode add-on)
@@ -33,11 +35,6 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 }
 .heatmap-controls {
     margin-bottom: 0;
-}
-
-/* anki20: workaround for layout issues on Linux under some Qt versions */
-.rh-platform-lin.rh-anki-20 #cal-heatmap {
-    width: 640px;
 }
 
 /* Heatmap graph adjustments */
@@ -461,3 +458,28 @@ select.hm-sel:active, select.hm-sel:focus {
 .night_mode .rh-theme-flame .rh-col18{color: #feb24c}
 .night_mode .rh-theme-flame .rh-col19{color: #fed976}
 .night_mode .rh-theme-flame .rh-col20{color: #ffeda0}
+
+
+/* Platform-specific adjustments / workarounds */
+/* ################################################################### */
+
+/* anki20: workaround for layout issues on Linux under some Qt versions */
+.rh-platform-lin.rh-anki-20.rh-mode-year #cal-heatmap {
+    width: 640px;
+}
+.rh-platform-lin.rh-anki-20.rh-mode-months #cal-heatmap {
+    width: 600px;
+}
+/* without these adjustments, buttons are comically large on the stats screen  */
+.rh-anki-20.rh-view-stats .hm-btn {
+    height: 0.8em;
+}
+.rh-platform-win.rh-anki-20.rh-view-stats .hm-btn {
+    height: 1em;
+}
+/* seems to be necessary to vertically center button icons on macOS anki20: */
+.rh-platform-mac.rh-anki-20.rh-view-deckbrowser .hm-btn, 
+.rh-platform-mac.rh-anki-20.rh-view-overview .hm-btn {
+    height: 1em;
+    padding-top: 5px;
+}
