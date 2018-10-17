@@ -106,12 +106,16 @@ function initHeatmap(options, data) {
                 } else {
                     label = "reviews";
                 }
-                return `<b>No</b> ${label} on ${fmt.date}`
+                return "<b>No</b> " + label + " on " + fmt.date;
             } else if (rawData.v < 0) {
-                return `<b>${-1 * fmt.count}</b> ${rawData.v == -1 ? "card" : "cards"} <b>due</b> ${fmt.connector} ${fmt.date}`
+                count = -1 * fmt.count;
+                action = "due";
             } else {
-                return `<b>${fmt.count}</b> ${rawData.v == 1 ? "card" : "cards"} <b>reviewed</b> ${fmt.connector} ${fmt.date}`
+                count = fmt.count;
+                action = "reviewed";
             }
+            label = Math.abs(rawData.v) == 1 ? "card" : "cards";
+            return "<b>" + count + "</b> " + label + " <b>" + action + "</b> " + fmt.connector + " " + fmt.date;
         },
         onClick: function (date, nb) {
             // browse to date
