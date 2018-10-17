@@ -12,7 +12,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from .libaddon.platform import JSPY_BRIDGE
+from .libaddon.platform import JSPY_BRIDGE, ANKI21, PLATFORM
 from .libaddon.packaging import platformAwareImport
 
 __all__ = ["html_main_element", "html_heatmap",
@@ -32,14 +32,16 @@ html_main_element = """
 
 <script>
 var pybridge = function(arg){{{{
-    {}(arg);
+    {bridge}(arg);
 }}}};
+var rhAnki21 = "{anki21}" === "True";
+var rhPlatform = "{platform}";
 </script>
 
 <div class="rh-container {{classes}}">
 {{content}}
 </div>
-""".format(JSPY_BRIDGE)
+""".format(bridge=JSPY_BRIDGE, anki21=ANKI21, platform=PLATFORM)
 
 html_heatmap = """
 <div class="heatmap">
