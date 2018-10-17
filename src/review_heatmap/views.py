@@ -21,7 +21,7 @@ from aqt.stats import DeckStats
 from anki.stats import CollectionStats
 from anki.hooks import addHook, remHook
 
-from .libaddon.platform import ANKI21, MODULE_ADDON
+from .libaddon.platform import ANKI21
 
 from .config import config
 from .heatmap import HeatmapCreator
@@ -206,4 +206,4 @@ def initializeViews():
     # Initially set up hotkey:
     addHook("profileLoaded", initializeHotkey)
     # Update hotkey on config save:
-    addHook("config_saved_{}".format(MODULE_ADDON), initializeHotkey)
+    addHook("config_saved_heatmap", initializeHotkey)
