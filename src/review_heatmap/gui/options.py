@@ -193,4 +193,9 @@ def invokeOptionsDialog(parent=None):
     dialog = RevHmOptions(config, mw, parent=parent)
     return dialog.exec_()
 
-config.setConfigAction(invokeOptionsDialog)
+def initializeOptions():
+    config.setConfigAction(invokeOptionsDialog)
+    # Set up menu entry:
+    options_action = QAction("Review &Heatmap Options...", mw)
+    options_action.triggered.connect(lambda _: invokeOptionsDialog())
+    mw.form.menuTools.addAction(options_action)

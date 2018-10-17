@@ -14,16 +14,46 @@ from anki.hooks import wrap
 
 from aqt.qt import *
 
+from aqt import mw
 from aqt.overview import Overview
 from aqt.deckbrowser import DeckBrowser
 from aqt.stats import DeckStats
 from anki.stats import CollectionStats
 from anki.hooks import addHook, remHook
 
-from .libaddon.platform import ANKI21
+from .libaddon.platform import ANKI21, MODULE_ADDON
 
 from .config import config
 from .heatmap import HeatmapCreator
+
+# Common
+######################################################################
+
+def toggleHeatmap():
+    """Toggle heatmap display on demand"""
+    state = mw.state.lower()
+    hm_active = config["profile"]["display"].get(state, None)
+    if hm_active is None:
+        # unrecognized mw state
+        return False
+    config["profile"]["display"][state] = not hm_active
+    mw.reset()
+
+def initializeHotkey():
+    """
+    Create toggle action if it does not exist, yet, and assign it the
+    hotkey defined in the user config
+    """
+    toggle_action = getattr(mw, "_hmToggleAction", None)
+    
+    if toggle_action is None:
+        toggle_action = QAction(mw, triggered=toggleHeatmap)
+        mw.addAction(toggle_action)
+        mw._hmToggleAction = toggle_action
+    
+    hotkey = config["profile"]["hotkeys"]["toggle"]
+    toggle_action.setShortcut(QKeySequence(hotkey))
+    
 
 # Deck Browser (Main view)
 ######################################################################
@@ -173,3 +203,7 @@ def initializeViews():
     else:
         DeckStats.__init__ = deckStatsInit20
     DeckStats.reject = wrap(DeckStats.reject, deckStatsReject)
+    # Initially set up hotkey:
+    addHook("profileLoaded", initializeHotkey)
+    # Update hotkey on config save:
+    addHook("config_saved_{}".format(MODULE_ADDON), initializeHotkey)
