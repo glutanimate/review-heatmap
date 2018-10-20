@@ -59,7 +59,7 @@ function build_for_anki_version () {
 
     pyuic_exec="pyuic${qt_version}"
     pyrcc_exec="pyrcc${qt_version}"
-    form_dir="${src_folder}/gui/forms/${anki_version}"
+    form_dir="${src_folder}/dialogs/forms/${anki_version}"
     if ! type "$pyuic_exec" >/dev/null 2>&1; then
         echo "${pyuic_exec} not found. Skipping generation."
         return 0

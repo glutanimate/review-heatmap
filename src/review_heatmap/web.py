@@ -19,7 +19,7 @@ __all__ = ["html_main_element", "html_heatmap",
            "html_streak", "html_info_nodata"]
 
 # Initialize Qt web resources
-web_rc = platformAwareImport(".gui.forms", "web_rc", __name__)
+web_rc = platformAwareImport(".dialogs.forms", "web_rc", __name__)
 
 # TODO: Look into moving more web components to designer/web
 
