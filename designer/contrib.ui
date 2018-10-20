@@ -51,7 +51,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="labContrib">
+        <widget class="QLabel" name="fmtLabContrib">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -59,7 +59,7 @@
           </font>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Love {addon}?&lt;/span&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;span style=&quot; font-size:14pt;&quot;&gt;Love {ADDON_NAME}?&lt;/span&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -82,7 +82,7 @@
       </layout>
      </item>
      <item>
-      <widget class="QLabel" name="labHeader">
+      <widget class="QLabel" name="fmtLabHeader">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
@@ -90,7 +90,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Writing, supporting, and maintaining my add-ons takes a lot of time. If &lt;span style=&quot; font-weight:600;&quot;&gt;{addon}&lt;/span&gt; has been a valuable asset in your studies, please consider &lt;span style=&quot; font-weight:600;&quot;&gt;supporting my work&lt;/span&gt; through one of the methods below:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Writing, supporting, and maintaining my add-ons takes a lot of time. If &lt;span style=&quot; font-weight:600;&quot;&gt;{ADDON_NAME}&lt;/span&gt; has been a valuable asset in your studies, please consider &lt;span style=&quot; font-weight:600;&quot;&gt;supporting my work&lt;/span&gt; through one of the methods below:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>

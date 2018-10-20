@@ -14,48 +14,41 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from aqt.qt import *
 from aqt.utils import openLink
 
-from ..consts import ADDON_NAME, LINKS, MAIL_AUTHOR
+from ..consts import MAIL_AUTHOR, LINKS
+
+from .basic.dialog_basic import BasicDialog
+from .labelformatter import formatLabels
 
 
-class ContribDialog(QDialog):
+class ContribDialog(BasicDialog):
     """
     Add-on agnostic dialog that presents user with a number
     of options to support the development of the add-on.
     """
 
-    def __init__(self, form, parent=None):
+    def __init__(self, form_module, parent=None):
         """
         Initialize contrib dialog with provided form
 
         Arguments:
-            form {PyQt form module} -- PyQt dialog form outlining the UI
+            form_module {PyQt form module} -- PyQt dialog form outlining the UI
 
         Keyword Arguments:
             parent {QWidget} -- Parent Qt widget (default: {None})
         """
 
-        super(ContribDialog, self).__init__(parent=parent)
-        # Set up UI from pre-generated UI form:
-        self.form = form.Ui_Dialog()
-        self.form.setupUi(self)
-        # Perform any subsequent setup steps:
-        self.setupLabels()
-        self.setupEvents()
+        super(ContribDialog, self).__init__(form_module=form_module,
+                                            parent=parent)
 
-    def setupLabels(self):
+    def _setupUI(self):
         """
         Format dialog labels with add-on specific information
         """
-        format_dict = {"addon": ADDON_NAME}
+        formatLabels(self)
 
-        for widget in self.children():
-            if isinstance(widget, QLabel):
-                widget.setText(widget.text().format(**format_dict))
-
-    def setupEvents(self):
+    def _setupEvents(self):
         """
         Connect button presses to actions
         """

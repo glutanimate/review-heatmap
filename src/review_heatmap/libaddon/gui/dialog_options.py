@@ -14,12 +14,12 @@ from aqt.qt import Qt
 
 from aqt.utils import openLink
 
-from ..consts import ADDON_NAME, ADDON_VERSION, LINKS
+from ..consts import LINKS
 from ..platform import PLATFORM
 
 from .basic.dialog_mapped import MappedDialog
 from .about import get_about_string
-
+from .labelformatter import formatLabels
 
 class OptionsDialog(MappedDialog):
 
@@ -58,7 +58,8 @@ class OptionsDialog(MappedDialog):
     # Static widget setup
 
     def _setupUI(self):
-        self._setupLabels()
+        formatLabels(self)
+        self._setupAbout()
         if PLATFORM == "mac":
             # Decrease tab margins on macOS
             tab_widget = getattr(self.form, "tabWidget", None)
@@ -69,13 +70,10 @@ class OptionsDialog(MappedDialog):
                 layout = tab.layout()
                 layout.setContentsMargins(3, 3, 3, 3)
 
-    def _setupLabels(self):
+    def _setupAbout(self):
         """
-        Fill out info & about text elements
+        Fill out 'about' widget
         """
-        if hasattr(self.form, "labInfo"):
-            info_string = "{} v{}".format(ADDON_NAME, ADDON_VERSION)
-            self.form.labInfo.setText(info_string)
         if hasattr(self.form, "htmlAbout"):
             about_string = get_about_string()
             self.form.htmlAbout.setHtml(about_string)

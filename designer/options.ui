@@ -144,14 +144,14 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="labInfo">
+      <widget class="QLabel" name="fmtLabInfo">
        <property name="font">
         <font>
          <italic>true</italic>
         </font>
        </property>
        <property name="text">
-        <string>Review Heatmap vX.X.X</string>
+        <string>{ADDON_NAME} v{ADDON_VERSION} </string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -210,7 +210,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="labContrib">
+            <widget class="QLabel" name="fmtLabContrib">
              <property name="font">
               <font>
                <pointsize>14</pointsize>
@@ -219,7 +219,7 @@
               </font>
              </property>
              <property name="text">
-              <string>Review Heatmap?</string>
+              <string>{ADDON_NAME}?</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -774,7 +774,7 @@ with a coffee</string>
   <customwidget>
    <class>QKeyGrabButton</class>
    <extends>QPushButton</extends>
-   <header>review_heatmap.libaddon.gui.basic.widgets.qkeygrabber</header>
+   <header>....libaddon.gui.basic.widgets.qkeygrabber</header>
   </customwidget>
  </customwidgets>
  <tabstops>
