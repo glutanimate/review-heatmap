@@ -12,7 +12,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from .gui.options import initializeOptions
+from .dialogs.options import initializeOptions
 from .links import initializeLinks
 from .views import initializeViews
 
