@@ -16,11 +16,14 @@ from __future__ import (absolute_import, division,
 from random import randrange
 import time
 
-from aqt import mw
 from aqt.qt import *
-from aqt.utils import tooltip
+
+from aqt import mw
+from aqt.utils import tooltip, openLink
 
 from ..libaddon.anki.configmanager import ConfigManager
+from ..libaddon.consts import LINKS
+from ..libaddon.platform import isMac
 
 __all__ = ["invokeSnanki"]
 
@@ -77,6 +80,14 @@ class Snanki(QDialog):
             self.newGame()
         elif e.key() == Qt.Key_Escape:
             self.close()
+
+    def mousePressEvent(self, event):
+        """
+        Quick hacky workaround to open Patreon link on gameOver screen click.
+        """
+        if self.gameOver and self.lives == 0:
+            openLink(LINKS["patreon"])
+        QDialog(self).mousePressEvent(event)
 
     def newGame(self):
         if self.lives < 1:
@@ -142,14 +153,20 @@ class Snanki(QDialog):
             self.lives += 1
             self.highscore = self.score
             info = "\n\nNew high score! 1 life replenished."
+        font_size = 10 if not isMac else 12
         qp.setPen(QColor(0, 34, 3))
-        qp.setFont(QFont('Decorative', 10))
+        qp.setFont(QFont('Decorative', font_size))
         if self.lives > 0:
             msg = "GAME OVER{}\n\nPress space to play again".format(info)
         else:
+            self.setCursor(Qt.PointingHandCursor)
             msg = ("GAME OVER\n\nYou're out of lives for today,\n"
                    "but you can come back tomorrow :)\n\n"
-                   "Tip: Get more lives by\nkeeping up with your reviews!")
+                   "Tip: Get more lives by\nkeeping up with your reviews!\n\n"
+                   "Tip: Pledge your support on Patreon\n"
+                   "and get access to super-secret\n"
+                   "add-ons and other goodies :)"
+                   "\n\n→ patreon.com/glutanimate")
         qp.drawText(event.rect(), Qt.AlignCenter, msg)
 
     def checkStatus(self, x, y):
@@ -238,11 +255,9 @@ def invokeSnanki(parent=None):
         # new day, reset
         livesleft = 5
         if streak_max is not None:
-            # 1 extra life for each 3 months of max streak
-            livesleft += streak_max // 90
+            livesleft += round(0.1 * streak_max ** 0.5)
         if streak_cur is not None:
-            # 1 extra life for each month of current streak
-            livesleft += streak_cur // 30
+            livesleft += round(0.5 * streak_cur ** 0.5)
     elif lastplayed != 0 and lastplayed < day_cutoff:
         # same day
         if not livesleft:
@@ -251,7 +266,7 @@ def invokeSnanki(parent=None):
             return
         else:
             pass  # play with remaining lives
-            
+    
     highscore = conf["highscore"]
 
     snanki = Snanki(highscore=highscore, lives=livesleft, parent=parent)
