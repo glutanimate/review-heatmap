@@ -10,7 +10,6 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from ...libaddon.platform import ANKI21
 
 if ANKI21:
-    from .anki21 import *
+    from .anki21 import *  # noqa: F401
 else:
-    from .anki20 import *
-
+    from .anki20 import *  # noqa: F401

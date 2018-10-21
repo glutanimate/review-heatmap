@@ -26,9 +26,9 @@ from anki.find import Finder
 
 from .libaddon.platform import ANKI21
 
-from .dialogs.options import invokeOptionsDialog
-from .dialogs.contrib import invokeContributionsDialog
-from .dialogs.extra import invokeSnanki
+from .gui.options import invokeOptionsDialog
+from .gui.contrib import invokeContributionsDialog
+from .gui.extra import invokeSnanki
 
 from .config import config, heatmap_colors, heatmap_modes
 

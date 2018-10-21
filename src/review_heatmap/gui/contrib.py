@@ -13,9 +13,8 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 from ..libaddon.gui.dialog_contrib import ContribDialog
-from ..libaddon.packaging import platformAwareImport
 
-qtform_contrib = platformAwareImport(".forms", "contrib", __name__)
+from .forms import contrib as qtform_contrib
 
 __all__ = ["RevHmContrib", "invokeContributionsDialog"]
 

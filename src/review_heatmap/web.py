@@ -13,13 +13,10 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 from .libaddon.platform import JSPY_BRIDGE, ANKI21, PLATFORM
-from .libaddon.packaging import platformAwareImport
 
 __all__ = ["html_main_element", "html_heatmap",
            "html_streak", "html_info_nodata"]
 
-# Initialize Qt web resources
-web_rc = platformAwareImport(".dialogs.forms", "web_rc", __name__)
 
 # TODO: Look into moving more web components to designer/web
 

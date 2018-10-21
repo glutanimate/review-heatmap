@@ -12,10 +12,12 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from .dialogs.options import initializeOptions
-from .links import initializeLinks
+from .gui import initializeQtResources
+from .gui.options import initializeOptions
 from .views import initializeViews
+from .links import initializeLinks
 
+initializeQtResources()
 initializeOptions()
 initializeViews()
 initializeLinks()

@@ -20,11 +20,9 @@ from aqt.qt import *
 from aqt.studydeck import StudyDeck
 
 from ..libaddon.gui.dialog_options import OptionsDialog
-from ..libaddon.packaging import platformAwareImport
-
 from ..config import config, heatmap_colors, heatmap_modes
 
-qtform_options = platformAwareImport(".forms", "options", __name__)
+from .forms import options as qtform_options
 
 __all__ = ["RevHmOptions", "invokeOptionsDialog"]
 
