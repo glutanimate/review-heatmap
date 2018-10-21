@@ -161,12 +161,13 @@ class Snanki(QDialog):
         else:
             self.setCursor(Qt.PointingHandCursor)
             msg = ("GAME OVER\n\nYou're out of lives for today,\n"
-                   "but you can come back tomorrow :)\n\n"
+                   "but tomorrow is another day :)\n\n"
                    "Tip: Get more lives by\nkeeping up with your reviews!\n\n"
                    "Tip: Pledge your support on Patreon\n"
-                   "and get access to super-secret\n"
-                   "add-ons and other goodies :)"
-                   "\n\n→ patreon.com/glutanimate")
+                   "and get access to other 'secret'\n"
+                   "features and add-ons :)"
+                   "\n\nClick here to go to\n"
+                   "patreon.com/glutanimate")
         qp.drawText(event.rect(), Qt.AlignCenter, msg)
 
     def checkStatus(self, x, y):

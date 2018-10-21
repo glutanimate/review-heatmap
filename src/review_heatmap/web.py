@@ -17,9 +17,6 @@ from .libaddon.platform import JSPY_BRIDGE, ANKI21, PLATFORM
 __all__ = ["html_main_element", "html_heatmap",
            "html_streak", "html_info_nodata"]
 
-
-# TODO: Look into moving more web components to designer/web
-
 html_main_element = """
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
 <script type="text/javascript" src="qrc:/review_heatmap/web/cal-heatmap.js"></script>
