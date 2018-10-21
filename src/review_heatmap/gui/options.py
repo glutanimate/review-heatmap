@@ -20,6 +20,7 @@ from aqt.qt import *
 from aqt.studydeck import StudyDeck
 
 from ..libaddon.gui.dialog_options import OptionsDialog
+from ..libaddon.platform import PLATFORM
 from ..config import config, heatmap_colors, heatmap_modes
 
 from .forms import options as qtform_options
@@ -126,6 +127,17 @@ class RevHmOptions(OptionsDialog):
 
     def _setupUI(self):
         super(RevHmOptions, self)._setupUI()
+
+        # manually adjust title label font sizes on Windows
+        # gap between default windows font sizes and sizes that work well
+        # on Linux and macOS is simply too big
+        # TODO: find a better solution
+        if PLATFORM == "win":
+            default_size = QApplication.font().pointSize()
+            for label in [self.form.fmtLabContrib, self.form.labHeading]:
+                font = label.font()
+                font.setPointSize(int(default_size * 1.5))
+                label.setFont(font)
 
     # Events:
 

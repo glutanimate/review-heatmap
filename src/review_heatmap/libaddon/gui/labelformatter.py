@@ -22,6 +22,7 @@ if ANKI21:
     fmt_find_params = ((QLabel, QPushButton), QRegExp("^fmt.*"),
                        Qt.FindChildrenRecursively)
 else:
+    # Qt4: recursive by default. No third param.
     fmt_find_params = ((QLabel, QPushButton), QRegExp("^fmt.*"))
 
 def formatLabels(dialog):

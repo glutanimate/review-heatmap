@@ -60,6 +60,7 @@ class OptionsDialog(MappedDialog):
     def _setupUI(self):
         formatLabels(self)
         self._setupAbout()
+
         if PLATFORM == "mac":
             # Decrease tab margins on macOS
             tab_widget = getattr(self.form, "tabWidget", None)

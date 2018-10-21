@@ -196,7 +196,7 @@ class Snanki(QDialog):
 
     # places the food when theres none on the board
     def placeFood(self, qp):
-        if self.FoodPlaced == False:
+        if self.FoodPlaced is False:
             self.foodx = randrange(24)*12
             self.foody = randrange(2, 24)*12
             if not [self.foodx, self.foody] in self.snakeArray:
@@ -256,9 +256,9 @@ def invokeSnanki(parent=None):
         # new day, reset
         livesleft = 5
         if streak_max is not None:
-            livesleft += round(0.1 * streak_max ** 0.5)
+            livesleft += int(round(0.1 * streak_max ** 0.5))
         if streak_cur is not None:
-            livesleft += round(0.5 * streak_cur ** 0.5)
+            livesleft += int(round(0.5 * streak_cur ** 0.5))
     elif lastplayed != 0 and lastplayed < day_cutoff:
         # same day
         if not livesleft:
