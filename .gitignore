@@ -8,6 +8,7 @@ src/*/meta.json
 build
 src/*/forms*
 src/*/*/forms*
+src/*/resources/compiled
 *-anki2*.zip
 # Python
 .python-version
