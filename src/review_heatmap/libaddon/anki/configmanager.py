@@ -11,12 +11,11 @@ from __future__ import (absolute_import, division,
 import os
 import io
 
-# have to use local stdlib workaround because 'version' is missing
-# from Anki's 'distutils'
-from stdlib.distutils.version import LooseVersion
-
 from anki.utils import json
 from anki.hooks import addHook, runHook
+
+# use vendorized distutils because distutils.version is missing from Anki
+from .._vendor.distutils.version import LooseVersion
 
 from ..utils import deepMergeDicts
 from ..platform import ANKI21, PATH_ADDON, MODULE_ADDON

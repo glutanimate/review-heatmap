@@ -16,17 +16,8 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-import os
-
 from ._version import __version__  # noqa: F401
-
-from .platform import PATH_ADDON, MODULE_LIBADDON
-from .packaging import addSubdirPathToModuleLookup
-
 
 __all__ = [
     "__version__"
 ]
-
-# Add libraries shipped with libaddon to Python module lookup
-addSubdirPathToModuleLookup(os.path.join(PATH_ADDON, MODULE_LIBADDON, "libs"))
