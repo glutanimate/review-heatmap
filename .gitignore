@@ -6,9 +6,8 @@ __pycache__/
 src/*/meta.json
 # Build files
 build
-src/*/forms*
-src/*/*/forms*
-src/*/resources/compiled
+src/*/gui/forms/anki*
+src/*/gui/resources/anki*
 *-anki2*.zip
 # Python
 .python-version
