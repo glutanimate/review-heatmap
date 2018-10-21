@@ -125,8 +125,8 @@ function qt_builder () {
     imports=""
     for infile in "${indir}"/${fileglob}; do
         name="${infile##*/}"
-        base="${name%.*}"
-        outfile="${outdir}/${base}${name_suffix}.py"
+        base="${name%.*}${name_suffix}"
+        outfile="${outdir}/${base}.py"
         
         # add to initfile __all__
         echo "    \"$base\"," >> "${initfile}"
