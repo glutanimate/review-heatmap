@@ -11,8 +11,7 @@ from ..packaging import VersionSpecificImporter
 
 # New vendored packages should be appended here:
 names = [
-    "distutils",
-    "importlib"
+    "distutils"
 ]
 
 # NOTE: VersionSpecificImporter does not resolve absolute imports within
