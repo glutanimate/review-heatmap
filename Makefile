@@ -49,8 +49,13 @@ buildzip:
 buildrelease:
 	rm -f *-release-$(VERSION)-anki2*.zip
 	git archive --format tar $(VERSION) | tar -x -C build/dist/
+	for license in build/dist/LICENSE*; do \
+		name=$$(basename $$license) ; \
+		cp $$license "build/dist/src/$(ADDONDIR)/$$name" ; \
+	done
+	
 	cp -r build/dist/* build/dist21
-	rm -rf "build/dist/$(ADDONDIR)/forms5" "build/dist21/forms4"
+
 	cd build/dist &&  \
 		PYENV_VERSION=anki20tools ../../tools/build_ui.sh "$(ADDONDIR)" anki20 &&\
 		cd src && \
