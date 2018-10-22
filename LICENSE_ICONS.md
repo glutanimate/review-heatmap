@@ -17,7 +17,7 @@ The following icons are property of their respective copyright holders and used 
 - youtube.svg is © [YouTube](https://www.youtube.com/intl/us/yt/about/brand-resources/#logos-icons-colors)
 - twitter.svg is © [Twitter](https://about.twitter.com/en/company/brand-resources.html)
 - patreon.svg is © [Patreon](https://www.paypal.com/us/webapps/mpp/logo-center)
-- coffee.svg is © [BuyMeACoffee](https://www.buymeacoffee.com/brand)
+- coffee.svg is © [Ko-Fi](https://ko-fi.com/)
 
 If you fork the repository or plan to use it in a different project please make sure to follow the company guidelines linked for each icon.
 
@@ -25,7 +25,7 @@ If you fork the repository or plan to use it in a different project please make 
 
 All of the following icons were either based off of public domain works or created from scratch. They are copyright © Glutanimate 2018 and licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International license](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode):
 
-    circle.svg, down.svg, left.svg, right.svg, options.svg, rate.svg
+    coffee.svg, circle.svg, down.svg, left.svg, right.svg, options.svg, rate.svg
 
 
 

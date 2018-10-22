@@ -9,9 +9,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="39.229256mm"
-   height="31.229258mm"
-   viewBox="0 0 39.229256 31.229258"
+   width="32"
+   height="32"
+   viewBox="0 0 8.4666667 8.4666667"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
@@ -58,15 +58,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="39.065171"
-     inkscape:cy="56.156404"
-     inkscape:document-units="mm"
+     inkscape:zoom="3.959798"
+     inkscape:cx="-13.108075"
+     inkscape:cy="0.3147681"
+     inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      fit-margin-top="0"
-     fit-margin-left="4"
-     fit-margin-right="4"
+     fit-margin-left="0"
+     fit-margin-right="0"
      fit-margin-bottom="0"
      units="px" />
   <metadata
@@ -85,19 +85,19 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-44.272227,-151.13096)">
+     transform="translate(-48.320611,-173.84517)">
     <g
-       id="g1289"
-       transform="matrix(0.39399623,0,0,0.39399623,26.538125,113.226)">
+       id="g833"
+       transform="matrix(0.23796145,0,0,0.23796145,37.351335,138.39948)">
       <circle
-         r="37.423153"
-         cy="135.8378"
-         cx="94.79464"
+         r="15.566247"
+         cy="166.74557"
+         cx="63.886856"
          id="path826"
-         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#f96854;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.26458332;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;filter:url(#filter1279);enable-background:accumulate" />
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#f96854;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.11005404;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate" />
       <g
          style="fill:none;fill-rule:evenodd;filter:url(#filter1279)"
-         transform="matrix(0.40012424,0,0,0.40012424,76.032384,117.7795)"
+         transform="matrix(0.16568178,0,0,0.16568178,56.117859,159.26808)"
          id="g832">
         <path
            style="fill:#ffffff"

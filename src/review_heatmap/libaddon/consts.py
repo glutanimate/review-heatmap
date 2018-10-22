@@ -51,7 +51,7 @@ _mail_author_snippets = ["ankiglutanimate", "ατ", "gmail.com"]  # anti-spam
 MAIL_AUTHOR = "".join(_mail_author_snippets).replace("ατ", "@")
 LINKS = {
     "patreon": "https://www.patreon.com/glutanimate",
-    "coffee": "https://www.buymeacoffee.com/glutanimate",
+    "coffee": "http://ko-fi.com/glutanimate",
     "description": "https://ankiweb.net/shared/info/{}".format(ADDON_ID),
     "rate": "https://ankiweb.net/shared/review/{}".format(ADDON_ID),
     "twitter": "https://twitter.com/glutanimate",

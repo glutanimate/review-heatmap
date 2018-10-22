@@ -164,7 +164,7 @@ class Snanki(QDialog):
                    "but tomorrow is another day :)\n\n"
                    "Tip: Get more lives by\nkeeping up with your reviews!\n\n"
                    "Tip: Pledge your support on Patreon\n"
-                   "and get access to other 'secret'\n"
+                   "and get access to other secret\n"
                    "features and add-ons :)"
                    "\n\nClick here to go to\n"
                    "patreon.com/glutanimate")
