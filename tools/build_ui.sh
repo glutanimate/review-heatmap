@@ -4,8 +4,6 @@
 # Usage: build_ui.sh <PROJECT_PREFIX> <ANKI_VERSION>
 # Dependencies: pyuic4 pyuic5 pyrcc4 pyrcc5
 #
-# start with DEBUG=1 to get debug log
-#
 # Copyright: (c) 2017-2018 Glutanimate <https://glutanimate.com/>
 #            (c) 2016 Damien Elmes <http://ichi2.net/contact.html>
 # License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
@@ -15,6 +13,10 @@
 __name__="build_ui.sh"
 __version__="0.2.0"
 __author__="Glutanimate"
+
+# Enable debugging?
+
+DEBUG=0  # set to 1 to enable verbose debugging statements
 
 # Arguments
 
