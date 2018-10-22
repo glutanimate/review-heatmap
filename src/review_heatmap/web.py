@@ -21,8 +21,8 @@ html_main_element = """
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
 <script type="text/javascript" src="qrc:/review_heatmap/web/cal-heatmap.js"></script>
 <link rel="stylesheet" href="qrc:/review_heatmap/web/cal-heatmap.css">
-<script type="text/javascript" src="qrc:/review_heatmap/web/heatmap.js"></script>
-<link rel="stylesheet" href="qrc:/review_heatmap/web/heatmap.css">
+<script type="text/javascript" src="qrc:/review_heatmap/web/review-heatmap.js"></script>
+<link rel="stylesheet" href="qrc:/review_heatmap/web/review-heatmap.css">
 
 <script>
 var pybridge = function(arg){{{{
