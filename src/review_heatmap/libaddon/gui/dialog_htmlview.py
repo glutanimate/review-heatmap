@@ -14,7 +14,9 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from aqt.qt import QVBoxLayout, QTextBrowser
+from aqt.qt import *
+
+from ..platform import PLATFORM
 
 from .basic.dialog_basic import BasicDialog
 
@@ -23,8 +25,12 @@ class HTMLViewer(BasicDialog):
 
     def __init__(self, html, title=None, parent=None):
         super(HTMLViewer, self).__init__(parent=parent)
-        self.setMinimumWidth(500)
-        self.setMinimumHeight(600)
+        if PLATFORM == "win":
+            self.setMinimumWidth(400)
+            self.setMinimumHeight(500)
+        else:
+            self.setMinimumWidth(500)
+            self.setMinimumHeight(600)
         if title:
             self.setWindowTitle(title)
         self.setHtml(html)
