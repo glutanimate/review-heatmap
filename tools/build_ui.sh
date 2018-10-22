@@ -4,6 +4,8 @@
 # Usage: build_ui.sh <PROJECT_PREFIX> <ANKI_VERSION>
 # Dependencies: pyuic4 pyuic5 pyrcc4 pyrcc5
 #
+# start with DEBUG=1 to get debug log
+#
 # Copyright: (c) 2017-2018 Glutanimate <https://glutanimate.com/>
 #            (c) 2016 Damien Elmes <http://ichi2.net/contact.html>
 # License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
@@ -25,8 +27,6 @@ set -eu -o pipefail
 shopt -s nullglob
 
 # Global variables
-
-DEBUG=0
 
 SRC_FOLDER="src/${PROJECT_PREFIX}"
 INDIR_FORMS="designer"
@@ -150,6 +150,19 @@ function qt_builder () {
     echo "Done."
 }
 
+function copy_licenses () {
+    indir="$1"
+    outdir="$2"
+
+    debuglog "Copying licenses..."
+
+    for license in "${indir}"/LICENSE*; do
+        name=$(basename "${license}")
+        echo "$name"
+        echo "$outdir"
+        cp "${license}" "${outdir}/${name}"
+    done
+}
 
 function build_for_anki_version () {
     echo -e "This is ${__name__} v${__version__} by ${__author__}.\n"
@@ -166,6 +179,8 @@ function build_for_anki_version () {
     echo ""
 
     qt_builder "pyrcc" "${qt_version}" "${INDIR_RESOURCES}" "${resource_dir}"
+
+    copy_licenses "${INDIR_RESOURCES}" "$OUTDIR_RESOURCES"
     
     echo -e "\nDone with all UI build tasks."
 }

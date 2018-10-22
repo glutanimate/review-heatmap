@@ -7,7 +7,9 @@ src/*/meta.json
 # Build files
 build
 src/*/gui/forms/anki*
+src/*/gui/forms/LICENSE*
 src/*/gui/resources/anki*
+src/*/gui/resources/LICENSE*
 *-anki2*.zip
 # Python
 .python-version
