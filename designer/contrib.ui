@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>344</width>
-    <height>426</height>
+    <height>452</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Please support my work</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="10,0">
    <item>
     <layout class="QVBoxLayout" name="contribLayout">
      <property name="topMargin">
@@ -240,20 +240,37 @@ an add-on for you</string>
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>0</number>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+     <item>
+      <widget class="QPushButton" name="btnCredits">
+       <property name="text">
+        <string>Credits</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/icons.qrc">
+         <normaloff>:/review_heatmap/icons/heart.svg</normaloff>:/review_heatmap/icons/heart.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>btnPatreon</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
   <include location="../resources/icons.qrc"/>
