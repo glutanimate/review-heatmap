@@ -21,6 +21,10 @@ from ..consts import MAIL_AUTHOR, LINKS
 from .basic.dialog_basic import BasicDialog
 from .labelformatter import formatLabels
 
+from .dialog_htmlview import HTMLViewer
+from .about import get_about_string
+from ..consts import ADDON_NAME
+
 
 class ContribDialog(BasicDialog):
     """
@@ -35,6 +39,9 @@ class ContribDialog(BasicDialog):
         Arguments:
             form_module {PyQt form module} -- PyQt dialog form outlining the UI
 
+        Provided Qt form should contain the following widgets:
+            QPushButton: btnMail, btnCoffee, btnPatreon, btnCredits
+
         Keyword Arguments:
             parent {QWidget} -- Parent Qt widget (default: {None})
         """
@@ -43,9 +50,6 @@ class ContribDialog(BasicDialog):
                                             parent=parent)
 
     def _setupUI(self):
-        """
-        Format dialog labels with add-on specific information
-        """
         formatLabels(self)
 
     def _setupEvents(self):
@@ -59,3 +63,10 @@ class ContribDialog(BasicDialog):
             lambda: openLink(LINKS["coffee"]))
         self.form.btnPatreon.clicked.connect(
             lambda: openLink(LINKS["patreon"]))
+        self.form.btnCredits.clicked.connect(
+            self.showCredits)
+
+    def showCredits(self):
+        viewer = HTMLViewer(get_about_string(title=True),
+                            title=ADDON_NAME, parent=self)
+        viewer.exec_()
