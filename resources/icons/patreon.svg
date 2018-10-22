@@ -11,7 +11,7 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="32"
    height="32"
-   viewBox="0 0 8.4666667 8.4666667"
+   viewBox="0 0 32 32"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
@@ -59,7 +59,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.959798"
-     inkscape:cx="-13.108075"
+     inkscape:cx="-54.903136"
      inkscape:cy="0.3147681"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -88,7 +88,7 @@
      transform="translate(-48.320611,-173.84517)">
     <g
        id="g833"
-       transform="matrix(0.23796145,0,0,0.23796145,37.351335,138.39948)">
+       transform="matrix(0.89938185,0,0,0.89938185,6.8619322,39.877226)">
       <circle
          r="15.566247"
          cy="166.74557"
@@ -106,7 +106,7 @@
            id="path828" />
         <polygon
            style="fill:#052d49"
-           points="0.012,0.1 0.012,95.988 17.59,95.988 17.59,0.1 "
+           points="0.012,95.988 17.59,95.988 17.59,0.1 0.012,0.1 "
            id="polygon830" />
       </g>
     </g>
