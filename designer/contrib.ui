@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>344</width>
-    <height>452</height>
+    <height>373</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Please support my work</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="10,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
    <item>
     <layout class="QVBoxLayout" name="contribLayout">
      <property name="topMargin">
@@ -121,35 +121,8 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btnPatreon">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip">
-        <string>Perks include access to Patron-only add-ons, &lt;br&gt;exclusive blog posts, mentions in the credits, and more!</string>
-       </property>
-       <property name="text">
-        <string>Become a Patron and receive 
-exclusive add-ons &amp;&amp; other goodies!</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../resources/icons.qrc">
-         <normaloff>:/review_heatmap/icons/patreon.svg</normaloff>:/review_heatmap/icons/patreon.svg</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>42</width>
-         <height>42</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="2" column="0">
         <widget class="QPushButton" name="btnCoffee">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -176,7 +149,7 @@ with a coffee</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="2" column="1">
         <widget class="QPushButton" name="btnMail">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -203,23 +176,34 @@ an add-on for you</string>
          </property>
         </widget>
        </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QPushButton" name="btnPatreon">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Perks include access to Patron-only add-ons, &lt;br&gt;exclusive blog posts, mentions in the credits, and more!</string>
+         </property>
+         <property name="text">
+          <string>Become a Patron and receive 
+exclusive add-ons &amp;&amp; other goodies!</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources/icons.qrc">
+           <normaloff>:/review_heatmap/icons/patreon.svg</normaloff>:/review_heatmap/icons/patreon.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>42</width>
+           <height>42</height>
+          </size>
+         </property>
+        </widget>
+       </item>
       </layout>
-     </item>
-     <item>
-      <spacer name="verticalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>5</height>
-        </size>
-       </property>
-      </spacer>
      </item>
      <item>
       <widget class="QLabel" name="labFooter">
@@ -269,9 +253,6 @@ an add-on for you</string>
    </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>btnPatreon</tabstop>
- </tabstops>
  <resources>
   <include location="../resources/icons.qrc"/>
   <include location="../resources/icons.qrc"/>
@@ -284,8 +265,8 @@ an add-on for you</string>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>336</x>
+     <y>444</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -300,8 +281,8 @@ an add-on for you</string>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>336</x>
+     <y>444</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
