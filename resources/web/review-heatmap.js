@@ -7,6 +7,9 @@ Copyright: (c) 2016-2018 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 */
 
+// Button click handlers
+// ##########################################################################
+
 function onHmSelChange(selector) {
     selector.blur();
     var val = selector.value;
@@ -53,7 +56,14 @@ function onHmContrib(event, button) {
     }
 }
 
+// Date mangling
+// ##########################################################################
+
 function stdTimezoneOffset(date) {
+    // Returns regular time (not DST) timezone offset in hours
+    // (offset is negative for timezones west of UTC, 
+    // positive for timezones east of UTC)
+    // Based on: https://stackoverflow.com/a/11888430/1708932
     var jan = new Date(date.getFullYear(), 0, 1);
     var jul = new Date(date.getFullYear(), 6, 1);
     return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
@@ -64,11 +74,13 @@ function applyDateOffset(date) {
     return new Date(date.getTime() + offset * 60 * 1000)
 }
 
+// Heatmap
+// ##########################################################################
+
 function initHeatmap(options, data) {
     var calStartDate = applyDateOffset(new Date());
     var calMinDate = applyDateOffset(new Date(options.start));
     var calMaxDate = applyDateOffset(new Date(options.stop));
-    console.log(options.today)
     var calTodayDate = new Date(options.today);
 
     // Running overview of 6-month activity in month view:
@@ -147,51 +159,70 @@ function initHeatmap(options, data) {
             return tip;
         },
         onClick: function (date, nb) {
-            // browse to date
+            // Click handler that shows cards assigned to a particular date
+            // in Anki's card browser
+            
             if (nb === null || nb == 0) {
+                // No cards for that day. Preserve highlight and return.
                 cal.highlight(calTodayDate); return;
             }
-
+            
+            // Determine if review history or forecast
             isHistory = nb >= 0;
-
-            // No, I don't know why we have to use a different reference point
-            // for revlogs and forecasts. This works, and at this point
-            // I have no intent of pursuing this any further. If you value
-            // your sanity, I propose that you don't, either.
-            if (isHistory) {
-                // Revlog. Use 'today' as set by daily cutoff.
-                today = new Date(calTodayDate);
-            } else {
-                // Forecast. Use actual date of today.
-                today = new Date();
-            }
-            today.setHours(0, 0, 0);
-            console.log(date);
-            console.log(today);
-
+            
+            // Apply deck limits
             cmd = options.whole ? "" : "deck:current ";
-
-            if (isHistory) {
+            
+            // Construct search command
+            if (nb >= 0) { // Review log
+                // Use custom finder based on revlog ID range
                 cutoff1 = date.getTime() + options.offset * 60 * 60 * 1000;
-                console.log(options.offset)
                 cutoff2 = cutoff1 + 86400 * 1000;
-                cmd += "revlog:" + cutoff1 + ":" + cutoff2;
-            } else {
+                cmd += "rid:" + cutoff1 + ":" + cutoff2;
+            } else {  // Forecast
+                // No, I don't know why we have to use the actual date of today
+                // as a reference point, rather than the daily-cutoff-adjusted
+                // calTodayDate. This works, and at this point I have no intent
+                // of investigating this any further. If you value your sanity,
+                // I propose that you don't, either.
+                today = new Date();
+                today.setHours(0, 0, 0);  // times returned by heatmap are all at
+                                          // 00:00 local TZ when subdomain is set
+                                          // to days
+                                          // (regardless of actual input date)
                 diffSecs = Math.abs(today.getTime() - date.getTime()) / 1000;
                 diffDays = Math.round(diffSecs / 86400);
                 cmd += "prop:due=" + diffDays;
             }
-            console.log(cmd)
-
+            
+            // Invoke browser
             pybridge("revhm_browse:" + cmd);
-
+            
+            // Update date highlight to include clicked on date AND today
             cal.highlight([calTodayDate, date]);
         },
         afterLoadData: function afterLoadData(timestamps) {
+            // Cal-heatmap works with local time, whereas the input data we
+            // provide is in UTC. This can lead to mismatches between recorded
+            // activity and activity presented to the user.
+            //
+            // The present function is meant to work around that fact,
+            // applying a time offset to each timestamp that is meant to bring
+            // the local time representation in cal-heatmap in line with UTC.
+            //
+            // E.g.:
+            //   - input datetime (UTC): 2018-01-02 00:00:00 UTC+0000 (UTC)
+            //   - cal-heatmap datetime: 2018-01-01 20:00:00 UTC-0400 (EDT)
+            //   - workaround datetime:  2018-01-02 00:00:00 UTC-0400 (EDT)
+            //
+            // Please note that this change will skew any programmatic data
+            // output from cal-heatmap, e.g. when implementing an onClick
+            // handler. You will have to take the updated datetime into
+            // account in that case.
+            //   
             // based on a GitHub comment by sergeysolovev
             // cf. https://github.com/wa0x6e/cal-heatmap/issues/126
             var offset = stdTimezoneOffset(new Date()) * 60;
-            // console.log(offset);
             var results = {};
             for (var timestamp in timestamps) {
                 var value = timestamps[timestamp];

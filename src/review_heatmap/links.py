@@ -33,7 +33,7 @@ from .gui.extra import invokeSnanki
 from .config import config, heatmap_colors, heatmap_modes
 
 __all__ = ["heatmapLinkHandler", "invokeBrowser", "findSeenOn",
-           "addSeenFinder"]
+           "findRevlogEntries", "addFinders"]
 
 # Link handler
 ######################################################################
@@ -92,12 +92,20 @@ def invokeBrowser(search):
 # Finder extensions
 ######################################################################
 
+# Used when clicking on heatmap date
+def findRevlogEntries(self, val):
+    """Find cards by revlog timestamp range"""
+    args = val[0]
+    cutoff1, cutoff2 = [int(i) for i in args.split(":")]
+    return ("c.id in (select cid from revlog where id between %d and %d)"
+            % (cutoff1, cutoff2))
 
+
+# NOTE: Deprecated as click handler due to rare off-by-one bugs,
+# but preserved for legacy support in case users use it
+# to create filtered decks). Might drop this in the future.
 def findSeenOn(self, val):
     """Find cards seen on a specific day"""
-    # NOTE: Deprecated as click handler due to rare off-by-one bugs,
-    # but preserved for legacy support in case users use it
-    # to create filtered decks). Might drop this in the future.
     try:
         days = int(val[0])
     except ValueError:
@@ -112,21 +120,13 @@ def findSeenOn(self, val):
     return ("c.id in (select cid from revlog where id between %d and %d)"
             % (cutoff1, cutoff2))
 
-def findRevlog(self, val):
-    """Find cards by revlog timestamp range"""
-    args = val[0]
-    cutoff1, cutoff2 = [int(i) for i in args.split(":")]
-    return ("c.id in (select cid from revlog where id between %d and %d)"
-            % (cutoff1, cutoff2))
-
-def addSeenFinder(self, col):
+def addFinders(self, col):
     """Add custom finder to search dictionary"""
     self.search["seen"] = self.findSeenOn
-    self.search["revlog"] = self.findRevlog
+    self.search["rid"] = self.findRevlogEntries
 
 # Hooks
 ######################################################################
-
 
 def initializeLinks():
     Overview._linkHandler = wrap(Overview._linkHandler, heatmapLinkHandler,
@@ -135,5 +135,5 @@ def initializeLinks():
         DeckBrowser._linkHandler, heatmapLinkHandler, "around")
     DeckStats._linkHandler = heatmapLinkHandler
     Finder.findSeenOn = findSeenOn
-    Finder.findRevlog = findRevlog
-    Finder.__init__ = wrap(Finder.__init__, addSeenFinder, "after")
+    Finder.findRevlogEntries = findRevlogEntries
+    Finder.__init__ = wrap(Finder.__init__, addFinders, "after")
