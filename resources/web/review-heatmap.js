@@ -139,11 +139,11 @@ function initHeatmap(options, data) {
                 tip = "<b>" + count + "</b> " + label + " <b>" + action + "</b> " + fmt.connector + " " + fmt.date;
             }
 
-            if (! cal.options.tooltip) {
+            if (!cal.options.tooltip) {
                 // anki20: quick hack to remove HTML for regular tooltips
                 tip = tip.replace(/<\/?b>/g, "");
             };
-            
+
             return tip;
         },
         onClick: function (date, nb) {
@@ -152,11 +152,13 @@ function initHeatmap(options, data) {
                 cal.highlight(calTodayDate); return;
             }
 
+            isHistory = nb >= 0;
+
             // No, I don't know why we have to use a different reference point
             // for revlogs and forecasts. This works, and at this point
             // I have no intent of pursuing this any further. If you value
             // your sanity, I propose that you don't, either.
-            if (nb >= 0) {
+            if (isHistory) {
                 // Revlog. Use 'today' as set by daily cutoff.
                 today = new Date(calTodayDate);
             } else {
@@ -168,13 +170,21 @@ function initHeatmap(options, data) {
             console.log(today);
 
             cmd = options.whole ? "" : "deck:current ";
-            cmd += nb >= 0 ? "seen:" : "prop:due=";
-            
-            diffSecs = Math.abs(today.getTime() - date.getTime()) / 1000;
-            diffDays = Math.round(diffSecs / 86400);
-            
-            pybridge("revhm_browse:" + cmd + diffDays);
-            
+
+            if (isHistory) {
+                cutoff1 = date.getTime() + options.offset * 60 * 60 * 1000;
+                console.log(options.offset)
+                cutoff2 = cutoff1 + 86400 * 1000;
+                cmd += "revlog:" + cutoff1 + ":" + cutoff2;
+            } else {
+                diffSecs = Math.abs(today.getTime() - date.getTime()) / 1000;
+                diffDays = Math.round(diffSecs / 86400);
+                cmd += "prop:due=" + diffDays;
+            }
+            console.log(cmd)
+
+            pybridge("revhm_browse:" + cmd);
+
             cal.highlight([calTodayDate, date]);
         },
         afterLoadData: function afterLoadData(timestamps) {
@@ -189,7 +199,7 @@ function initHeatmap(options, data) {
                 results[timestamp + offset] = value;
             };
             return results;
-            },
+        },
         data: data
     });
 
