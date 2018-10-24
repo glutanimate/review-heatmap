@@ -29,6 +29,7 @@ class ActivityReporter(object):
 
     def getData(self, limhist=None, limfcst=None, mode="reviews"):
         conf = self.config["synced"]
+        offset = self._getColOffset(self.col.crt)
         if limhist is None:
             limhist = self._getDynamicLimit(
                 conf["limhist"], conf["limdate"]) or None
@@ -36,12 +37,12 @@ class ActivityReporter(object):
             limfcst = conf["limfcst"] or None  # 0 => None
 
         if mode == "reviews":
-            history = self._cardsDone(num=limhist, chunk=1)
+            # TODO:start/stop
+            history = self._cardsDoneTs(offset)
             if not history:
                 return None
-            # let history take precedence over forecast for today:
-            startfcst = 1 if history[-1][0] == 0 else 0
-            forecast = self._cardsDue(startfcst, limfcst)
+            # TODO: handle today selection between history/forecast
+            forecast = self._cardsDueTs(offset, start=0)
         else:
             raise NotImplementedError(
                 "activity mode {} not implemented".format(mode))
@@ -50,83 +51,57 @@ class ActivityReporter(object):
 
     def _getActivity(self, history, forecast):
         col_crt = self.col.crt  # col creation unix timestamp
-        today = self.col.sched.today  # today in days since col creation time
-        first_day = last_day = None
+        offset = self._getColOffset(col_crt)  # daily cutoff offset in hours
+        today = self._getToday(offset)  # 00:00 UTC timestamp for today
+        first_day = history[0][0] if history else None
+        last_day = forecast[-1][0] if forecast else None
+
+        # Stats: cumulative activity and streaks
+
         streak_max = streak_cur = streak_last = 0
-
         current = total = 0
-        activity_by_day = {}
 
-        # Activity: history
         for idx, item in enumerate(history):
             current += 1
-            days_ago = item[0]  # x days ago
-            activity = item[1]  # activity count
+            timestamp, activity = item
 
             try:
-                next_days_ago = history[idx+1][0]
+                next_timestamp = history[idx+1][0]
             except IndexError:  # last item
                 streak_last = current
-                next_days_ago = None
+                next_timestamp = None
 
-            if days_ago + 1 != next_days_ago:  # days+1 ago, streak over
+            if timestamp + 86400 != next_timestamp:  # >1 day gap. streak over.
                 if current > streak_max:
                     streak_max = current
                 current = 0
 
-            day = today + days_ago
-
-            if first_day is None:
-                first_day = day
-
             total += activity
 
-            activity_by_day[col_crt + day * 86400] = activity  # by unix time
+        days_learned = idx
 
         # Stats: current streak
-        if history[-1][0] in (0, -1):  # last recorded date today or yesterday?
+        if history[-1][0] in (today, today - 86400):
+            # last recorded date today or yesterday?
             streak_cur = streak_last
 
         # Stats: average count on days with activity
-        avg_cur = int(round(float(total) / (idx+1)))
+        avg_cur = int(round(total / days_learned))
 
         # Stats: percentage of days with activity
-        dlearn = today - first_day
-        if dlearn == 0:
+        days_total = (today - first_day) / 86400
+        if days_total == 0:
             pdays = 100  # review history only extends to yesterday
         else:
-            pdays = int(round(((idx+1) / float(dlearn+1))*100))
-
-        revlogdata = dict(self._cardsDoneTs(self._getColOffset(col_crt)))
-        revlogdata.update(self._cardsDueTs(
-            self._getColOffset(col_crt), start=0))
-
-        # Activity: forecast
-        for item in forecast:
-            day = today + item[0]
-            due = item[1]
-            # negative counts allow us to apply separate cal-heatmap
-            # colorschemes for past and future data:
-            activity_by_day[col_crt + day * 86400] = -due
-            # revlogdata[col_crt + day * 86400] = -due
-            ################## DEBUG START ########################
-            # date = datetime.datetime.fromtimestamp(col_crt + day * 86400)
-            # print("{} ––– {} due --- fday: {} --- cday: {}".format(
-            #     date.strftime('%d %B %Y %H:%M:%S'), due, item[0], day))
-            ################### DEBUG END #########################
-
-        last_day = day
-
-        today = self._getToday(self._getColOffset(col_crt)) * 1000
-        print(today)
+            pdays = int(round((days_learned / days_total) * 100))
 
         return {
-            "activity": revlogdata,
-            # cal-heatmap dates need to be in ms:
-            "start": int((col_crt + first_day * 86400) * 1000),
-            "stop": int((col_crt + last_day * 86400) * 1000),
-            "today": today,
-            "offset": self._getColOffset(col_crt),
+            "activity": dict(history + forecast),
+            # individual cal-heatmap dates need to be in ms:
+            "start": first_day * 1000,
+            "stop": last_day * 1000,
+            "today": today * 1000,
+            "offset": offset,
             "stats": {
                 "streak_max": {
                     "type": "streak",
@@ -324,8 +299,7 @@ GROUP BY day ORDER BY day""".format(self._limit(), lim)
         offset *= 3600
         cmd = """
 SELECT
-strftime('%s', id / 1000 - {}, 'unixepoch', 'localtime', 'start of day')
-AS day, count()
+CAST(STRFTIME('%s', id / 1000 - {}, 'unixepoch', 'localtime', 'start of day') AS int) AS day, count()
 FROM revlog {}
 GROUP BY day ORDER BY day""".format(offset, lim)
         # print("_cardsDoneTsCmd: ", cmd)

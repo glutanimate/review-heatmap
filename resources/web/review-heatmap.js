@@ -176,7 +176,7 @@ function initHeatmap(options, data) {
             // Construct search command
             if (nb >= 0) { // Review log
                 // Use custom finder based on revlog ID range
-                cutoff1 = date.getTime() + options.offset * 60 * 60 * 1000;
+                cutoff1 = date.getTime() + options.offset * 3600 * 1000;
                 cutoff2 = cutoff1 + 86400 * 1000;
                 cmd += "rid:" + cutoff1 + ":" + cutoff2;
             } else {  // Forecast
