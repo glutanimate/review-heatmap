@@ -118,6 +118,7 @@ class ActivityReporter(object):
         last_day = day
 
         today = self._getToday(self._getColOffset(col_crt)) * 1000
+        print(today)
 
         return {
             "activity": revlogdata,
@@ -311,7 +312,7 @@ FROM cards
 WHERE did IN {} AND queue IN (2,3)
 {}
 GROUP BY day ORDER BY day""".format(self._limit(), lim)
-        print("_cardsDueTsCmd: ", cmd)
+        # print("_cardsDueTsCmd: ", cmd)
         return self.col.db.all(cmd,
                                today=self.col.sched.today)
 
@@ -327,5 +328,5 @@ strftime('%s', id / 1000 - {}, 'unixepoch', 'localtime', 'start of day')
 AS day, count()
 FROM revlog {}
 GROUP BY day ORDER BY day""".format(offset, lim)
-        print("_cardsDoneTsCmd: ", cmd)
+        # print("_cardsDoneTsCmd: ", cmd)
         return self.col.db.all(cmd)

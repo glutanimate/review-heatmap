@@ -68,7 +68,8 @@ function initHeatmap(options, data) {
     var calStartDate = applyDateOffset(new Date());
     var calMinDate = applyDateOffset(new Date(options.start));
     var calMaxDate = applyDateOffset(new Date(options.stop));
-    var calTodayDate = applyDateOffset(new Date(options.today));
+    console.log(options.today)
+    var calTodayDate = new Date(options.today);
 
     // Running overview of 6-month activity in month view:
     if (options.domain === "month") {
@@ -150,23 +151,28 @@ function initHeatmap(options, data) {
             if (nb === null || nb == 0) {
                 cal.highlight(calTodayDate); return;
             }
+
+            // No, I don't know why we have to use a different reference point
+            // for revlogs and forecasts. This works, and at this point
+            // I have no intent of pursuing this any further. If you value
+            // your sanity, I propose that you don't, either.
+            if (nb >= 0) {
+                // Revlog. Use 'today' as set by daily cutoff.
+                today = new Date(calTodayDate);
+            } else {
+                // Forecast. Use actual date of today.
+                today = new Date();
+            }
+            today.setHours(0, 0, 0);
             console.log(date);
-            console.log(calTodayDate)
-            // clicked = new Date(date);
-            // today = new Date(calTodayDate);
-            // today.setHours(0)
-            
+            console.log(today);
+
             cmd = options.whole ? "" : "deck:current ";
             cmd += nb >= 0 ? "seen:" : "prop:due=";
             
-            // FIXME:
-            diffSecs = Math.abs(calTodayDate.getTime() - date.getTime()) / 1000;
-            if (nb < 0) {
-                diffDays = Math.round(diffSecs / 86400);
-            } else {
-                diffDays = Math.round(diffSecs / 86400);
-            }
-
+            diffSecs = Math.abs(today.getTime() - date.getTime()) / 1000;
+            diffDays = Math.round(diffSecs / 86400);
+            
             pybridge("revhm_browse:" + cmd + diffDays);
             
             cal.highlight([calTodayDate, date]);
@@ -175,7 +181,7 @@ function initHeatmap(options, data) {
             // based on a GitHub comment by sergeysolovev
             // cf. https://github.com/wa0x6e/cal-heatmap/issues/126
             var offset = stdTimezoneOffset(new Date()) * 60;
-            console.log(offset);
+            // console.log(offset);
             var results = {};
             for (var timestamp in timestamps) {
                 var value = timestamps[timestamp];
