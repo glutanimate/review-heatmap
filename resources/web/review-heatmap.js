@@ -53,11 +53,22 @@ function onHmContrib(event, button) {
     }
 }
 
+function stdTimezoneOffset(date) {
+    var jan = new Date(date.getFullYear(), 0, 1);
+    var jul = new Date(date.getFullYear(), 6, 1);
+    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+};
+
+function applyDateOffset(date) {
+    var offset = stdTimezoneOffset(date);
+    return new Date(date.getTime() + offset * 60 * 1000)
+}
+
 function initHeatmap(options, data) {
-    var calStartDate = new Date();
-    var calMinDate = new Date(options.start);
-    var calMaxDate = new Date(options.stop);
-    var calTodayDate = new Date(options.today)
+    var calStartDate = applyDateOffset(new Date());
+    var calMinDate = applyDateOffset(new Date(options.start));
+    var calMaxDate = applyDateOffset(new Date(options.stop));
+    var calTodayDate = applyDateOffset(new Date(options.today));
 
     // Running overview of 6-month activity in month view:
     if (options.domain === "month") {
@@ -74,9 +85,10 @@ function initHeatmap(options, data) {
             calStartDate = calMinDate;
         }
 
-        tempDate = new Date()
+        tempDate = new Date();
         tempDate.setMonth(tempDate.getMonth() + paddingUpper)
         tempDate.setDate(1);
+        tempDate = applyDateOffset(tempDate);
 
         // Always go back to centered view after scrolling back then forward
         if (tempDate.getTime() > calMaxDate.getTime()) {
@@ -127,7 +139,7 @@ function initHeatmap(options, data) {
             }
 
             if (! cal.options.tooltip) {
-                // quick hack to remove HTML for regular tooltips
+                // anki20: quick hack to remove HTML for regular tooltips
                 tip = tip.replace(/<\/?b>/g, "");
             };
             
@@ -138,20 +150,40 @@ function initHeatmap(options, data) {
             if (nb === null || nb == 0) {
                 cal.highlight(calTodayDate); return;
             }
-            clicked = new Date(date);
-            today = new Date(calTodayDate);
-            today.setHours(0)
+            console.log(date);
+            console.log(calTodayDate)
+            // clicked = new Date(date);
+            // today = new Date(calTodayDate);
+            // today.setHours(0)
             
             cmd = options.whole ? "" : "deck:current ";
             cmd += nb >= 0 ? "seen:" : "prop:due=";
             
-            diffSecs = Math.abs(today.getTime() - clicked.getTime()) / 1000;
-            diffDays = Math.round(diffSecs / 86400);
-            
+            // FIXME:
+            diffSecs = Math.abs(calTodayDate.getTime() - date.getTime()) / 1000;
+            if (nb < 0) {
+                diffDays = Math.round(diffSecs / 86400);
+            } else {
+                diffDays = Math.round(diffSecs / 86400);
+            }
+
             pybridge("revhm_browse:" + cmd + diffDays);
             
             cal.highlight([calTodayDate, date]);
         },
+        afterLoadData: function afterLoadData(timestamps) {
+            // based on a GitHub comment by sergeysolovev
+            // cf. https://github.com/wa0x6e/cal-heatmap/issues/126
+            var offset = stdTimezoneOffset(new Date()) * 60;
+            console.log(offset);
+            var results = {};
+            for (var timestamp in timestamps) {
+                var value = timestamps[timestamp];
+                timestamp = parseInt(timestamp, 10);
+                results[timestamp + offset] = value;
+            };
+            return results;
+            },
         data: data
     });
 

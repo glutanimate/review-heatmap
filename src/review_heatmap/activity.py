@@ -97,6 +97,10 @@ class ActivityReporter(object):
         else:
             pdays = int(round(((idx+1) / float(dlearn+1))*100))
 
+        revlogdata = dict(self._cardsDoneTs(self._getColOffset(col_crt)))
+        revlogdata.update(self._cardsDueTs(
+            self._getColOffset(col_crt), start=0))
+
         # Activity: forecast
         for item in forecast:
             day = today + item[0]
@@ -104,6 +108,7 @@ class ActivityReporter(object):
             # negative counts allow us to apply separate cal-heatmap
             # colorschemes for past and future data:
             activity_by_day[col_crt + day * 86400] = -due
+            # revlogdata[col_crt + day * 86400] = -due
             ################## DEBUG START ########################
             # date = datetime.datetime.fromtimestamp(col_crt + day * 86400)
             # print("{} ––– {} due --- fday: {} --- cday: {}".format(
@@ -112,12 +117,14 @@ class ActivityReporter(object):
 
         last_day = day
 
+        today = self._getToday(self._getColOffset(col_crt)) * 1000
+
         return {
-            "activity": activity_by_day,
+            "activity": revlogdata,
             # cal-heatmap dates need to be in ms:
             "start": int((col_crt + first_day * 86400) * 1000),
             "stop": int((col_crt + last_day * 86400) * 1000),
-            "today": int((col_crt + today * 86400) * 1000),
+            "today": today,
             "offset": self._getColOffset(col_crt),
             "stats": {
                 "streak_max": {
@@ -138,21 +145,27 @@ class ActivityReporter(object):
                 }
             }
         }
-    
+
     def _getColOffset(self, col_crt):
         if ANKI21 and self.col.schedVer() == 2:
             return self.col.conf.get("rollover", 4)
         start_date = datetime.datetime.fromtimestamp(col_crt)
         return start_date.hour
 
+    def _getToday(self, offset):
+        time_str = self.col.db.scalar("""
+select strftime('%s', "now", "-{} hours",
+                "localtime", "start of day") as day""".format(offset))
+        return int(time_str)
+
     def _getDynamicLimit(self, limit_days, limit_date):
         if limit_date == self.col.crt:
             # ignore default value (set to collection creation time)
             return limit_days
-        
+
         days_since_date = int(round((
             (self.col.sched.dayCutoff - limit_date) / 86400)))
-        
+
         if limit_days == 0:
             return days_since_date
 
@@ -219,6 +232,41 @@ group by day order by day""" % (self._limit(), lim),
                                today=self.col.sched.today,
                                chunk=chunk)
 
+    def _cardsDoneTemp(self, offset, start=None):
+        # num: number of days to look back:
+        # chunk: chunks in days (per day: 1)
+        lims = []
+        # if start is not None:
+        #     lims.append("id > {}".format(start * 1000))
+
+        deck_limit = self._revlogLimit()
+        if deck_limit:
+            deck_limit.append(deck_limit)
+
+        if lims:
+            lim = "where " + " and ".join(lims)
+        else:
+            lim = ""
+
+        # Group revlog entries by day while taking local timezone and DST
+        # settings into account. Return as unix timestamps of UTC day start
+        # (00:00:00 UTC+0 of each day)
+        #
+        # We perform the grouping here instead of passing the raw data on to
+        # cal-heatmap because of performance reasons (user revlogs can easily
+        # reach >100K entries).
+        #
+        # Grouping-by-day needs to be timezone-aware to assign the recorded
+        # timestamps to the correct day. For that reason we include the
+        # 'localtime' strftime modifier, even though it does come at a
+        # performance penalty
+        return self.col.db.all("""
+select
+strftime('%s', id/1000 - {}, 'unixepoch', 'localtime', 'start of day') as day,
+count()
+from revlog {}
+group by day order by day""".format(offset, lim))
+
     def _cardsDone(self, num=7, chunk=1):
         # num: number of days to look back:
         # chunk: chunks in days (per day: 1)
@@ -244,3 +292,40 @@ from revlog %s
 group by day order by day""" % lim,
                                cut=self.col.sched.dayCutoff,
                                chunk=chunk)
+
+    def _cardsDueTs(self, offset, start=None, end=None,):
+        # start, end: days from today (today: 0). Set to None for unlimited.
+        # start: inclusive; end: exclusive
+        # chunk: chunks in days (per day: 1)
+        # TODO: limits
+        lim = ""
+        if start is not None:
+            lim += " and due-:today >= %d" % start
+        if end is not None:
+            lim += " and day < %d" % end
+        cmd = """
+SELECT
+strftime('%s', "now", 'localtime', "start of day") + (due - :today) * 86400
+AS day, -count()
+FROM cards
+WHERE did IN {} AND queue IN (2,3)
+{}
+GROUP BY day ORDER BY day""".format(self._limit(), lim)
+        print("_cardsDueTsCmd: ", cmd)
+        return self.col.db.all(cmd,
+                               today=self.col.sched.today)
+
+    def _cardsDoneTs(self, offset):
+        # TODO: time limits
+        lim = self._revlogLimit()
+        if lim:
+            lim = "where " + lim
+        offset *= 3600
+        cmd = """
+SELECT
+strftime('%s', id / 1000 - {}, 'unixepoch', 'localtime', 'start of day')
+AS day, count()
+FROM revlog {}
+GROUP BY day ORDER BY day""".format(offset, lim)
+        print("_cardsDoneTsCmd: ", cmd)
+        return self.col.db.all(cmd)
