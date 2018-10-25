@@ -22,6 +22,7 @@ from aqt.studydeck import StudyDeck
 from ..libaddon.gui.dialog_options import OptionsDialog
 from ..libaddon.platform import PLATFORM
 from ..config import config, heatmap_colors, heatmap_modes
+from ..activity import ActivityReporter
 
 from .forms import options as qtform_options
 
@@ -83,7 +84,8 @@ class RevHmOptions(OptionsDialog):
         )),
         ("form.dateLimData", (
             ("value", {
-                "dataPath": "synced/limdate"
+                "dataPath": "synced/limdate",
+                "getter": "_getDateLimData"
             }),
             ("min", {
                 "setter": "_setDateLimDataMin"
@@ -197,6 +199,15 @@ class RevHmOptions(OptionsDialog):
                 continue
             item_tuples.append((name, did))
         return item_tuples
+    
+    # Config getters:
+    
+    def _getDateLimData(self, widget_val):
+        val = ActivityReporter.daystartEpoch(widget_val)
+        default = ActivityReporter.daystartEpoch(self._setDateLimDataMin(None))
+        if val == default:
+            return 0
+        return val
 
 
 def invokeOptionsDialog(parent=None):

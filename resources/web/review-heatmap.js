@@ -81,7 +81,8 @@ function initHeatmap(options, data) {
     var calStartDate = applyDateOffset(new Date());
     var calMinDate = applyDateOffset(new Date(options.start));
     var calMaxDate = applyDateOffset(new Date(options.stop));
-    var calTodayDate = new Date(options.today);
+    var calTodayDate = applyDateOffset(new Date(options.today));
+    console.log(calTodayDate);
 
     // Running overview of 6-month activity in month view:
     if (options.domain === "month") {
