@@ -468,7 +468,7 @@ select.hm-sel:active, select.hm-sel:focus {
     width: 640px;
 }
 .rh-platform-lin.rh-anki-20.rh-mode-months #cal-heatmap {
-    width: 600px;
+    width: 610px;
 }
 /* without these adjustments, buttons are comically large on the stats screen  */
 .rh-anki-20.rh-view-stats .hm-btn {
