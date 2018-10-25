@@ -786,7 +786,8 @@ class CommonWidgetInterface(object):
         """
         qdatetime = qdatetimeedit.dateTime()
         # Qt4 does not support toSecsSinceEpoch
-        return int(qdatetime.toMSecsSinceEpoch() // 1000)
+        timestamp = int(round(qdatetime.toMSecsSinceEpoch() / 1000))
+        return timestamp
 
     # QComboBox
 
