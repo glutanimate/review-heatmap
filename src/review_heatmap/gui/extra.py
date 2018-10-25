@@ -145,7 +145,7 @@ class Snanki(QDialog):
         qp.setFont(QFont('Decorative', 10))
         qp.drawText(4, 17, "LIVES: " + str(self.lives))
         qp.drawText(120, 17, "SCORE: " + str(self.score))
-        qp.drawText(235, 17, "BEST: " + str(self.highscore))
+        qp.drawText(230, 17, "BEST: " + str(self.highscore))
 
     def gameOver(self, event, qp):
         info = ""
