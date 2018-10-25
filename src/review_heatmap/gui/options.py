@@ -207,7 +207,7 @@ class RevHmOptions(OptionsDialog):
         default = ActivityReporter.daystartEpoch(self._setDateLimDataMin(None))
         if val == default:
             return 0
-        return val
+        return widget_val
 
 
 def invokeOptionsDialog(parent=None):

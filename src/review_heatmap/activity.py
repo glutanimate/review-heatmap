@@ -205,11 +205,14 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
         else:
             limit_days_date = 0
 
+        limit_date = self.daystartEpoch(limit_date) if limit_date else None
+
         if (not limit_date or
-                self.daystartEpoch(limit_date) ==
-                self.daystartEpoch(self.col.crt)):
+                limit_date == self.daystartEpoch(self.col.crt)):
             # ignore zero value or default value
             limit_date = 0
+        else:
+            limit_date = limit_date
 
         # choose most restricting limit
         return max(limit_days_date, limit_date) or None
