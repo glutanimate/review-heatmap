@@ -82,7 +82,6 @@ function initHeatmap(options, data) {
     var calMinDate = applyDateOffset(new Date(options.start));
     var calMaxDate = applyDateOffset(new Date(options.stop));
     var calTodayDate = applyDateOffset(new Date(options.today));
-    console.log(calTodayDate);
 
     // Running overview of 6-month activity in month view:
     if (options.domain === "month") {
@@ -99,10 +98,9 @@ function initHeatmap(options, data) {
             calStartDate = calMinDate;
         }
 
-        tempDate = new Date();
+        tempDate = new Date(calTodayDate);
         tempDate.setMonth(tempDate.getMonth() + paddingUpper)
         tempDate.setDate(1);
-        tempDate = applyDateOffset(tempDate);
 
         // Always go back to centered view after scrolling back then forward
         if (tempDate.getTime() > calMaxDate.getTime()) {
