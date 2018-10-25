@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>344</width>
-    <height>441</height>
+    <height>428</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -97,7 +97,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Writing, supporting, and maintaining my add-ons takes a lot of time. If &lt;span style=&quot; font-weight:600;&quot;&gt;{ADDON_NAME}&lt;/span&gt; has been a valuable asset in your studies, please consider &lt;span style=&quot; font-weight:600;&quot;&gt;supporting my work&lt;/span&gt; through one of the methods below:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hi! &lt;span style=&quot; font-weight:600;&quot;&gt;Glutanimate&lt;/span&gt; here :). Thanks for checking out Review Heatmap and some of my other add-ons. I hope you've been enjoying them. &lt;/p&gt;&lt;p&gt;Writing, supporting, and maintaining these projects takes a lot of time. If &lt;span style=&quot; font-weight:600;&quot;&gt;{ADDON_NAME}&lt;/span&gt; or any of my other add-ons has been a valuable asset in your studies, please consider &lt;span style=&quot; font-weight:600;&quot;&gt;supporting my work&lt;/span&gt; through one of the methods below:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -214,7 +214,7 @@ exclusive add-ons &amp;&amp; other goodies!</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Each contribution is greatly appreciated and will help me &lt;span style=&quot; font-weight:600;&quot;&gt;maintain and improve&lt;/span&gt; my add-ons as time goes by!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Each contribution is greatly appreciated and will help me &lt;span style=&quot; font-weight:600;&quot;&gt;maintain and improve&lt;/span&gt; my add-ons as time goes by! Thank you.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -253,6 +253,13 @@ exclusive add-ons &amp;&amp; other goodies!</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>btnPatreon</tabstop>
+  <tabstop>btnCoffee</tabstop>
+  <tabstop>btnMail</tabstop>
+  <tabstop>btnCredits</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../resources/icons.qrc"/>
   <include location="../resources/icons.qrc"/>
