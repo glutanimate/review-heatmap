@@ -68,5 +68,5 @@ PATRONS = ("Alex M", "Devin Beecher", "Edan Maor", "Itai Efrat",
            "Paul McManus", "Peter Benisch", "Rob Alexander", "Scott Barnett",
            "Sebastián Ortega", "Shawn Lesniak", "spiraldancing",
            "Steven Nevers", "Henrik Giesel", "Jim Sola", "JessC",
-           "Yuniesky Echemendia")
+           "Yuniesky Echemendia", "Andrew", "Michael Song")
 PATRONS_TOP = ("Paul Bake", "Blacky 372", "Fin Thiessen")
