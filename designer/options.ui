@@ -46,7 +46,7 @@
         <string>&lt;html&gt;Please leave a thumbs-up if you've enjoyed this add-on&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string/>
+        <string>Rate</string>
        </property>
        <property name="icon">
         <iconset resource="../resources/icons.qrc">
@@ -63,7 +63,7 @@
         <string>&lt;html&gt;Follow me on Twitter for &lt;br&gt;updates on add-on releases and news on Anki in general!&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string/>
+        <string>Twitter</string>
        </property>
        <property name="icon">
         <iconset resource="../resources/icons.qrc">
@@ -80,7 +80,7 @@
         <string>&lt;html&gt;Check out my YouTube channel for&lt;br&gt;helpful tutorials on this add-on and more&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>YouTube</string>
        </property>
        <property name="icon">
         <iconset resource="../resources/icons.qrc">

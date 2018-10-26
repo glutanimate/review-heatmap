@@ -5,11 +5,7 @@
     <file>icons/heart.svg</file>
     <file>icons/heart_small.svg</file>
     <file>icons/heart_bw.svg</file>
-    <file>icons/coffee.svg</file>
-    <file>icons/patreon.svg</file>
     <file>icons/rate.svg</file>
-    <file>icons/twitter.svg</file>
-    <file>icons/youtube.svg</file>
     <file>icons/email.svg</file>
     <file>icons/down.svg</file>
     <file>icons/left.svg</file>
@@ -17,5 +13,9 @@
     <file>icons/circle.svg</file>
     <file>icons/plus.svg</file>
     <file>icons/minus.svg</file>
+    <file alias="icons/coffee.svg">icons/optional/coffee.svg</file>
+    <file alias="icons/patreon.svg">icons/optional/patreon.svg</file>
+    <file alias="icons/twitter.svg">icons/optional/twitter.svg</file>
+    <file alias="icons/youtube.svg">icons/optional/youtube.svg</file>
   </qresource>
 </RCC>
