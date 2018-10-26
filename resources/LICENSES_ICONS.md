@@ -41,9 +41,11 @@ Licensed under the same variation of GNU Affero General Public License as the so
 
 ### Referenced Icons
 
-The following icons are not part of the source code distribution, but included in binary builds. They are proprietary assets which are not essential to the functioning of the base program and as such not subject to the licensing terms imposed by the GNU Affero General Public License.
+The icons listed in this section are not part of the source code distribution, but included in binary builds. They are proprietary assets which are not essential to the functioning of the base program and as such not subject to the licensing terms imposed by the GNU Affero General Public License.
 
-The icons listed below are property of their respective copyright holders and used under each company's respective brand resource guidelines:
+#### Company Logos
+
+The following icons are property of their respective copyright holders and used under each company's respective brand resource guidelines:
 
 - youtube.svg is Copyright (c) [YouTube](https://www.youtube.com/intl/us/yt/about/brand-resources/#logos-icons-colors)
 - twitter.svg is Copyright (c) [Twitter](https://about.twitter.com/en/company/brand-resources.html)
@@ -51,6 +53,8 @@ The icons listed below are property of their respective copyright holders and us
 - coffee.svg is Copyright (c) [Ko-Fi](https://ko-fi.com/)
 
 Trademark and copyright terms of each respective brand apply.
+
+#### Glutanimate Logos
 
 The following icons are Copyright (c) 2016-2018 Glutanimate with all rights reserved:
 
