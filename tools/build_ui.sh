@@ -176,20 +176,6 @@ function qt_builder () {
     echo "Done."
 }
 
-function copy_licenses () {
-    indir="$1"
-    outdir="$2"
-
-    debuglog "Copying licenses..."
-
-    for license in "${indir}"/LICENSE*; do
-        name=$(basename "${license}")
-        echo "$name"
-        echo "$outdir"
-        cp "${license}" "${outdir}/${name}"
-    done
-}
-
 function build_for_anki_version () {
     echo -e "This is ${__name__} v${__version__} by ${__author__}.\n"
 
@@ -205,8 +191,6 @@ function build_for_anki_version () {
     echo ""
 
     qt_builder "pyrcc" "${qt_version}" "${INDIR_RESOURCES}" "${resource_dir}"
-
-    copy_licenses "${INDIR_RESOURCES}" "$OUTDIR_RESOURCES"
     
     echo -e "\nDone with all UI build tasks."
 }

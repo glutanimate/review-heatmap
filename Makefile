@@ -51,7 +51,7 @@ buildzip:
 buildrelease:
 	rm -f *-release-$(VERSION)-anki2*.zip
 	git archive --format tar $(VERSION) | tar -x -C build/dist/
-	for license in build/dist/LICENSE*; do \
+	for license in build/dist/LICENSE* build/dist/resources/LICENSE*; do \
 		name=$$(basename $$license) ; \
 		ext="$${name##*.}" ; \
 		fname="$${name%.*}" ; \
