@@ -5,6 +5,8 @@
 # Copyright: (c) 2017-2018 Glutanimate <https://glutanimate.com/>
 # License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 
+SHELL := /bin/bash
+
 VERSION = `git describe HEAD --tags --abbrev=0`
 ADDON = review-heatmap
 ADDONDIR = review_heatmap
@@ -51,7 +53,10 @@ buildrelease:
 	git archive --format tar $(VERSION) | tar -x -C build/dist/
 	for license in build/dist/LICENSE*; do \
 		name=$$(basename $$license) ; \
-		cp $$license "build/dist/src/$(ADDONDIR)/$$name" ; \
+		ext="$${name##*.}" ; \
+		fname="$${name%.*}" ; \
+		echo "build/dist/src/$(ADDONDIR)/$${fname}.txt" ; \
+		cp $$license "build/dist/src/$(ADDONDIR)/$${fname}.txt" ; \
 	done
 	
 	cp -r build/dist/* build/dist21
