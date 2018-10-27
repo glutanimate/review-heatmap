@@ -20,7 +20,7 @@ clean: cleanbuild cleanzips
 
 zip: cleanbuild ui builddir buildzip
 
-release: cleanbuild builddir buildrelease
+release: cleanbuild builddir buildrelease cleanbuild
 
 ###
 
@@ -49,8 +49,13 @@ buildzip:
 	rm -rf build
 
 buildrelease:
+    # Remove existing release build of same version
 	rm -f *-release-$(VERSION)-anki2*.zip
+
+	# Create a git snapshot of source files at $(VERSION) tag
 	git archive --format tar $(VERSION) | tar -x -C build/dist/
+
+	# Copy licenses to module directory
 	for license in build/dist/LICENSE* build/dist/resources/LICENSE*; do \
 		name=$$(basename $$license) ; \
 		ext="$${name##*.}" ; \
@@ -58,15 +63,25 @@ buildrelease:
 		echo "build/dist/src/$(ADDONDIR)/$${fname}.txt" ; \
 		cp $$license "build/dist/src/$(ADDONDIR)/$${fname}.txt" ; \
 	done
+
+	# Include referenced assets that are not part of version control
+	cp -r resources/icons/optional build/dist/resources/icons/
 	
+	# Duplicate build folder for both build targets
 	cp -r build/dist/* build/dist21
 
+	# Build for Anki 2.0
 	cd build/dist &&  \
 		PYENV_VERSION=anki20tools ../../tools/build_ui.sh "$(ADDONDIR)" anki20 &&\
 		cd src && \
 		zip -r "../../../$(ADDON)-release-$(VERSION)-anki20.zip" "$(ADDONDIR)" *.py
+	# Build for Anki 2.1
+	#   GitHub release contains module folder, whereas files in the AnkiWeb release
+	#   are all placed at the top-level of the zip file.
 	cd build/dist21 &&  \
-		PYENV_VERSION=anki21tools ../../tools/build_ui.sh "$(ADDONDIR)" anki21 &&\
-		cd src/"$(ADDONDIR)" && \
-		zip -r "../../../../$(ADDON)-release-$(VERSION)-anki21.zip" *
-	rm -rf build
+		PYENV_VERSION=anki21tools ../../tools/build_ui.sh "$(ADDONDIR)" anki21 && \
+		cd src && \
+		zip -r "../../../$(ADDON)-release-$(VERSION)-anki21.zip" "$(ADDONDIR)" && \
+		cd "$(ADDONDIR)" && \
+		zip -r "../../../../$(ADDON)-release-$(VERSION)-anki21-ankiweb.zip" *
+	
