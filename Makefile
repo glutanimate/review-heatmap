@@ -73,7 +73,7 @@ buildarchive:
 	# Create build directory
 	mkdir -p build/dist build/dist21
 
-    # Remove existing release build of same version
+	# Remove existing release build of same version
 	rm -f *-release-$(VERSION)-anki2*.zip
 
 	# Create a git snapshot of source files at $(VERSION) tag
