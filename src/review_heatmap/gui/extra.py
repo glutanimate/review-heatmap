@@ -52,6 +52,7 @@ from ..libaddon.platform import isMac
 __all__ = ["invokeSnanki"]
 
 SNANKI_VERSION = "0.0.2"
+STARTING_LIVES = 3
 
 class Snanki(QDialog):
     def __init__(self, highscore=0, lives=5, parent=None):
@@ -278,7 +279,7 @@ def invokeSnanki(parent=None):
 
     if lastplayed < day_start:
         # new day, reset
-        livesleft = 5
+        livesleft = STARTING_LIVES
         if streak_max is not None:
             livesleft += int(round(0.1 * streak_max ** 0.5))
         if streak_cur is not None:
