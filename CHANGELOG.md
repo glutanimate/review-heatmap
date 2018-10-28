@@ -72,7 +72,7 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 - Review Heatmap and all of the other add-ons I'm working on are now tested against all platforms supported by Anki. If you are a macOS or Windows user you should see a lot of improvements in ironing out platform-specific kinks in the future.
 
 
-## [0.6.1-alpha-anki21] - 2018-09-23
+## [0.6.1-anki21-alpha] - 2018-09-23
 
 ### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/0.6.1-anki21-alpha)
 
@@ -130,9 +130,9 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 
 First release of Review Heatmap.
 
-[Unreleased]: https://github.com/glutanimate/review-heatmap/compare/v0.7.0-beta1...HEAD
-[0.7.0-beta.1]: https://github.com/glutanimate/review-heatmap/compare/v0.6.1-anki21-alpha...v0.7.0-beta1
-[0.6.1-alpha-anki21]: https://github.com/glutanimate/review-heatmap/compare/v0.6.0...0.6.1-alpha-anki21
+[Unreleased]: https://github.com/glutanimate/review-heatmap/compare/v0.7.0-beta.1...HEAD
+[0.7.0-beta.1]: https://github.com/glutanimate/review-heatmap/compare/v0.6.1-anki21-alpha...v0.7.0-beta.1
+[0.6.1-anki21-alpha]: https://github.com/glutanimate/review-heatmap/compare/v0.6.0...v0.6.1-anki21-alpha
 [0.6.0]: https://github.com/glutanimate/review-heatmap/compare/v0.5.2...v0.6.0
 [0.5.2]: https://github.com/glutanimate/review-heatmap/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/glutanimate/review-heatmap/compare/39f686fd8dbfe532e97ff9c4a8189a684a011492...v0.5.1
