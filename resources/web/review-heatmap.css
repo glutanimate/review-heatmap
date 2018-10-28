@@ -182,6 +182,21 @@ select.hm-sel:active, select.hm-sel:focus {
     background: #e6e6e6;
 }
 
+/* Heatmap links */
+/* ################################################################### */
+
+/* we use these instead of regular links to prevent bugs with page navigation,
+   prevent the link color from changing on click, etc.*/
+
+.linkspan {
+     cursor:pointer;
+     color:blue;
+     text-decoration:underline;
+}
+
+.night_mode .linkspan {
+    color: white;
+}
 
 /* Streak stats */
 /* ################################################################### */
@@ -195,6 +210,9 @@ select.hm-sel:active, select.hm-sel:focus {
     font-weight: bold;
     color: #E6E6E6;
 }
+
+
+
 
 
 /* Color themes */
