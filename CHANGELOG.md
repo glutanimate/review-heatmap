@@ -8,7 +8,7 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 
 &nbsp;
 
-:heart: My heartfelt thanks go out to everyone who has supported this add-on through their tips, contributions, or any other means (you know who you are!). All of the recent additions would not have been possible without you. Thank you for being awesome!
+:heart: My heartfelt thanks goes out to everyone who has supported this add-on through their tips, contributions, or any other means (you know who you are!). All of the recent additions would not have been possible without you. Thank you for being awesome!
 
 
 
@@ -19,10 +19,9 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 <center><img src="screenshots/0.7.0_logo.png"></center>
 
 
-
 ### Added
 
-- Full **Anki 2.1 & 2.0 support**
+- Full **Anki 2.1 support** (and 2.0 backwards compatibility)
     - Yes, it's finally here!
 - **Completely reworked months mode**
     - shows a **continuous timeline** of activity, instead of being bound to a yearly schedule
@@ -49,15 +48,10 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 
 ### Changed
 
-- **Complete rewrite** of the add-on
-    - Review Heatmap's codebase hadn't really changed that much since its first release nearly two years ago. This rewrite, although arduous and very time-consuming, was long overdue and now provides a stable and maintainable base for future additions to the add-on's functionality.
+- **Completely rewrote** the add-on. Review Heatmap's codebase hadn't really changed that much since the add-on' first release nearly two years ago. This rewrite, although arduous and very time-consuming, was long overdue and now provides a stable and maintainable base for future additions to Review Heatmap.
 - Fully **redesigned options dialog**, which can now also be accessed directly from the heatmap.
 - On Anki 2.1 the heatmap now loads asynchronously, i.e. without blocking page load, which should make for faster switching between Anki's screens even with long review histories
 - History and forecast limits are now inactive by default. The previous default of limiting the displayed data to a period of 365 days could be confusing sometimes.
-
-### Deprecated
-
-- the `seen:` query phrase has been superseded by the new `rid:` phrase, and is likely to be removed in the future
 
 ### Fixed
 
@@ -67,9 +61,14 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 - Fixes some macOS- and Windows-specific layout and sizing issues
 - Quite a few other smaller issues which would take too long to list here
 
+
+### Deprecated
+
+- the `seen:` query phrase has been superseded by the new `rid:` phrase, and is likely to be removed in the future
+
 ### Other
 
-- Throughout the redesign of Review Heatmap I developed a completely new set new tools for building and testing my add-ons. The fruits of this work will also benefit my other add-on projects, making for a faster iteration time, and more 2.1 releases coming soon!
+- Throughout the redesign of Review Heatmap I had to develop a completely new set new tools for building and testing my add-ons. The fruits of this work will also benefit my other projects, making for a faster iteration time, and more 2.1 add-on releases coming soon!
 - Review Heatmap and all of the other add-ons I'm working on are now tested against all platforms supported by Anki. If you are a macOS or Windows user you should see a lot of improvements in ironing out platform-specific kinks in the future.
 
 
