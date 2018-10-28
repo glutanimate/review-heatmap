@@ -14,7 +14,7 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 
 ## [0.7.0-beta.1] - 2018-10-28
 
-### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/0.7.0-beta.1)
+### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v0.7.0-beta.1)
 
 <center><img src="screenshots/0.7.0_logo.png"></center>
 
@@ -74,7 +74,7 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 
 ## [0.6.1-anki21-alpha] - 2018-09-23
 
-### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/0.6.1-anki21-alpha)
+### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v0.6.1-anki21-alpha)
 
 ### Added
 
