@@ -116,6 +116,12 @@ class ActivityReporter(object):
         avg_cur = int(round(total / max(days_learned, 1)))
 
         # Stats: percentage of days with activity
+        #
+        # NOTE: days_total is based on first recorded revlog entry, i.e. it is
+        # not the grand total of days since collection creation date / whatever
+        # history limits the user might have set. This value seems more
+        # desirable and motivating than the raw percentage of days learned
+        # in the date inclusion period.
         days_total = (self.today - first_day) / 86400
         if days_total == 0:
             pdays = 100  # review history only extends to yesterday
