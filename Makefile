@@ -90,8 +90,8 @@ buildarchive:
 	done
 
 	# Include referenced assets that are not part of version control
-	[[ -d "$$resources/icons/optional" ]] && \
-		 cp -r resources/icons/optional build/dist/resources/icons/ || true
+	[[ -d "resources/icons/optional" ]] && \
+		 cp -r "resources/icons/optional" build/dist/resources/icons/ || true
 	
 	# Duplicate build folder for both build targets
 	cp -r build/dist/* build/dist21
