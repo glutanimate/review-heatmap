@@ -36,6 +36,7 @@ Components related to gathering and analyzing user activity
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
+import time
 import datetime
 
 from aqt import mw
@@ -315,14 +316,36 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
             lim += " AND day < {}".format(stop)
         cmd = """
 SELECT
-STRFTIME('%s', 'now', 'localtime', 'start of day') + (due - :today) * 86400
-AS day, -COUNT() -- negative to support heatmap legend
+STRFTIME('%s', 'now', '-{} hours', 'localtime', 'start of day')
+    + (due - :today) * 86400
+AS day, -COUNT(), due -- nsegative to support heatmap legend
 FROM cards
 WHERE did IN {} AND queue IN (2,3)
 {}
-GROUP BY day ORDER BY day""".format(self._didLimit(), lim)
+GROUP BY day ORDER BY day""".format(self.offset, self._didLimit(), lim)
 
-        return self.col.db.all(cmd, today=self.col.sched.today)
+        if ANKI21 and mw.col.schedVer() == 2:
+            offset = mw.col.conf.get("rollover", 4)
+            schedver = 2
+        else:
+            startDate = datetime.datetime.fromtimestamp(mw.col.crt)
+            offset = startDate.hour
+            schedver = 1
+
+        print(cmd)
+        print(self.col.sched.today)
+
+        print("Anki version {}, Scheduler version {}".format("2.1" if ANKI21 else "2.0", schedver))
+        print("Day starts at setting: {} hours".format(offset))
+        print(time.strftime("dayCutoff: %Y-%m-%d %H:%M", time.localtime(mw.col.sched.dayCutoff)))
+        print(time.strftime("local now: %Y-%m-%d %H:%M", time.localtime(time.time())))
+        print(time.strftime("Col today: %Y-%m-%d", time.localtime(mw.col.crt + 86400 * mw.col.sched.today)))
+        print("Col days: {}".format(mw.col.sched.today))
+
+        res = self.col.db.all(cmd, today=self.col.sched.today)
+        print(res)
+
+        return [i[:-1] for i in res]
 
     def _cardsDone(self, start=None):
         """
