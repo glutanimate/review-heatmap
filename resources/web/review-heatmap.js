@@ -59,19 +59,16 @@ function onHmContrib(event, button) {
 // Date mangling
 // ##########################################################################
 
-function stdTimezoneOffset(date) {
-    // Returns regular time (not DST) timezone offset in hours
-    // (offset is negative for timezones west of UTC, 
-    // positive for timezones east of UTC)
-    // Based on: https://stackoverflow.com/a/11888430/1708932
-    var jan = new Date(date.getFullYear(), 0, 1);
-    var jul = new Date(date.getFullYear(), 6, 1);
-    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
-};
-
+// return "zero"-ed local datetime (workaround for lack of UTC time support
+// in cal-heatmap)
 function applyDateOffset(date) {
-    var offset = stdTimezoneOffset(date);
-    return new Date(date.getTime() + offset * 60 * 1000)
+    return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
+}
+
+// return local timezone offset in seconds at given unix timestamp
+function tzOffsetByTimestamp(timestamp) {
+    date = new Date(timestamp * 1000);
+    return date.getTimezoneOffset() * 60;
 }
 
 // Heatmap
@@ -219,14 +216,12 @@ function initHeatmap(options, data) {
             // handler. You will have to take the updated datetime into
             // account in that case.
             //   
-            // based on a GitHub comment by sergeysolovev
-            // cf. https://github.com/wa0x6e/cal-heatmap/issues/126
-            var offset = stdTimezoneOffset(new Date()) * 60;
+            // adapted from: https://github.com/wa0x6e/cal-heatmap/issues/126
             var results = {};
             for (var timestamp in timestamps) {
                 var value = timestamps[timestamp];
                 timestamp = parseInt(timestamp, 10);
-                results[timestamp + offset] = value;
+                results[timestamp + tzOffsetByTimestamp(timestamp)] = value;
             };
             return results;
         },
