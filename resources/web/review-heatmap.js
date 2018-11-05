@@ -79,33 +79,37 @@ function initHeatmap(options, data) {
     var calMinDate = applyDateOffset(new Date(options.start));
     var calMaxDate = applyDateOffset(new Date(options.stop));
     var calTodayDate = applyDateOffset(new Date(options.today));
-
+    
     // Running overview of 6-month activity in month view:
     if (options.domain === "month") {
         padding = options.range / 2;
         // TODO: fix
         paddingLower = Math.round(padding - 1);
         paddingUpper = Math.round(padding + 1);
-
+        
         calStartDate.setMonth(calStartDate.getMonth() - paddingLower);
         calStartDate.setDate(1);
-
+        
         // Start at first data point if history < 6 months
         if (calMinDate.getTime() > calStartDate.getTime()) {
             calStartDate = calMinDate;
         }
-
+        
         tempDate = new Date(calTodayDate);
         tempDate.setMonth(tempDate.getMonth() + paddingUpper)
         tempDate.setDate(1);
-
+        
         // Always go back to centered view after scrolling back then forward
         if (tempDate.getTime() > calMaxDate.getTime()) {
             calMaxDate = tempDate;
         }
     }
-
+    
     var cal = new CalHeatMap();
+    
+    console.log("Date: options.today " + new Date(options.today))
+    console.log("Date: calTodayDate "+ calTodayDate)
+    console.log("Date: Date() "+ new Date())
 
     cal.init({
         domain: options.domain,
@@ -163,7 +167,9 @@ function initHeatmap(options, data) {
                 cal.highlight(calTodayDate); return;
             }
             
-            // Determine if review history or forecast
+            console.log(date)
+
+            // Determine if review history or forecasts
             isHistory = nb >= 0;
             
             // Apply deck limits
