@@ -37,7 +37,7 @@ from ..packaging import VersionSpecificImporter
 
 # New vendored packages should be appended here:
 names = [
-    "distutils"
+    "packaging"
 ]
 
 # NOTE: VersionSpecificImporter does not resolve absolute imports within

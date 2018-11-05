@@ -42,8 +42,7 @@ import io
 from anki.utils import json
 from anki.hooks import addHook, runHook
 
-# use vendorized distutils because distutils.version is missing from Anki
-from .._vendor.distutils.version import LooseVersion
+from .._vendor.packaging import version
 
 from ..utils import deepMergeDicts
 from ..platform import ANKI21, PATH_ADDON, MODULE_ADDON
@@ -525,7 +524,7 @@ class ConfigManager(object):
         default_version = default_dict["version"]
 
         # Upgrade config version if necessary
-        if (LooseVersion(dict_version) < LooseVersion(default_version)):
+        if (version.parse(dict_version) < version.parse(default_version)):
             storage_obj[conf_key] = deepMergeDicts(
                 default_dict, storage_dict, new=True)
             storage_obj[conf_key]["version"] = default_version
