@@ -176,16 +176,9 @@ function initHeatmap(options, data) {
                 cutoff2 = cutoff1 + 86400 * 1000;
                 cmd += "rid:" + cutoff1 + ":" + cutoff2;
             } else {  // Forecast
-                // No, I don't know why we have to use the actual date of today
-                // as a reference point, rather than the daily-cutoff-adjusted
-                // calTodayDate. This works, and at this point I have no intent
-                // of investigating this any further. If you value your sanity,
-                // I propose that you don't, either.
-                today = new Date();
-                today.setHours(0, 0, 0);  // times returned by heatmap are all at
-                                          // 00:00 local TZ when subdomain is set
-                                          // to days
-                                          // (regardless of actual input date)
+                today = new Date(calTodayDate);
+                today.setHours(0, 0, 0);  // just a precaution against
+                                          // calTodayDate not being zeroed
                 diffSecs = Math.abs(today.getTime() - date.getTime()) / 1000;
                 diffDays = Math.round(diffSecs / 86400);
                 cmd += "prop:due=" + diffDays;
