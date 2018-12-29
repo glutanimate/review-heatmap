@@ -73,12 +73,18 @@ html_template = """\
     {libs_string}
     
     <p><img src="qrc:/review_heatmap/icons/heart_small.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
-    <p>My heartfelt thanks go out to everyone who has supported this add-on through their tips, contributions, or any other means. You guys rock!</p>
-    <p>In particular I would like to thank all of the awesome people who support me on <a href="https://www.patreon.com/glutanimate">Patreon</a>, including:</p>
+    <p>My heartfelt thanks go out to everyone who has <b>supported</b> this add-on through their tips,
+        contributions, or any other means. You guys rock!</p>
+    <p>In particular I would like to thank all of the awesome people who support me
+        on <b><a href="https://www.patreon.com/glutanimate">Patreon</a></b>, including:</p>
     <p><i><span style="color:#aa2a4c;">{patrons_string}</span></i></p>
     
     <p><span style="font-weight:600;">License</span></p>
-    <p>{display_name} is licensed under the {license} license. Please see the license file in the add-on directory for more information.</p>
+    <p><i>{display_name}</i> is <b>free and open-source</b> software. The add-on code that runs within
+        Anki is released under the {license} license, extended by a number of additional terms.
+        For more information please see the accompanied license file.</p>
+    <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
+        Please see the license file for more details.</p>
 </body>
 </html>\
 """
