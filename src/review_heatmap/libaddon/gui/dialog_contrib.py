@@ -76,7 +76,7 @@ class ContribDialog(BasicDialog):
                                             parent=parent)
 
     def _setupUI(self):
-        formatLabels(self)
+        formatLabels(self, self._linkHandler)
 
     def _setupEvents(self):
         """
@@ -90,9 +90,17 @@ class ContribDialog(BasicDialog):
         self.form.btnPatreon.clicked.connect(
             lambda: openLink(LINKS["patreon"]))
         self.form.btnCredits.clicked.connect(
-            self.showCredits)
+            self._showCredits)
 
-    def showCredits(self):
+    def _showCredits(self):
         viewer = HTMLViewer(get_about_string(title=True),
                             title=ADDON_NAME, parent=self)
         viewer.exec_()
+
+    def _linkHandler(self, url):
+        """Support for binding custom actions to text links"""
+        if not url.startswith("action://"):
+            return openLink(url)
+        protocol, cmd = url.split("://")
+        if cmd == "installed-addons":
+            print("invoking installed addons dialog")

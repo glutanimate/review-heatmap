@@ -47,12 +47,16 @@ format_dict = {
 }
 
 if ANKI21:
-    fmt_find_params = ((QLabel, QPushButton), QRegExp("^fmt.*"),
+    fmt_find_params = ((QLabel, QPushButton), QRegExp(".*"),
                        Qt.FindChildrenRecursively)
 else:
     # Qt4: recursive by default. No third param.
-    fmt_find_params = ((QLabel, QPushButton), QRegExp("^fmt.*"))
+    fmt_find_params = ((QLabel, QPushButton), QRegExp(".*"))
 
-def formatLabels(dialog):
+
+def formatLabels(dialog, linkhandler=None):
     for widget in dialog.findChildren(*fmt_find_params):
-        widget.setText(widget.text().format(**format_dict))
+        if widget.objectName().startswith("fmt"):
+            widget.setText(widget.text().format(**format_dict))
+        if linkhandler and isinstance(widget, QLabel):
+            widget.linkActivated.connect(linkhandler)
