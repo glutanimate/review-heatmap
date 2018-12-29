@@ -197,15 +197,11 @@ function initHeatmap(options, data) {
             cal.highlight([calTodayDate, date]);
         },
         afterLoadData: function afterLoadData(timestamps) {
-            // Cal-heatmap works with local time, whereas the input data we
-            // provide is in UTC. This can lead to mismatches between recorded
-            // activity and activity presented to the user.
+            // Cal-heatmap always uses the local timezone, which is problematic
+            // when supplying UTC start-of-day times.
             //
-            // The present function is meant to work around that fact,
-            // applying a time offset to each timestamp that is meant to bring
-            // the local time representation in cal-heatmap in line with UTC.
-            //
-            // E.g.:
+            // This workaround updates the supplied timestamps to force
+            // cal-heatmap to display times in UTC. E.g.:
             //   - input datetime (UTC): 2018-01-02 00:00:00 UTC+0000 (UTC)
             //   - cal-heatmap datetime: 2018-01-01 20:00:00 UTC-0400 (EDT)
             //   - workaround datetime:  2018-01-02 00:00:00 UTC-0400 (EDT)
@@ -215,7 +211,8 @@ function initHeatmap(options, data) {
             // handler. You will have to take the updated datetime into
             // account in that case.
             //   
-            // adapted from: https://github.com/wa0x6e/cal-heatmap/issues/126
+            // cf.: https://github.com/wa0x6e/cal-heatmap/issues/122
+            //      https://github.com/wa0x6e/cal-heatmap/issues/126
             var results = {};
             for (var timestamp in timestamps) {
                 var value = timestamps[timestamp];
