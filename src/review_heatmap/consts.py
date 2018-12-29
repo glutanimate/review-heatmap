@@ -55,7 +55,7 @@ LIBRARIES = (
     {"name": "d3.js", "version": "v3.5.17",
         "author": "Mike Bostock", "license": "BSD license",
         "url": "https://d3js.org/"},
-    {"name": "cal-heatmap", "version": "v3.6.3-anki",
+    {"name": "cal-heatmap", "version": "v3.6.3.2-anki",
         "author": "Wan Qi Chen", "license": "MIT license",
         "url": "https://github.com/glutanimate/cal-heatmap"},
 )
