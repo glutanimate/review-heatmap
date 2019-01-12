@@ -43,7 +43,7 @@ from __future__ import (absolute_import, division,
 
 __all__ = ["ADDON_NAME", "ADDON_ID", "ADDON_VERSION", "LICENSE",
            "LIBRARIES", "AUTHORS", "CONTRIBUTORS", "SPONSORS",
-           "MAIL_AUTHOR", "LINKS", "PATRONS", "PATRONS_TOP"]
+           "MAIL_AUTHOR", "LINKS"]
 
 # ADD-ON SPECIFIC CONSTANTS
 
@@ -58,13 +58,14 @@ AUTHORS = (
     {"name": "Aristotelis P. <https//glutanimate.com/>", "years": "2018",
      "contact": "https://glutanimate.com"},
 )  # main developers
-CONTRIBUTORS = ()  # single code contributions
-SPONSORS = ()  # sponsors / development commissions
+CONTRIBUTORS = SPONSORS = MEMBERS_CREDITED = MEMBERS_TOP = ()
 
 # Merge in add-on specific consts:
 
+# FIXME: find a less hacky solution
 try:
     from ..consts import *  # noqa: F401
+    from ..data.patrons import *  # noqa: F401
     from ..consts import LINKS as ADDON_LINKS
 except ImportError:
     pass
@@ -84,17 +85,3 @@ LINKS = {
     "youtube": "https://www.youtube.com/c/glutanimate"
 }
 LINKS.update(ADDON_LINKS)
-
-# Credits
-
-# https://www.patreon.com/glutanimate
-# automatically sorted:
-PATRONS = ("Alex M", "Devin Beecher", "Edan Maor", "Itai Efrat",
-           "Jørgen Rahbek", "Man Duong", "Nicolas Curi", "PapelMagico",
-           "Paul McManus", "Peter Benisch", "Rob Alexander", "Scott Barnett",
-           "Sebastián Ortega", "Shawn Lesniak", "spiraldancing",
-           "Steven Nevers", "Henrik Giesel", "JessC",
-           "Yuniesky Echemendia", "Andrew", "Michael Song", "Jack Elsey",
-           "Tom", "Marcus Hilliard", "Alex", "Jae Lee", "Farhan Ahmad",
-           "Stephen Lienhard")
-PATRONS_TOP = ("Paul Bake", "Blacky 372", "Fin Thiessen", "The Academy")

@@ -92,7 +92,12 @@ buildarchive:
 	# Include referenced assets that are not part of version control
 	[[ -d "resources/icons/optional" ]] && \
 		 cp -r "resources/icons/optional" build/dist/resources/icons/ || true
-	
+
+	# Update credits if possible
+	type patreon_update_credits_addon >/dev/null 2>&1 && \
+		cp addon.json build/dist/ && \
+		cd build/dist && patreon_update_credits_addon -r || true
+
 	# Duplicate build folder for both build targets
 	cp -r build/dist/* build/dist21
 

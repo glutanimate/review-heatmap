@@ -37,7 +37,7 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 from ..consts import (ADDON_NAME, LICENSE, LIBRARIES,
-                      AUTHORS, CONTRIBUTORS, PATRONS, PATRONS_TOP)
+                      AUTHORS, CONTRIBUTORS, MEMBERS_CREDITED, MEMBERS_TOP)
 
 from ..platform import ANKI21
 
@@ -77,7 +77,11 @@ html_template = """\
         contributions, or any other means. You guys rock!</p>
     <p>In particular I would like to thank all of the awesome people who support me
         on <b><a href="https://www.patreon.com/glutanimate">Patreon</a></b>, including:</p>
-    <p><i><span style="color:#aa2a4c;">{patrons_string}</span></i></p>
+    <p><i><span style="color:#aa2a4c;">{members_string}</span></i></p>
+    <p><i>Want to be listed here?
+        <b><a href="https://www.patreon.com/bePatron?u=7522179">Pledge your support on Patreon now</a></b>
+        to receive all kinds of exclusive goodies!
+    </i></p>
     
     <p><span style="font-weight:600;">License</span></p>
     <p><i>{display_name}</i> is <b>free and open-source</b> software. The add-on code that runs within
@@ -111,10 +115,10 @@ def get_about_string(title=False):
     else:
         libs_string = ""
     contributors_string = ", ".join(sorted(CONTRIBUTORS, key=string.lower))
-    patrons_top_string = "<b>{}</b>".format(", ".join(
-        sorted(PATRONS_TOP, key=string.lower)))
-    patrons_all_string = ", ".join(sorted(PATRONS, key=string.lower))
-    patrons_string = ", ".join((patrons_top_string, patrons_all_string))
+
+    members_top_string = "<b>{}</b>".format(", ".join(MEMBERS_TOP))
+    members_credited_string = ", ".join(MEMBERS_CREDITED)
+    members_string = ", ".join((members_top_string, members_credited_string))
 
     if title:
         title_string = title_template.format(display_name=ADDON_NAME)
@@ -127,4 +131,4 @@ def get_about_string(title=False):
                                 authors_string=authors_string,
                                 libs_string=libs_string,
                                 contributors_string=contributors_string,
-                                patrons_string=patrons_string)
+                                members_string=members_string)

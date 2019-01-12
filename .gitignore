@@ -30,6 +30,7 @@ node_modules
 .sublime-backup/
 .idea/
 .vscode/
+addon.json
 # Temp
 .gitold
 obsolete
@@ -44,5 +45,6 @@ docs/description.html
 designer/web/cal-heatmap.min_orig.js
 designer/web/cal-heatmap_orig.css
 todo
-# Assets
+# Assets / data
 resources/icons/optional
+src/review_heatmap/data/patrons.py
