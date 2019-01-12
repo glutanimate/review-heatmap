@@ -42,14 +42,13 @@ from __future__ import (absolute_import, division,
 
 from aqt.utils import openLink
 
-from ..consts import MAIL_AUTHOR, LINKS
+from ..consts import MAIL_AUTHOR, LINKS, ADDON_NAME
 
 from .basic.dialog_basic import BasicDialog
 from .labelformatter import formatLabels
 
 from .dialog_htmlview import HTMLViewer
 from .about import get_about_string
-from ..consts import ADDON_NAME
 
 
 class ContribDialog(BasicDialog):

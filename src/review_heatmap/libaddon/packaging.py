@@ -45,6 +45,7 @@ import os
 from .platform import ANKI21
 
 __all__ = [
+    "VersionSpecificImporter",
     "addPathToModuleLookup",
     "addSubdirPathToModuleLookup"
 ]

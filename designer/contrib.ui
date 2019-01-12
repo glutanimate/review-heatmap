@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>344</width>
+    <width>352</width>
     <height>479</height>
    </rect>
   </property>
@@ -97,10 +97,13 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hi! &lt;span style=&quot; font-weight:600;&quot;&gt;Glutanimate&lt;/span&gt; here :). Thanks for checking out Review Heatmap and some of my other add-ons. I hope you've been enjoying them! &lt;/p&gt;&lt;p&gt;I hate asking for this, but writing, supporting, and maintaining my projects really takes a lot of time.&lt;/p&gt;&lt;/p&gt;If &lt;span style=&quot; font-weight:600;&quot;&gt;{ADDON_NAME}&lt;/span&gt; or any of my other add-ons has been a valuable asset in your studies, please do consider &lt;span style=&quot; font-weight:600;&quot;&gt;supporting my work&lt;/span&gt; through one of the methods below:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hi! &lt;span style=&quot; font-weight:600;&quot;&gt;Glutanimate&lt;/span&gt; here :). Thanks for checking out Review Heatmap and some of my other add-ons. I hope you've been enjoying them! &lt;/p&gt;&lt;p&gt;If &lt;span style=&quot; font-weight:600;&quot;&gt;{ADDON_NAME}&lt;/span&gt; or any of &lt;a href=&quot;action://installed-addons&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;my other projects&lt;/span&gt;&lt;/a&gt; has been a valuable asset in your studies, please do consider &lt;span style=&quot; font-weight:600;&quot;&gt;supporting my work&lt;/span&gt; through one of the methods below:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
+       </property>
+       <property name="openExternalLinks">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

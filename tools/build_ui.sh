@@ -5,6 +5,7 @@
 #   Generates PyQt forms and resources from QtDesigner project files
 #
 #   Usage: build_ui.sh <PROJECT_PREFIX> <ANKI_VERSION>
+#          e.g.: build_ui.sh review_heatmap anki21
 #   Dependencies: pyuic4, pyuic5, pyrcc4, pyrcc5, perl
 #
 # Copyright (C) 2017-2018  Aristotelis P. <https//glutanimate.com/>
