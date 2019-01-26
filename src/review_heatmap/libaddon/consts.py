@@ -55,18 +55,29 @@ ADDON_VERSION = "0.1.0"
 LICENSE = "GNU AGPLv3"
 LIBRARIES = ()
 AUTHORS = (
-    {"name": "Aristotelis P. <https//glutanimate.com/>", "years": "2018",
-     "contact": "https://glutanimate.com"},
+    {"name": "Aristotelis P. (Glutanimate)", "years": "2018",
+     "contact": "https://glutanimate.com"}
 )  # main developers
 CONTRIBUTORS = SPONSORS = MEMBERS_CREDITED = MEMBERS_TOP = ()
+QRC_PREFIX = "libaddon"
 
 # Merge in add-on specific consts:
 
 # FIXME: find a less hacky solution
 try:
     from ..consts import *  # noqa: F401
+except ImportError:
+    pass
+try:
+    from ..gui.resources import QRC_PREFIX  # noqa: F401
+except ImportError:
+    pass
+try:
     from ..data.patrons import *  # noqa: F401
-    from ..consts import LINKS as ADDON_LINKS
+except ImportError:
+    pass
+try:
+    from ..consts import LINKS as ADDON_LINKS  # noqa: F401
 except ImportError:
     pass
 

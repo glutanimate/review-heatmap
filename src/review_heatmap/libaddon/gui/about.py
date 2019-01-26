@@ -37,11 +37,12 @@ from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
 from ..consts import (ADDON_NAME, LICENSE, LIBRARIES,
-                      AUTHORS, CONTRIBUTORS, MEMBERS_CREDITED, MEMBERS_TOP)
+                      AUTHORS, CONTRIBUTORS, MEMBERS_CREDITED, MEMBERS_TOP,
+                      QRC_PREFIX)
 
-from ..platform import ANKI21
+from ..platform import ANKI20
 
-if ANKI21:
+if not ANKI20:
     string = str
 else:
     import string
@@ -72,7 +73,7 @@ html_template = """\
     <p>With patches from: <i>{contributors_string}</i></p>
     {libs_string}
     
-    <p><img src="qrc:/review_heatmap/icons/heart_small.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
+    <p><img src="qrc:/{qrc_prefix}/icons/heart_small.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
     <p>My heartfelt thanks go out to everyone who has <b>supported</b> this add-on through their tips,
         contributions, or any other means. You guys rock!</p>
     <p>In particular I would like to thank all of the awesome people who support me
@@ -131,4 +132,5 @@ def get_about_string(title=False):
                                 authors_string=authors_string,
                                 libs_string=libs_string,
                                 contributors_string=contributors_string,
-                                members_string=members_string)
+                                members_string=members_string,
+                                qrc_prefix=QRC_PREFIX)

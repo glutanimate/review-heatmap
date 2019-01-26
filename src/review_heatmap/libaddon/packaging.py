@@ -42,7 +42,7 @@ from __future__ import (absolute_import, division,
 import sys
 import os
 
-from .platform import ANKI21
+from .platform import ANKI20
 
 __all__ = [
     "VersionSpecificImporter",
@@ -73,7 +73,7 @@ class VersionSpecificImporter:
     located under a different namespace than root_name.
     """
 
-    module_dir = "anki21" if ANKI21 else "anki20"
+    module_dir = "anki20" if ANKI20 else "anki21"
 
     def __init__(self, root_name, managed_imports=(), vendor_pkg=None):
         self.root_name = root_name
@@ -184,8 +184,8 @@ def importAny(*modules):
 # (e.g. third-party packages depending on stdlib modules missing
 # in Anki's Python distribution).
 
-STRINGTYPES = (str,) if ANKI21 else (str, unicode)  # noqa: F821
-LOOKUP_SUBDIRS = ["common", "anki21" if ANKI21 else "anki20"]
+STRINGTYPES = (str, unicode) if ANKI20 else (str,)  # noqa: F821
+LOOKUP_SUBDIRS = ["common", "anki20" if ANKI20 else "anki21"]
 
 def _addPathToModuleLookup(path):
     # Insert at idx 0 in order to supersede system-wide packages

@@ -39,14 +39,14 @@ from __future__ import (absolute_import, division,
 from aqt.qt import *
 
 from ..consts import ADDON_NAME, ADDON_VERSION
-from ..platform import ANKI21
+from ..platform import ANKI20
 
 format_dict = {
     "ADDON_NAME": ADDON_NAME,
     "ADDON_VERSION": ADDON_VERSION,
 }
 
-if ANKI21:
+if not ANKI20:
     fmt_find_params = ((QLabel, QPushButton), QRegExp(".*"),
                        Qt.FindChildrenRecursively)
 else:
