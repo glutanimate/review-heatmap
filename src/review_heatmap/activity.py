@@ -43,7 +43,7 @@ from aqt import mw
 
 from anki.utils import ids2str
 
-from .libaddon.platform import ANKI21
+from .libaddon.platform import ANKI20
 
 __all__ = ["ActivityReporter"]
 
@@ -177,7 +177,7 @@ class ActivityReporter(object):
         """
         Return daily scheduling cutoff time in hours
         """
-        if ANKI21 and self.col.schedVer() == 2:
+        if not ANKI20 and self.col.schedVer() == 2:
             return self.col.conf.get("rollover", 4)
         start_date = datetime.datetime.fromtimestamp(self.col.crt)
         return start_date.hour
@@ -324,7 +324,7 @@ WHERE did IN {} AND queue IN (2,3)
 {}
 GROUP BY day ORDER BY day""".format(self.offset, self._didLimit(), lim)
 
-        if ANKI21 and mw.col.schedVer() == 2:
+        if not ANKI20 and mw.col.schedVer() == 2:
             offset = mw.col.conf.get("rollover", 4)
             schedver = 2
         else:
@@ -335,7 +335,7 @@ GROUP BY day ORDER BY day""".format(self.offset, self._didLimit(), lim)
         print(cmd)
         print(self.col.sched.today)
 
-        print("Anki version {}, Scheduler version {}".format("2.1" if ANKI21 else "2.0", schedver))
+        print("Anki version {}, Scheduler version {}".format("2.0" if ANKI20 else "2.1", schedver))
         print("Day starts at setting: {} hours".format(offset))
         print(time.strftime("dayCutoff: %Y-%m-%d %H:%M", time.localtime(mw.col.sched.dayCutoff)))
         print(time.strftime("local now: %Y-%m-%d %H:%M", time.localtime(time.time())))

@@ -47,7 +47,7 @@ from aqt.stats import DeckStats
 from anki.stats import CollectionStats
 from anki.hooks import addHook, remHook
 
-from .libaddon.platform import ANKI21
+from .libaddon.platform import ANKI20
 
 from .config import config
 from .heatmap import HeatmapCreator
@@ -124,7 +124,7 @@ def overviewRenderPage(self):
 
     hmap = HeatmapCreator(config, whole=False)
 
-    if not ANKI21:
+    if ANKI20:
         self.web.stdHtml(self._body % dict(
             deck=deck['name'],
             shareLink=shareLink,
@@ -224,7 +224,7 @@ def initializeViews():
     Overview._renderPage = overviewRenderPage
     DeckBrowser._renderStats = wrap(
         DeckBrowser._renderStats, deckbrowserRenderStats, "around")
-    if ANKI21:
+    if not ANKI20:
         DeckStats.__init__ = wrap(DeckStats.__init__, deckStatsInit21, "after")
     else:
         DeckStats.__init__ = deckStatsInit20

@@ -40,7 +40,7 @@ from aqt import mw
 
 from anki.utils import json
 
-from .libaddon.platform import ANKI21, PLATFORM
+from .libaddon.platform import ANKI20, PLATFORM
 
 from .activity import ActivityReporter
 from .config import heatmap_modes
@@ -119,7 +119,7 @@ class HeatmapCreator(object):
                    "rh-theme-{}".format(conf["colors"]),
                    "rh-mode-{}".format(conf["mode"]),
                    "rh-view-{}".format(view)]
-        if not ANKI21:
+        if ANKI20:
             classes.append("rh-anki-20")
         return classes
 

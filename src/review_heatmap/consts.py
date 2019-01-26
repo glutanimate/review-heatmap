@@ -60,7 +60,7 @@ LIBRARIES = (
         "url": "https://github.com/glutanimate/cal-heatmap"},
 )
 AUTHORS = (
-    {"name": "Aristotelis P. <https//glutanimate.com/>", "years": "2016-2018",
+    {"name": "Aristotelis P. (Glutanimate)", "years": "2016-2018",
      "contact": "https://glutanimate.com"},
 )  # trailing comma required for single-element tuples
 # automatically sorted:

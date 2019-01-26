@@ -48,7 +48,7 @@ from aqt.stats import DeckStats
 from anki.hooks import wrap
 from anki.find import Finder
 
-from .libaddon.platform import ANKI21
+from .libaddon.platform import ANKI20
 
 from .gui.options import invokeOptionsDialog
 from .gui.contrib import invokeContributionsDialog
@@ -108,7 +108,7 @@ def cycleHmModes():
 def invokeBrowser(search):
     browser = aqt.dialogs.open("Browser", mw)
     browser.form.searchEdit.lineEdit().setText(search)
-    if ANKI21:
+    if not ANKI20:
         browser.onSearchActivated()
     else:
         browser.onSearch()
