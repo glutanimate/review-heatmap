@@ -76,22 +76,16 @@ There are also a number of other great add-ons out there that will help you gami
 
 [![YouTube: Anki add-on Guide: Gamify Your Reviews](https://i.ytimg.com/vi/UkveLkAgXiM/mqdefault.jpg)](https://youtu.be/UkveLkAgXiM)
 
-**ADD-ON COMMISSIONS**
-
-A lot of my add-ons were commissioned by fellow Anki users. If you enjoy my work and would like to hire my services to work on an add-on or new feature, please feel free to reach out to me at:  ![Email icon](https://glutanimate.com/logos/email.svg) <em>ankiglutanimate [αt] gmail . com</em>
-
 **MORE RESOURCES**
 
-Want to stay up-to-date with my latest add-on releases and updates? Feel free to follow me on Twitter: [![Twitter bird](https://glutanimate.com/logos/twitter.svg)@Glutanimate](https://twitter.com/glutanimate)
+Make sure to check out my socials for the latest add-on updates and news: [![Twitter bird](https://glutanimate.com/logos/twitter.svg)@Glutanimate](https://twitter.com/glutanimate)  |  [![YouTube playbutton](https://glutanimate.com/logos/youtube.svg) / Glutanimate](https://www.youtube.com/c/glutanimate)
 
-New to Anki? Make sure to check out my YouTube channel where I post weekly tutorials on Anki add-ons and related topics: [![YouTube playbutton](https://glutanimate.com/logos/youtube.svg) / Glutanimate](https://www.youtube.com/c/glutanimate)
-
-============================================
+Want to hire me to work on add-on for you? Get in touch at ![Email icon](https://glutanimate.com/logos/email.svg) <em>ankiglutanimate [αt] gmail .com</em>
 
 **SUPPORT THIS ADD-ON**
 
-Writing, supporting, and maintaining Anki add-ons like these takes a lot of time and effort. If *Review Heatmap* has been a valuable asset in your studies, please consider using one of the buttons below to support my efforts by buying me a **coffee**, **sandwich**, **meal**, or anything else you'd like:
+Writing, supporting, and maintaining Anki add-ons like these takes a lot of time and effort. If *Review Heatmap* has been a valuable asset in your studies, please consider using one of the buttons below to support my efforts by **buying me a coffee**, or by **pledging your support on Patreon**. Each and every contribution is greatly appreciated and will help me maintain and improve *Review Heatmap* as time goes by!
 
-![](https://glutanimate.com/logos/paypal.svg)        [![](https://glutanimate.com/logos/contrib_btnsw_coffee.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4FT9NG3NJMY4U&on0=Project&os0=review-heatmap "Buy me a coffee ☺")    [![](https://glutanimate.com/logos/contrib_btnsw_sandwich.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YKSP7QF45Y7SJ&on0=Project&os0=review-heatmap "Buy me a burger 😊")    [![](https://glutanimate.com/logos/contrib_btnsw_meal.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=MVDM6JAL2R5JA&on0=Project&os0=review-heatmap "Buy me a meal 😄")    [![](https://glutanimate.com/logos/contrib_btnsw_custom.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=EYNV4ECSKBGE4&on0=Project&os0=review-heatmap "Contribute a custom amount ☺")
+[![](https://glutanimate.com/logos/patreon_button.svg)](https://www.patreon.com/glutanimate "Support me on Patreon 😄") &nbsp;&nbsp;&nbsp;&nbsp; [![](https://glutanimate.com/logos/kofi_button.svg)](https://ko-fi.com/X8X0L4YV "Buy me a coffee 😊")
 
-Each and every contribution is greatly appreciated and will help me maintain and improve *Review Heatmap* as time goes by!
+*Pro-tip: Lots of exclusive add-ons and other goodies await on my Patreon page. Make sure to check them out!*
