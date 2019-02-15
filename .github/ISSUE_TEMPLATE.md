@@ -1,39 +1,48 @@
+#### Problem description or Feature request
 
-## Prerequisite checklist
+*Please describe the issue concisely in here. In case of an error: Walk us through the steps you took to get there. What happened? What did you expect to happen?*
 
-* [ ] In case of a bug: Have you tried restarting Anki?
-* [ ] Are you running the latest version of the add-on. Have you redownloaded the add-on from AnkiWeb to make sure?
-* [ ] Did you check the add-on documentation (e.g. AnkiWeb description, Wiki if it exists) for known issues?
-* [ ] Did you perform a cursory search through the existing issue reports?
+#### Checklist
 
-## What is the problem/feature you would like to see fixed/implemented?
+*Please replace the space inside the brackets with an **x** if the following sentences apply to you. Feel free to disregard some of these if you're posting a feature request rather than a bug report.*
 
-[Be as specific as possible. Provide screenshots if you think they can help.]
+ - [ ] I restarted Anki to see if it helps
+ - [ ] I verified that I use the latest version of the add-on by redownloading it from AnkiWeb
+ - [ ] I verified that I use the latest version of Anki by checking at https://apps.ankiweb.net#download
+ - [ ] I tried to disable other add-ons to see if there are any interactions present
+ - [ ] I checked if anyone reported this problem before by looking through the issue reports. I also checked to see if there is a section about known issues in the add-on description, documentation, or README.
+ - [ ] My issue is solved when holding shift while starting Anki.
+ 
+#### Information about your Anki Setup
 
-## How can we reproduce the problem?
+<details>
 
-[What were you doing when the problem occurred?]
+*Please open Anki, go to Help → About, look-up two lines, starting with `Version:` and `Qt` and copy-paste them below:*
 
-1. [First step]
-2. [Second step]
-3. [and so on...]
+```
+Version:
+Qt:
+```
 
-**Expected behavior:** [What you expected to happen]
+*Please fill in your OS details (Linux/Mac/Windows, which version):*
 
-**Actual behavior:** [What actually happened]
+```
+OS:
+```
 
-**Reproducible?:** [Can you reliably reproduce the issue by following the steps above?]
+*Please open Anki, go to Tools → Add-ons, take a screenshot of your installed add-ons, and paste it below:*
+ 
 
-## Version information
+</details>
 
-**Anki**
+#### Error message (if any)
 
-[Please head to *Help* → *About Anki* and Paste the version string here, e.g.:]
+<details>
 
-[Version 2.0.47]
-[Qt 4.8.1 PyQt 4.9.1]
+*If you got an error message, please copy and paste it below:*
 
-**System**
+```python"
+[paste your error message in here if you got any; otherwise feel free to remove this part]
+```
 
-- Operating system: [Windows/macOS/Linux]
-- Version: [e.g. 10, High Sierra, Ubuntu 18.04]
+</details>
