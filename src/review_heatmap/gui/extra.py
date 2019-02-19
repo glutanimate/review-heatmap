@@ -54,6 +54,7 @@ __all__ = ["invokeSnanki"]
 SNANKI_VERSION = "0.0.2"
 STARTING_LIVES = 3
 
+
 class Snanki(QDialog):
     def __init__(self, highscore=0, lives=5, parent=None):
         super(Snanki, self).__init__(parent=parent)
@@ -111,7 +112,7 @@ class Snanki(QDialog):
         Quick hacky workaround to open Patreon link on gameOver screen click.
         """
         if self.gameOver and self.lives == 0:
-            openLink(LINKS["patreon"])
+            openLink(LINKS["bepatron"])
         QDialog(self).mousePressEvent(event)
 
     def newGame(self):
@@ -188,7 +189,7 @@ class Snanki(QDialog):
             msg = ("GAME OVER\n\nYou're out of lives for today,\n"
                    "but tomorrow is another day :)\n\n"
                    "Tip: Get more lives by\nkeeping up with your reviews!\n\n"
-                   "Tip: Pledge your support on Patreon\n"
+                   "Pro-Tip: Pledge your support on Patreon\n"
                    "and get access to other secret\n"
                    "features and add-ons :)"
                    "\n\nClick here to go to\n"
@@ -250,7 +251,7 @@ class Snanki(QDialog):
     def accept(self):
         self._onClose()
         super(Snanki, self).accept()
-    
+
     def reject(self):
         self._onClose()
         super(Snanki, self).reject()
@@ -267,11 +268,23 @@ defaults = {
 
 snanki_config = ConfigManager(mw, config_dict=defaults, conf_key="snanki")
 
+
 def invokeSnanki(parent=None):
     conf = snanki_config["profile"]
     streak_max = getattr(mw, "_hmStreakMax", None)
     streak_cur = getattr(mw, "_hmStreakCur", None)
-    
+    activity_daily_avg = getattr(mw, "_hmActivityDailyAvg", None)
+
+    done_today = mw.col.db.scalar("""select count() from revlog where id > ?""",
+                                  (mw.col.sched.dayCutoff-86400)*1000)
+
+    goal = int(round(activity_daily_avg / 4))
+
+    if done_today < goal:
+        tooltip("Return when you've done at least<br>"
+                "{} cards for the day :)".format(goal))
+        return
+
     lastplayed = conf["lastplayed"]
     livesleft = conf["livesleft"]
     day_cutoff = mw.col.sched.dayCutoff
@@ -292,12 +305,12 @@ def invokeSnanki(parent=None):
             return
         else:
             pass  # play with remaining lives
-    
+
     highscore = conf["highscore"]
 
     snanki = Snanki(highscore=highscore, lives=livesleft, parent=parent)
     snanki.exec_()
-    
+
     conf["highscore"] = snanki.highscore
     conf["livesleft"] = snanki.lives
     conf["lastplayed"] = int(time.time())

@@ -108,7 +108,7 @@ class HeatmapCreator(object):
             classes.append("rh-disable-stats")
 
         if self.whole:
-            self._saveCurrentStreaks(data)
+            self._saveCurrentPerf(data)
 
         return html_main_element.format(content=heatmap + stats,
                                         classes=" ".join(classes))
@@ -196,9 +196,9 @@ class HeatmapCreator(object):
             "s" if abs(count) > 1 else ""
         )
 
-    def _saveCurrentStreaks(self, data):
+    def _saveCurrentPerf(self, data):
         """
-        Store current streak in mw object
+        Store current performance in mw object
 
         TODO: Make data like this available through a proper API
 
@@ -207,3 +207,4 @@ class HeatmapCreator(object):
         """
         mw._hmStreakMax = data["stats"]["streak_max"]["value"]
         mw._hmStreakCur = data["stats"]["streak_cur"]["value"]
+        mw._hmActivityDailyAvg = data["stats"]["activity_daily_avg"]["value"]
