@@ -2,7 +2,7 @@
 
 # Libaddon for Anki
 #
-# Copyright (C) 2018-2019  Aristotelis P. <https//glutanimate.com/>
+# Copyright (C) 2018-2019  Glutanimate <https//glutanimate.com/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,7 @@ Generate 'about' info, including credits, copyright, etc.
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from ..consts import (ADDON_NAME, LICENSE, LIBRARIES,
+from ..consts import (ADDON_NAME, ADDON_VERSION, LICENSE, LIBRARIES,
                       AUTHORS, CONTRIBUTORS, MEMBERS_CREDITED, MEMBERS_TOP,
                       QRC_PREFIX)
 
@@ -48,7 +48,7 @@ else:
     import string
 
 libs_header = (
-    "<p>{} ships with the following open-source libraries:</p>".format(ADDON_NAME))
+    "<p>{} ships with the following third-party code:</p>".format(ADDON_NAME))
 
 html_template = """\
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
@@ -70,7 +70,6 @@ html_template = """\
     {title}
     <p><span style="font-weight:600;">Credits</span></p>
     {authors_string}
-    <p>With patches from: <i>{contributors_string}</i></p>
     {libs_string}
     
     <p><img src="qrc:/{qrc_prefix}/icons/heart_small.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
@@ -78,7 +77,7 @@ html_template = """\
         contributions, or any other means. You guys rock!</p>
     <p>In particular I would like to thank all of the awesome people who support me
         on <b><a href="https://www.patreon.com/glutanimate">Patreon</a></b>, including:</p>
-    <p><i><span style="color:#aa2a4c;">{members_string}</span></i></p>
+    <div style="color:#aa2a4c;">{members_string}</div>
     <p><i>Want to be listed here?
         <b><a href="https://www.patreon.com/bePatron?u=7522179">Pledge your support on Patreon now</a></b>
         to receive all kinds of exclusive goodies!
@@ -103,7 +102,7 @@ libs_item_template = """\
 """
 
 title_template = """\
-<h3>About {display_name}</h3>\
+<h3>About {display_name} (v{version})</h3>\
 """
 
 def get_about_string(title=False):
@@ -115,14 +114,18 @@ def get_about_string(title=False):
         libs_string = "\n".join((libs_header, "<ul>", libs_entries, "</ul>"))
     else:
         libs_string = ""
-    contributors_string = ", ".join(sorted(CONTRIBUTORS, key=string.lower))
+    contributors_string = "<p>With patches from: <i>{}</i></p>".format(
+        ", ".join(sorted(CONTRIBUTORS, key=string.lower))
+    )
 
     members_top_string = "<b>{}</b>".format(", ".join(MEMBERS_TOP))
     members_credited_string = ", ".join(MEMBERS_CREDITED)
-    members_string = ", ".join((members_top_string, members_credited_string))
+    members_string = "<p>{t},</p><p>{r}</p>".format(
+        t=members_top_string, r=members_credited_string)
 
     if title:
-        title_string = title_template.format(display_name=ADDON_NAME)
+        title_string = title_template.format(display_name=ADDON_NAME,
+                                             version=ADDON_VERSION)
     else:
         title_string = ""
 
