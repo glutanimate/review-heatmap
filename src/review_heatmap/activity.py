@@ -123,8 +123,8 @@ class ActivityReporter(object):
         # history limits the user might have set. This value seems more
         # desirable and motivating than the raw percentage of days learned
         # in the date inclusion period.
-        days_total = (self.today - first_day) / 86400
-        if days_total == 0:
+        days_total = (self.today - first_day) / 86400 + 1
+        if days_total == 1:
             pdays = 100  # review history only extends to yesterday
         else:
             pdays = int(round((days_learned / days_total) * 100))
