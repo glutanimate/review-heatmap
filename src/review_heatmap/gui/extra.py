@@ -278,10 +278,11 @@ def invokeSnanki(parent=None):
     done_today = mw.col.db.scalar("""select count() from revlog where id > ?""",
                                   (mw.col.sched.dayCutoff-86400)*1000)
 
-    goal = int(round(activity_daily_avg / 4))
+    goal = max(1, int(round(activity_daily_avg / 2)))
 
     if done_today < goal:
-        tooltip("Return when you've done at least<br>"
+        tooltip("Psst! You've stumbled on a secret.<br>"
+                "Return when you've done at least<br>"
                 "{} cards for the day :)".format(goal))
         return
 
