@@ -106,7 +106,7 @@ class ActivityReporter(object):
 
             total += activity
 
-        days_learned = idx
+        days_learned = idx + 1
 
         # Stats: current streak
         if history[-1][0] in (self.today, self.today - 86400):
