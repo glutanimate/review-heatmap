@@ -332,18 +332,18 @@ GROUP BY day ORDER BY day""".format(self.offset, self._didLimit(), lim)
             offset = startDate.hour
             schedver = 1
 
-        print(cmd)
-        print(self.col.sched.today)
+        # print(cmd)
+        # print(self.col.sched.today)
 
-        print("Anki version {}, Scheduler version {}".format("2.0" if ANKI20 else "2.1", schedver))
-        print("Day starts at setting: {} hours".format(offset))
-        print(time.strftime("dayCutoff: %Y-%m-%d %H:%M", time.localtime(mw.col.sched.dayCutoff)))
-        print(time.strftime("local now: %Y-%m-%d %H:%M", time.localtime(time.time())))
-        print(time.strftime("Col today: %Y-%m-%d", time.localtime(mw.col.crt + 86400 * mw.col.sched.today)))
-        print("Col days: {}".format(mw.col.sched.today))
+        # print("Anki version {}, Scheduler version {}".format("2.0" if ANKI20 else "2.1", schedver))
+        # print("Day starts at setting: {} hours".format(offset))
+        # print(time.strftime("dayCutoff: %Y-%m-%d %H:%M", time.localtime(mw.col.sched.dayCutoff)))
+        # print(time.strftime("local now: %Y-%m-%d %H:%M", time.localtime(time.time())))
+        # print(time.strftime("Col today: %Y-%m-%d", time.localtime(mw.col.crt + 86400 * mw.col.sched.today)))
+        # print("Col days: {}".format(mw.col.sched.today))
 
         res = self.col.db.all(cmd, today=self.col.sched.today)
-        print(res)
+        # print(res)
 
         return [i[:-1] for i in res]
 

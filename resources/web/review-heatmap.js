@@ -13,7 +13,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 function onHmSelChange(selector) {
     selector.blur();
     var val = selector.value;
-    console.log(val);
+    // console.log(val);
 }
 
 function onHmNavigate(event, button, direction) {
@@ -107,9 +107,9 @@ function initHeatmap(options, data) {
     
     var cal = new CalHeatMap();
     
-    console.log("Date: options.today " + new Date(options.today))
-    console.log("Date: calTodayDate "+ calTodayDate)
-    console.log("Date: Date() "+ new Date())
+    // console.log("Date: options.today " + new Date(options.today))
+    // console.log("Date: calTodayDate "+ calTodayDate)
+    // console.log("Date: Date() "+ new Date())
 
     cal.init({
         domain: options.domain,
@@ -167,7 +167,7 @@ function initHeatmap(options, data) {
                 cal.highlight(calTodayDate); return;
             }
             
-            console.log(date)
+            // console.log(date)
 
             // Determine if review history or forecasts
             isHistory = nb >= 0;
