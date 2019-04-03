@@ -2,15 +2,16 @@
 #
 # Builds add-on archive for distribution on AnkiWeb and elsewhere
 #
-#   Dependencies: ./tools/build_ui.sh, git, bash
+#   Dependencies:   git, bash, ./tools/build_ui.sh
+#	Optional: 		pyenv	
 #
-# Copyright (C) 2017-2018  Aristotelis P. <https//glutanimate.com/>
+# Copyright (C) 2017-2019  Aristotelis P. <https//glutanimate.com/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version, with the additions
-# listed at the end of the accompanied license file.
+# listed at the end of the license file that accompanied this program.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,7 +24,7 @@
 # NOTE: This program is subject to certain additional terms pursuant to
 # Section 7 of the GNU Affero General Public License.  You should have
 # received a copy of these additional terms immediately following the
-# terms and conditions of the GNU Affero General Public License which
+# terms and conditions of the GNU Affero General Public License that
 # accompanied this program.
 #
 # If not, please request a copy through one of the means of contact
@@ -35,8 +36,8 @@
 SHELL := /bin/bash
 
 # Add-on info
-ADDON = review-heatmap
-ADDONDIR = review_heatmap
+ADDON = $(shell basename $$(git rev-parse --show-toplevel))
+ADDONDIR = $(shell basename $$(find src -mindepth 1 -maxdepth 1 -type d | tail -1))
 
 # Build tools
 PYENV20 = anki20tools
@@ -44,8 +45,8 @@ PYENV21 = anki21tools
 UIBUILDER = tools/build_ui.sh
 
 # Compile version info
-VERSION = `git describe HEAD --tags`
-LATEST_TAG = `git describe HEAD --tags --abbrev=0`
+VERSION = $(shell git describe HEAD --tags)
+LATEST_TAG = $(shell git describe HEAD --tags --abbrev=0)
 
 # General targets
 #################################################################
@@ -75,6 +76,7 @@ buildarchive:
 
 	# Remove existing release build of same version
 	rm -f *-release-$(VERSION)-anki2*.zip
+	rm -f *-release-$(VERSION).ankiaddon
 
 	# Create a git snapshot of source files at $(VERSION) tag
 	git archive --format tar $(VERSION) | tar -x -C build/dist/
@@ -91,8 +93,8 @@ buildarchive:
 
 	# Include referenced assets that are not part of version control
 	[[ -d "resources/icons/optional" ]] && \
-		 cp -r "resources/icons/optional" build/dist/resources/icons/ || true
-
+		 cp -r "resources/icons/optional" "build/dist/resources/icons/" || true
+	
 	# Update credits if possible
 	type patreon_update_credits_addon >/dev/null 2>&1 && \
 		cp addon.json build/dist/ && \
@@ -102,26 +104,34 @@ buildarchive:
 	cp -r build/dist/* build/dist21
 
 	# Build for Anki 2.0
-	cd build/dist &&  \
-		PYENV_VERSION=$(PYENV20) ../../$(UIBUILDER) "$(ADDONDIR)" anki20 &&\
+	type pyenv >/dev/null 2>&1 && \
+		eval "$$(pyenv init -)" && eval "$$(pyenv virtualenv-init -)" || true && \
+		cd build/dist && \
+		PYENV_VERSION=$(PYENV20) ../../$(UIBUILDER) "$(ADDONDIR)" anki20 && \
 		cd src && \
-		zip -r "../../../$(ADDON)-release-$(VERSION)-anki20.zip" "$(ADDONDIR)" *.py
-	# Build for Anki 2.1
-	#   GitHub release contains module folder, whereas files in the AnkiWeb release
-	#   are all placed at the top-level of the zip file.
-	cd build/dist21 &&  \
-		PYENV_VERSION=$(PYENV21) ../../$(UIBUILDER) "$(ADDONDIR)" anki21 && \
-		cd src && \
-		zip -r "../../../$(ADDON)-release-$(VERSION)-anki21.zip" "$(ADDONDIR)" && \
-		cd "$(ADDONDIR)" && \
-		zip -r "../../../../$(ADDON)-release-$(VERSION)-anki21-ankiweb.zip" *
+		zip -r "../../$(ADDON)-release-$(VERSION)-anki20.zip" "$(ADDONDIR)" *.py
 	
-	rm -rf build
+	# Build for Anki 2.1
+	#	different releases for GitHub (legacy), AnkiWeb, and GitHub
+	type pyenv >/dev/null 2>&1 && \
+		eval "$$(pyenv init -)" && eval "$$(pyenv virtualenv-init -)" || true && \
+		cd build/dist21 &&  \
+		eval "$$(pyenv init -)" && eval "$$(pyenv virtualenv-init -)" && \
+		PYENV_VERSION=$(PYENV21) ../../$(UIBUILDER) "$(ADDONDIR)" anki21 && \
+		cd "src/$(ADDONDIR)" && \
+		zip -r "../../../$(ADDON)-release-$(VERSION)-anki21-ankiweb.zip" * && \
+		zip -r "../../../$(ADDON)-release-$(VERSION).ankiaddon" *
+	
+	rm -rf build/dist build/dist21
 
 clean:
-	rm -rf build
+	rm -rf build/dist build/dist21
 	find . \( -name '*.pyc' -o -name '*.pyo' -o -name '__pycache__' \) -delete
 
 ui:
-	PYENV_VERSION=$(PYENV20) ./$(UIBUILDER) "$(ADDONDIR)" anki20
-	PYENV_VERSION=$(PYENV21) ./$(UIBUILDER) "$(ADDONDIR)" anki21
+	type pyenv >/dev/null 2>&1 && \
+		eval "$$(pyenv init -)" && eval "$$(pyenv virtualenv-init -)" || true && \
+		PYENV_VERSION=$(PYENV20) ./$(UIBUILDER) "$(ADDONDIR)" anki20
+	type pyenv >/dev/null 2>&1 && \
+		eval "$$(pyenv init -)" && eval "$$(pyenv virtualenv-init -)" || true && \
+		PYENV_VERSION=$(PYENV21) ./$(UIBUILDER) "$(ADDONDIR)" anki21
