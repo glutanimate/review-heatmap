@@ -1,0 +1,16 @@
+{
+    "display_name": "Review Heatmap",
+    "module_name": "review_heatmap",
+    "repo_name": "review-heatmap",
+    "ankiweb_id": "1771074083",
+    "author": "Glutanimate",
+    "contact": "https://glutanimate.com",
+    "homepage": "https://github.com/glutanimate/review-heatmap",
+    "copyright_start": 2016,
+    "tags": "stats motivation streak heatmap overview",
+    "conflicts": [],
+    "targets": [
+        "anki20",
+        "anki21"
+    ]
+}

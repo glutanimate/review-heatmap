@@ -1,91 +1,45 @@
+<!-- BANNER -->
+
 Adds a **heatmap graph** to Anki's main window which visualizes past and future card review activity, similar to the contribution view on GitHub. Information on the **current streak** is displayed alongside the heatmap. Clicking on an item shows the cards reviewed or due on that day.
 
 <img src="https://raw.githubusercontent.com/Glutanimate/review-heatmap/master/screenshots/review-heatmap-1.png">   <img src="https://raw.githubusercontent.com/Glutanimate/review-heatmap/master/screenshots/review-heatmap-2.png">
 
-**COMPATIBILITY**
-
-This add-on is designed to work both on Anki 2.0 and Anki 2.1. However, as Anki 2.1 is still being tested it is possible that a future beta release will break 2.1 compatibility. **Please do not report issues with Anki 2.1 in the review section below**. Instead, please report all issues you encounter on [GitHub](https://github.com/glutanimate/hierarchical-tags/issues).
-
-**VIDEO DEMONSTRATION**
-
-[![YouTube: Anki add-on: Review Heatmap](https://i.ytimg.com/vi/3Hk5TYdvKnM/mqdefault.jpg)](https://youtu.be/3Hk5TYdvKnM) [![YouTube: Add-on Update: Review Heatmap](https://i.ytimg.com/vi/2u8p0N47eUg/mqdefault.jpg)](https://youtu.be/2u8p0N47eUg)
-
-(Make sure to enable closed-captions for comments on the demonstrated features)
-
-**FEATURES**
+### FEATURES
 
 - **Color-coded** summary of **review activity**: Hues of green for past reviews, shades of grey for pending reviews
 - Additional stats: **Review streaks**, daily averages, and days learned
 - **Interactive controls**: Clicking on a day will draw up the corresponding cards in the browser
 - **Highly configurable**: 5 different color schemes, 2 different calendar modes, etc.
 
-**RELEASE LOG**
+<!-- CHANGELOG -->
 
-This section will always be updated with the latest changes to *Review Heatmap*. More details on major releases are listed in the next section. For a full release log, including smaller bug fix releases and more details on each entry, make sure to check out the [releases page on GitHub](https://github.com/Glutanimate/review-heatmap/releases).
-<!-- space -->
+### USAGE
 
-- 2017-02-19 - **v0.6.0** – Reworked add-on structure
-- 2017-01-10 – **v0.5.0** – Lots of new features and improvements.
-- 2017-01-01 – **v0.2.0** – Switched from absolute to relative scaling
-- 2016-12-31 – **v0.1.0** – Initial release
+The use of this add-on is documented in the [official Wiki](https://github.com/Glutanimate/review-heatmap/wiki) and the YouTube videos below:
 
-**LATEST CHANGES AND NEWS**
+[![YouTube: Anki add-on: Review Heatmap](https://i.ytimg.com/vi/3Hk5TYdvKnM/mqdefault.jpg)](https://youtu.be/3Hk5TYdvKnM) [![YouTube: Add-on Update: Review Heatmap](https://i.ytimg.com/vi/2u8p0N47eUg/mqdefault.jpg)](https://youtu.be/2u8p0N47eUg)
 
-*v0.6.0*
+(Make sure to enable closed-captions for comments on the demonstrated features)
 
-- **New**: Quickly toggle the heatmap in the deck browser and overview by using <code>CTRL</code> + <code>R</code>
-- Changed: New modularized add-on structure which should make maintenance easier
+<!-- SUPPORT -->
 
-As this version uses a new file structure you will have to **remove older versions of the add-on** before updating. Otherwise you might end up with multiple heatmaps.
+### CREDITS AND LICENSE
 
-**INSTALLATION**
-
-Simply follow the generic instructions listed below this add-on description.
-
-**DOCUMENTATION**
-
-The use of this add-on is documented in the [official Wiki](https://github.com/Glutanimate/review-heatmap/wiki) and the YouTube videos linked to above.
-
-**HELP**
-
-Please check out the [Troubleshooting section](https://github.com/Glutanimate/review-heatmap/wiki/Troubleshooting) in the Wiki if you are experiencing issues with the add-on. Bug reports and suggestions are always welcome, but it might take me a while to get to them. **Please do not post bug reports in the review section**, as I will not be able to help you or reply. Instead, please use the [official support thread](https://anki.tenderapp.com/discussions/add-ons/8707-review-heatmap-official-thread) (no registration necessary!).
-
-**CREDITS AND LICENSE**
-
-*Copyright (c) 2016-2018 [Aristotelis P.](https://github.com/Glutanimate)*
+*Copyright © 2016-2019 [Aristotelis P.](https://glutanimate.com/)  (Glutanimate)*
 
 Inspired by GitHub's contribution calendar and *Forecast graph on Overview page* by Steve AW. Ships with the following javascript libraries:
 
 - d3.js (v3.5.17), (c) Mike Bostock, BSD license
 - cal-heatmap (v3.6.2), (c) Wan Qi Chen, MIT license
 
-Licensed under the [GNU AGPL v3](https://www.gnu.org/licenses/agpl.html). The code for this add-on is available on [![GitHub icon](https://glutanimate.com/logos/github.svg) GitHub](https://github.com/Glutanimate/review-heatmap).
+Licensed under the _GNU AGPLv3_, extended by a number of additional terms. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. For more information on the license please see the [LICENSE file](https://github.com/glutanimate/review-heatmap/blob/master/LICENSE) accompanying this add-on. The source code is available on [![GitHub icon](https://glutanimate.com/logos/github.svg) GitHub](https://github.com/glutanimate/review-heatmap). Pull requests and other contributions are welcome!
 
-**OTHER ADD-ONS**
+### OTHER ADD-ONS
 
-Make sure to also give some of my other add-ons a try:
-
-- [Image Occlusion Enhanced](https://ankiweb.net/shared/info/1111933094) - image-based cloze deletions
-- [Cloze Overlapper](https://ankiweb.net/shared/info/969733775) - memorize lists and enumerations effectively
-- [Advanced Previewer](https://ankiweb.net/shared/info/544521385) - preview and review multiple cards at once right from within the previewer
-- [Search and Replace Tags](https://ankiweb.net/shared/info/138501288) - rename tags across multiple notes
-- [Batch Note Editing](https://ankiweb.net/shared/info/291119185) - makes batch-editing notes a breeze
-- [Sticky Searches](https://ankiweb.net/shared/info/594622823) - quick toggles for often used search terms in the browser
-
-There are also a number of other great add-ons out there that will help you gamify Anki to an even further extent than with Review Heatmap alone. I go over a few of them in the following video:
+Interested in more gamification? Make sure to check out the add-ons in the following video:
 
 [![YouTube: Anki add-on Guide: Gamify Your Reviews](https://i.ytimg.com/vi/UkveLkAgXiM/mqdefault.jpg)](https://youtu.be/UkveLkAgXiM)
 
-**MORE RESOURCES**
+<!-- RESOURCES -->
 
-Make sure to check out my socials for the latest add-on updates and news: [![Twitter bird](https://glutanimate.com/logos/twitter.svg)@Glutanimate](https://twitter.com/glutanimate)  |  [![YouTube playbutton](https://glutanimate.com/logos/youtube.svg) / Glutanimate](https://www.youtube.com/c/glutanimate)
-
-Want to hire me to work on add-on for you? Get in touch at ![Email icon](https://glutanimate.com/logos/email.svg) <em>ankiglutanimate [αt] gmail .com</em>
-
-**SUPPORT THIS ADD-ON**
-
-Writing, supporting, and maintaining Anki add-ons like these takes a lot of time and effort. If *Review Heatmap* has been a valuable asset in your studies, please consider using one of the buttons below to support my efforts by **buying me a coffee**, or by **pledging your support on Patreon**. Each and every contribution is greatly appreciated and will help me maintain and improve *Review Heatmap* as time goes by!
-
-[![](https://glutanimate.com/logos/patreon_button.svg)](https://www.patreon.com/glutanimate "Support me on Patreon 😄") &nbsp;&nbsp;&nbsp;&nbsp; [![](https://glutanimate.com/logos/kofi_button.svg)](https://ko-fi.com/X8X0L4YV "Buy me a coffee 😊")
-
-*Pro-tip: Lots of exclusive add-ons and other goodies await on my Patreon page. Make sure to check them out!*
+<!-- FUNDING -->
