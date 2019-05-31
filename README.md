@@ -20,8 +20,6 @@ Adds a **heatmap graph** to [Anki](https://apps.ankiweb.net/)'s main window whic
 
 - [Video Demonstration](#video-demonstration)
 - [Installation](#installation)
-    - [AnkiWeb](#ankiweb)
-    - [Manual installation](#manual-installation)
 - [Documentation](#documentation)
 - [Building](#building)
 - [Contributing](#contributing)
@@ -52,7 +50,7 @@ Please click on the entry corresponding to your Anki version:
 <summary><i>Anki 2.1</i></summary>
 
 1. Make sure you have the [latest version](https://apps.ankiweb.net/#download) of Anki 2.1 installed. Earlier releases (e.g. found in various Linux distros) do not support `.ankiaddon` packages.
-2. Download the latest `.ankiaddon` package from the [releases tab](https://github.com/glutanimate/review-heatmap/releases)
+2. Download the latest `.ankiaddon` package from the [releases tab](https://github.com/glutanimate/review-heatmap/releases) (you might need to click on *Assets* below the description to reveal the download links)
 3. From Anki's main window, head to *Tools* → *Add-ons*
 4. Drag-and-drop the `.ankiaddon` package onto the add-ons list
 5. Restart Anki
@@ -68,7 +66,7 @@ Please click on the entry corresponding to your Anki version:
 3. See if you can find a `review_heatmap` folder. If so:
     1. If the folder contains a `meta.json` file, copy the file to a safe location. This will allow you to preserve your current settings.
     2. Proceed to delete the `review_heatmap` folder
-4. Download and extract the latest Anki 2.0 add-on release from the [releases tab](https://github.com/glutanimate/review-heatmap/releases)
+4. Download and extract the latest Anki 2.0 add-on release from the [releases tab](https://github.com/glutanimate/review-heatmap/releases) (you might need to click on *Assets* below the description to reveal the download links)
 5. Move the extracted `Review Heatmap.py` and `review_heatmap` into the add-ons folder
 6. Optional: Place the `meta.json` file back into the directory if you created a copy beforehand.
 7. Restart Anki

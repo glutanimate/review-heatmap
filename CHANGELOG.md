@@ -10,6 +10,8 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 
 :heart: My heartfelt thanks goes out to everyone who has supported this add-on through their tips, contributions, or any other means (you know who you are!). All of the recent additions would not have been possible without you. Thank you for being awesome!
 
+## [Unreleased]
+
 ## [0.7.0-beta.1] - 2018-10-28
 
 ### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v0.7.0-beta.1)
