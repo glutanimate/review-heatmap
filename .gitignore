@@ -30,7 +30,6 @@ node_modules
 .sublime-backup/
 .idea/
 .vscode/
-addon.json
 # Temp
 .gitold
 obsolete
