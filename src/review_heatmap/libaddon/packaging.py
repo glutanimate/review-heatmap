@@ -2,7 +2,7 @@
 
 # Libaddon for Anki
 #
-# Copyright (C) 2018-2019  Glutanimate <https//glutanimate.com/>
+# Copyright (C) 2018-2019  Aristotelis P. <https//glutanimate.com/>
 # Copyright (C) 2016  Jason R Coombs and other PyPA contributors
 #                     <pypa-dev@googlegroups.com>
 #

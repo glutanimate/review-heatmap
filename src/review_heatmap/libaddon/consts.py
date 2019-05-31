@@ -2,7 +2,7 @@
 
 # Libaddon for Anki
 #
-# Copyright (C) 2018-2019  Glutanimate <https//glutanimate.com/>
+# Copyright (C) 2018-2019  Aristotelis P. <https//glutanimate.com/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -55,7 +55,7 @@ ADDON_VERSION = "0.1.0"
 LICENSE = "GNU AGPLv3"
 LIBRARIES = ()
 AUTHORS = (
-    {"name": "Glutanimate (Glutanimate)", "years": "2018",
+    {"name": "Aristotelis P. (Glutanimate)", "years": "2018",
      "contact": "https://glutanimate.com"}
 )  # main developers
 CONTRIBUTORS = SPONSORS = MEMBERS_CREDITED = MEMBERS_TOP = ()

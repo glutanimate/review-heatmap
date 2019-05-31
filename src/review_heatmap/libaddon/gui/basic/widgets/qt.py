@@ -2,7 +2,7 @@
 
 # Libaddon for Anki
 #
-# Copyright (C) 2018        Glutanimate <https//glutanimate.com/>
+# Copyright (C) 2018        Aristotelis P. <https//glutanimate.com/>
 # Copyright (C) 2013-2018   Damien Elmes <anki@ichi2.net>
 #
 # This program is free software: you can redistribute it and/or modify
