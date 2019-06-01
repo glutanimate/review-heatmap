@@ -26,7 +26,7 @@ assignees: ''
 
 #### Information about your Anki set-up
 
-Please fill out the section corresponding with your Anki version:
+*Please fill out the section corresponding with your Anki version:*
 
 
 ##### If you are using Anki 2.1
@@ -46,7 +46,7 @@ Please fill out the section corresponding with your Anki version:
 
 ```
 
-*Please fill details about your operating system (Windows/macOS/Linux, which version):*
+*Please fill in details about your operating system (Windows/macOS/Linux, which version):*
 
 - OS:
 - version:
@@ -57,7 +57,7 @@ Please fill out the section corresponding with your Anki version:
 
 #### Error message (if any)
 
-*If you received an error message, please copy and paste it between the backticks below:*
+*If you've received an error message, please copy and paste it between the backticks below:*
 
 
 ```python

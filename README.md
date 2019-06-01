@@ -113,6 +113,6 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 ----
 
 <b>
-<div align="center">The development of this add-on was made possible thanks to my <a href="https://www.patreon.com/glutanimate">Patreon</a> and <a href="https://ko-fi.com/X8X0L4YV">Ko-Fi</a> supporters.</div>
-<div align="center">Thank you so much for your love and support ❤️ !</div>
+<div align="center">The continued development of this add-on is made possible <br>thanks to my <a href="https://www.patreon.com/glutanimate">Patreon</a> and <a href="https://ko-fi.com/X8X0L4YV">Ko-Fi</a> supporters.
+<br>You guys rock ❤️ !</div>
 </b>
