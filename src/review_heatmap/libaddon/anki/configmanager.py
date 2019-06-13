@@ -128,16 +128,21 @@ class ConfigManager(object):
         self._reset_req = reset_req
         self._conf_key = conf_key
         self._storages = {
-            key: {"default": value, "dirty": False, "loaded": False}
-            for key, value in config_dict.items()
+            name: {
+                "default": (default if name != "local"
+                            else self._getLocalDefaults()),
+                "dirty": False,
+                "loaded": False
+            }
+            for name, default in config_dict.items()
         }
+        
+        self.conf_action = self.conf_updated_action = None
+        self._setupAnkiHooks(conf_action=conf_action)
+        self._setupCustomHooks()
+        
         self._config = {}
-        if "local" in self._storages:
-            self._storages["local"]["default"] = self._getLocalDefaults()
-            self._setupLocalHooks()
-        self._setupSaveHooks()
-        if not ANKI20 and conf_action:
-            self.setConfigAction(conf_action)
+        
         if preload:
             self._maybeLoad()
 
@@ -213,15 +218,31 @@ class ConfigManager(object):
             reset {bool} -- whether to reset mw upon save (overwrites
                             reset_req instance attribute)
         """
-        for name in ([storage_name] if storage_name else self._storages):
+        if storage_name:
+            storages = [storage_name]  # limit to specific storage
+        else:
+            storages = self._storages
+        
+        for name in storages:
             self._checkStorage(name)
             saver = getattr(self, "_save" + name.capitalize())
             saver(self._config[name])
-            self._storages[name]["dirty"] = True
+            self._storages[name]["dirty"] = False
+        
+        self.afterSave(reset=reset, profile_unload=profile_unload)
 
+    def afterSave(self, reset=False, profile_unload=False):
+        """Trigger actions that are supposed to be run after saving config
+        
+        Keyword Arguments:
+            profile_unload {bool} -- whether save has been triggered on profile
+                                     unload
+            reset {bool} -- whether to reset mw upon save (overwrites
+                            reset_req instance attribute)
+        """
         if (self._reset_req or reset) and not profile_unload:
             self.mw.reset()
-        
+
         if not profile_unload:
             runHook("config_saved_{}".format(self._conf_key))
 
@@ -325,10 +346,16 @@ class ConfigManager(object):
         Arguments:
             action {function} -- Function to call
         """
-        if ANKI20:
-            return False
-        self._conf_action = action
-        self._setupConfigButtonHook(action)
+        self.conf_action = action
+        if not ANKI20:
+            self.mw.addonManager.setConfigAction(
+                MODULE_ADDON, action)
+
+    def setConfigUpdatedAction(self, action):
+        self.conf_updated_action = action
+        if not ANKI20:
+            self.mw.addonManager.setConfigUpdatedAction(
+                MODULE_ADDON, action)
 
     # General helper methods
     ######################################################################
@@ -338,7 +365,8 @@ class ConfigManager(object):
         Try loading config storages, delegating loading until
         Anki profile is ready if necessary
         """
-        if "synced" or "profile" in self._storages and self.mw.col is None:
+        if (any(i in self._storages for i in ("synced", "profile")) and
+                self.mw.col is None):
             # Profile not ready. Defer config loading.
             addHook("profileLoaded", self.load)
             return
@@ -364,7 +392,7 @@ class ConfigManager(object):
             raise ConfigError(
                 "Config storage type not available for this add-on: ", name)
 
-    def _setupSaveHooks(self):
+    def _setupCustomHooks(self):
         """
         Adds hooks for various events that should trigger saving the config
         """
@@ -375,18 +403,33 @@ class ConfigManager(object):
         # are saved to the corresponding storages
         addHook("unloadProfile", self.onProfileUnload)
 
-    def _setupConfigButtonHook(self, action):
-        """
-        Assigns provided function to Anki 2.1's "Configure" button
-
-        Arguments:
-            action {function} -- Function to call
-        """
-        self.mw.addonManager.setConfigAction(MODULE_ADDON, action)
-
-    def _setupLocalHooks(self):
-        self.mw.addonManager.setConfigUpdatedAction(
-            MODULE_ADDON, lambda: self.save(storage="local"))
+    def _setupAnkiHooks(self, conf_action):
+        if "local" in self._storages:
+            self.setConfigUpdatedAction(self.onLocalConfigUpdated)
+        self.setConfigAction(conf_action)
+        if ANKI20:
+            self._setupAddonMenus20()
+    
+    def _setupAddonMenus20(self):
+        from anki.hooks import wrap
+        from aqt.addons import AddonManager
+        from ..gui.dialog_configeditor import ConfigEditor
+        
+        from ..consts import ADDON_NAME
+        from ..platform import DIRECTORY_ADDONS
+        
+        def onEdit(mgr, file_path, _old):
+            entry_point = os.path.join(DIRECTORY_ADDONS, ADDON_NAME + ".py")
+            if not file_path == entry_point:
+                return _old(mgr, file_path)
+            if self.conf_action:
+                self.conf_action()
+            elif "local" in self._config:
+                ConfigEditor(self, self.mw)
+            else:
+                return _old(mgr, file_path)
+        
+        AddonManager.onEdit = wrap(AddonManager.onEdit, onEdit, "around")
 
     # Local storage
     ######################################################################
@@ -410,7 +453,7 @@ class ConfigManager(object):
         else:
             config = self._addonConfigDefaults20()
             meta = self._addonMeta20()
-            user_conf = meta.get("config", {})
+            user_conf = meta.get("config", {}) or {}
             config.update(user_conf)
             return config
 
@@ -437,6 +480,10 @@ class ConfigManager(object):
             self.mw.addonManager.writeConfig(MODULE_ADDON, config)
         else:
             self._writeAddonMeta20({"config": config})
+
+    def onLocalConfigUpdated(self, new_config):
+        self._config["local"] = new_config
+        self.afterSave()
 
     # Synced storage
     ######################################################################

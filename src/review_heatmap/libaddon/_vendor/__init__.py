@@ -37,7 +37,8 @@ from ..packaging import VersionSpecificImporter
 
 # New vendored packages should be appended here:
 names = [
-    "packaging"
+    "packaging",
+    "markdown2"
 ]
 
 # NOTE: VersionSpecificImporter does not resolve absolute imports within
