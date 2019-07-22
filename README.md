@@ -56,6 +56,7 @@ Please click on the entry corresponding to your Anki version:
 5. Restart Anki
 
 Video summary:
+
 <img src="https://raw.githubusercontent.com/glutanimate/docs/master/anki/add-ons/media/ankiaddon-installation.gif" width=640>
 
 </details>
