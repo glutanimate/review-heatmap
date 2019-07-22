@@ -18,12 +18,12 @@ Adds a **heatmap graph** to [Anki](https://apps.ankiweb.net/)'s main window whic
 
 <!-- MarkdownTOC -->
 
-- [Video Demonstration](#video-demonstration)
-- [Installation](#installation)
-- [Documentation](#documentation)
-- [Building](#building)
-- [Contributing](#contributing)
-- [License and Credits](#license-and-credits)
+- [Video Demonstration](#Video-Demonstration)
+- [Installation](#Installation)
+- [Documentation](#Documentation)
+- [Building](#Building)
+- [Contributing](#Contributing)
+- [License and Credits](#License-and-Credits)
 
 <!-- /MarkdownTOC -->
 
@@ -54,6 +54,9 @@ Please click on the entry corresponding to your Anki version:
 3. From Anki's main window, head to *Tools* → *Add-ons*
 4. Drag-and-drop the `.ankiaddon` package onto the add-ons list
 5. Restart Anki
+
+Video summary:
+<img src="https://raw.githubusercontent.com/glutanimate/docs/master/anki/add-ons/media/ankiaddon-installation.gif" width=640>
 
 </details>
 
