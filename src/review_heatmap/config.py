@@ -42,7 +42,7 @@ from aqt import mw
 
 from .libaddon.anki.configmanager import ConfigManager
 
-from .consts import ADDON_VERSION
+from .consts import ADDON
 
 __all__ = ["heatmap_colors", "heatmap_modes", "config_defaults", "config"]
 
@@ -93,7 +93,7 @@ config_defaults = {
         "limfcst": 0,
         "limcdel": False,
         "limdecks": [],
-        "version": ADDON_VERSION
+        "version": ADDON.VERSION
     },
     "profile": {
         "display": {
@@ -105,7 +105,7 @@ config_defaults = {
         "hotkeys": {
             "toggle": "Ctrl+R"
         },
-        "version": ADDON_VERSION
+        "version": ADDON.VERSION
     }
 }
 

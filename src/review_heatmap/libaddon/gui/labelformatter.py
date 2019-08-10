@@ -38,12 +38,12 @@ from __future__ import (absolute_import, division,
 
 from aqt.qt import *
 
-from ..consts import ADDON_NAME, ADDON_VERSION
+from ..consts import ADDON
 from ..platform import ANKI20
 
 format_dict = {
-    "ADDON_NAME": ADDON_NAME,
-    "ADDON_VERSION": ADDON_VERSION,
+    "ADDON_NAME": ADDON.NAME,
+    "ADDON_VERSION": ADDON.VERSION,
 }
 
 if not ANKI20:

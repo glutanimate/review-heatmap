@@ -40,7 +40,8 @@ from aqt.utils import tooltip, showInfo
 from anki.utils import json
 
 from .._vendor import markdown2
-from ..consts import ADDON_NAME
+
+from ..consts import ADDON
 from ..platform import PATH_ADDON
 
 from .dialog_htmlview import HTMLViewer
@@ -53,7 +54,7 @@ class ConfigEditor(QDialog):
         self.mgr = config_manager
         self.form = aqt.forms.editaddon.Ui_Dialog()
         self.form.setupUi(self)
-        self.setWindowTitle("{} Configuration".format(ADDON_NAME))
+        self.setWindowTitle("{} Configuration".format(ADDON.NAME))
         self.setupWidgets()
         self.updateText(self.mgr["local"])
         self.exec_()
@@ -82,7 +83,7 @@ class ConfigEditor(QDialog):
         with open(docs_path, "r") as f:
             html = markdown2.markdown(f.read())
         dialog = HTMLViewer(html, title="{} Configuration Help".format(
-            ADDON_NAME), parent=self)
+            ADDON.NAME), parent=self)
         dialog.show()
     
     def accept(self):

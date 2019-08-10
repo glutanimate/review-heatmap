@@ -36,10 +36,7 @@ Generate 'about' info, including credits, copyright, etc.
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from ..consts import (ADDON_NAME, ADDON_VERSION, LICENSE, LIBRARIES,
-                      AUTHORS, CONTRIBUTORS, MEMBERS_CREDITED, MEMBERS_TOP,
-                      QRC_PREFIX)
-
+from ..consts import ADDON
 from ..platform import ANKI20
 
 if not ANKI20:
@@ -48,7 +45,7 @@ else:
     import string
 
 libs_header = (
-    "<p>{} ships with the following third-party code:</p>".format(ADDON_NAME))
+    "<p>{} ships with the following third-party code:</p>".format(ADDON.NAME))
 
 html_template = """\
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
@@ -107,33 +104,33 @@ title_template = """\
 
 def get_about_string(title=False):
     authors_string = "\n".join(authors_template.format(**dct)
-                               for dct in AUTHORS)
+                               for dct in ADDON.AUTHORS)
     libs_entries = "\n".join(libs_item_template.format(**dct)
-                             for dct in LIBRARIES)
+                             for dct in ADDON.LIBRARIES)
     if libs_entries:
         libs_string = "\n".join((libs_header, "<ul>", libs_entries, "</ul>"))
     else:
         libs_string = ""
     contributors_string = "<p>With patches from: <i>{}</i></p>".format(
-        ", ".join(sorted(CONTRIBUTORS, key=string.lower))
+        ", ".join(sorted(ADDON.CONTRIBUTORS, key=string.lower))
     )
 
-    members_top_string = "<b>{}</b>".format(", ".join(MEMBERS_TOP))
-    members_credited_string = ", ".join(MEMBERS_CREDITED)
+    members_top_string = "<b>{}</b>".format(", ".join(ADDON.MEMBERS_TOP))
+    members_credited_string = ", ".join(ADDON.MEMBERS_CREDITED)
     members_string = "<p>{t},</p><p>{r}</p>".format(
         t=members_top_string, r=members_credited_string)
 
     if title:
-        title_string = title_template.format(display_name=ADDON_NAME,
-                                             version=ADDON_VERSION)
+        title_string = title_template.format(display_name=ADDON.NAME,
+                                             version=ADDON.VERSION)
     else:
         title_string = ""
 
-    return html_template.format(display_name=ADDON_NAME,
-                                license=LICENSE,
+    return html_template.format(display_name=ADDON.NAME,
+                                license=ADDON.LICENSE,
                                 title=title_string,
                                 authors_string=authors_string,
                                 libs_string=libs_string,
                                 contributors_string=contributors_string,
                                 members_string=members_string,
-                                qrc_prefix=QRC_PREFIX)
+                                qrc_prefix=ADDON.MODULE)

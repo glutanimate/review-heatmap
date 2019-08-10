@@ -46,8 +46,9 @@ from aqt import mw
 from aqt.utils import tooltip, openLink
 
 from ..libaddon.anki.configmanager import ConfigManager
-from ..libaddon.consts import LINKS
 from ..libaddon.platform import isMac
+
+from ..consts import ADDON
 
 __all__ = ["invokeSnanki"]
 
@@ -112,7 +113,7 @@ class Snanki(QDialog):
         Quick hacky workaround to open Patreon link on gameOver screen click.
         """
         if self.gameOver and self.lives == 0:
-            openLink(LINKS["bepatron"])
+            openLink(ADDON.LINKS["bepatron"])
         QDialog(self).mousePressEvent(event)
 
     def newGame(self):

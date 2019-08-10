@@ -30,7 +30,7 @@
 # Any modifications to this file must keep this entire header intact.
 
 """
-Module-level entry point for the add-on into Anki 2.0/2.1
+Initializes add-on components.
 """
 
 from __future__ import (absolute_import, division,
@@ -38,4 +38,17 @@ from __future__ import (absolute_import, division,
 
 from ._version import __version__  # noqa: F401
 
-from . import main  # noqa: F401
+from .consts import ADDON
+from .libaddon.consts import setAddonProperties
+
+setAddonProperties(ADDON)
+
+from .gui import initializeQtResources
+from .gui.options import initializeOptions
+from .views import initializeViews
+from .links import initializeLinks
+
+initializeQtResources()
+initializeOptions()
+initializeViews()
+initializeLinks()

@@ -42,7 +42,7 @@ from __future__ import (absolute_import, division,
 
 from aqt.utils import openLink
 
-from ..consts import MAIL_AUTHOR, LINKS, ADDON_NAME
+from ..consts import ADDON
 
 from .basic.dialog_basic import BasicDialog
 from .labelformatter import formatLabels
@@ -81,19 +81,19 @@ class ContribDialog(BasicDialog):
         """
         Connect button presses to actions
         """
-        mail_string = "mailto:{}".format(MAIL_AUTHOR)
+        mail_string = "mailto:{}".format(ADDON.AUTHOR_MAIL)
         self.form.btnMail.clicked.connect(
             lambda: openLink(mail_string))
         self.form.btnCoffee.clicked.connect(
-            lambda: openLink(LINKS["coffee"]))
+            lambda: openLink(ADDON.LINKS["coffee"]))
         self.form.btnPatreon.clicked.connect(
-            lambda: openLink(LINKS["patreon"]))
+            lambda: openLink(ADDON.LINKS["patreon"]))
         self.form.btnCredits.clicked.connect(
             self._showCredits)
 
     def _showCredits(self):
         viewer = HTMLViewer(get_about_string(title=True),
-                            title=ADDON_NAME, parent=self)
+                            title=ADDON.NAME, parent=self)
         viewer.exec_()
 
     def _linkHandler(self, url):

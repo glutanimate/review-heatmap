@@ -38,31 +38,46 @@ from __future__ import (absolute_import, division,
 
 from ._version import __version__
 
-__all__ = ["ADDON_NAME", "ADDON_ID", "ADDON_VERSION", "LINKS",
-           "LICENSE", "LIBRARIES", "AUTHORS", "CONTRIBUTORS",
-           "SPONSORS"]
+try:
+    from .data.patrons import MEMBERS_CREDITED, MEMBERS_TOP
+except ImportError:
+    MEMBERS_CREDITED = MEMBERS_TOP = ()
 
-# ADD-ON
+# PROPERTIES DESCRIBING ADDON
 
-ADDON_NAME = "Review Heatmap"
-ADDON_ID = "1771074083"
-ADDON_VERSION = __version__
-LINKS = {
-    "help": "https://github.com/glutanimate/review-heatmap/wiki"
-}
-LICENSE = "GNU AGPLv3"
-LIBRARIES = (
-    {"name": "d3.js", "version": "v3.5.17",
-        "author": "Mike Bostock", "license": "BSD license",
-        "url": "https://d3js.org/"},
-    {"name": "cal-heatmap", "version": "v3.6.3.2-anki",
-        "author": "Wan Qi Chen", "license": "MIT license",
-        "url": "https://github.com/glutanimate/cal-heatmap"},
-)
-AUTHORS = (
-    {"name": "Aristotelis P. (Glutanimate)", "years": "2016-2018",
-     "contact": "https://glutanimate.com"},
-)  # trailing comma required for single-element tuples
-# automatically sorted:
-CONTRIBUTORS = ("David Bailey", "hehu80", "Rapptz")
-SPONSORS = ()
+class ADDON(object):
+    """Class storing general add-on properties
+    Property names need to be all-uppercase with no leading underscores
+    """
+    NAME = "Review Heatmap"
+    MODULE = "review_heatmap"
+    ID = "1771074083"
+    VERSION = __version__
+    LICENSE = "GNU AGPLv3"
+    AUTHORS = (
+        {"name": "Aristotelis P. (Glutanimate)", "years": "2016-2018",
+         "contact": "https://glutanimate.com"},
+    )
+    AUTHOR_MAIL = "ankiglutanimate@gmail.com"
+    LIBRARIES = (
+        {"name": "d3.js", "version": "v3.5.17",
+         "author": "Mike Bostock", "license": "BSD license",
+         "url": "https://d3js.org/"},
+        {"name": "cal-heatmap", "version": "v3.6.3.2-anki",
+         "author": "Wan Qi Chen", "license": "MIT license",
+         "url": "https://github.com/glutanimate/cal-heatmap"},
+    )
+    CONTRIBUTORS = ()
+    SPONSORS = ()
+    MEMBERS_CREDITED = MEMBERS_CREDITED
+    MEMBERS_TOP = MEMBERS_TOP
+    LINKS = {
+        "patreon": "https://www.patreon.com/glutanimate",
+        "bepatron": "https://www.patreon.com/bePatron?u=7522179",
+        "coffee": "http://ko-fi.com/glutanimate",
+        "description": "https://ankiweb.net/shared/info/{}".format(ID),
+        "rate": "https://ankiweb.net/shared/review/{}".format(ID),
+        "twitter": "https://twitter.com/glutanimate",
+        "youtube": "https://www.youtube.com/c/glutanimate",
+        "help": "https://github.com/glutanimate/review-heatmap/wiki"
+    }

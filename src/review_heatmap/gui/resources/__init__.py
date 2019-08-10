@@ -39,5 +39,3 @@ if ANKI20:
     from .anki20 import *  # noqa: F401
 else:
     from .anki21 import *  # noqa: F401
-
-QRC_PREFIX = "review_heatmap"

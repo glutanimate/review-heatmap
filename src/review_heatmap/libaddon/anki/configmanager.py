@@ -419,11 +419,12 @@ class ConfigManager(object):
         from aqt.addons import AddonManager
         from ..gui.dialog_configeditor import ConfigEditor
         
-        from ..consts import ADDON_NAME
+        from ..consts import ADDON
         from ..platform import DIRECTORY_ADDONS
         
         def onEdit(mgr, file_path, _old):
-            entry_point = os.path.join(DIRECTORY_ADDONS, ADDON_NAME + ".py")
+            entry_point = os.path.join(
+                DIRECTORY_ADDONS, ADDON.NAME + ".py")
             if not file_path == entry_point:
                 return _old(mgr, file_path)
             if self.conf_action:
