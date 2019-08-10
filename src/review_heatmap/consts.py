@@ -43,6 +43,10 @@ try:
 except ImportError:
     MEMBERS_CREDITED = MEMBERS_TOP = ()
 
+__all__ = [
+    "ADDON"
+]
+
 # PROPERTIES DESCRIBING ADDON
 
 class ADDON(object):
