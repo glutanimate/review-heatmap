@@ -44,7 +44,7 @@ def setAddonProperties(addon):
         addon {object} -- an ADDON class with properties stored as class
                           attributes
     """
-    for key, value in properties.__dict__.items():
+    for key, value in addon.__dict__.items():
         if key.startswith("__") and key.endswith("__"):
             # ignore special attributes
             continue
