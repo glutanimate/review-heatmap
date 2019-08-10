@@ -34,7 +34,7 @@ Contributions diaog
 
 Uses the following addon-level constants, if defined:
 
-ADDON_NAME, MAIL_AUTHOR, LINKS
+ADDON.NAME, ADDON.AUTHOR_MAIL, ADDON.LINKS
 """
 
 from __future__ import (absolute_import, division,
