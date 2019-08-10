@@ -2,7 +2,7 @@
 
 # Review Heatmap Add-on for Anki
 #
-# Copyright (C) 2016-2018  Aristotelis P. <https//glutanimate.com/>
+# Copyright (C) 2016-2019  Aristotelis P. <https//glutanimate.com/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -59,7 +59,7 @@ class ADDON(object):
     VERSION = __version__
     LICENSE = "GNU AGPLv3"
     AUTHORS = (
-        {"name": "Aristotelis P. (Glutanimate)", "years": "2016-2018",
+        {"name": "Aristotelis P. (Glutanimate)", "years": "2016-2019",
          "contact": "https://glutanimate.com"},
     )
     AUTHOR_MAIL = "ankiglutanimate@gmail.com"

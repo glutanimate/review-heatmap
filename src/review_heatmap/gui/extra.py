@@ -2,7 +2,7 @@
 
 # Review Heatmap Add-on for Anki
 #
-# Copyright (C) 2016-2018  Aristotelis P. <https//glutanimate.com/>
+# Copyright (C) 2016-2019  Aristotelis P. <https//glutanimate.com/>
 # Copyright (C) 2013       Maciej Lis (mlisbit)
 #
 # This program is free software: you can redistribute it and/or modify
