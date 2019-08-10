@@ -193,7 +193,7 @@ class MappedDialog(BasicDialog):
             return []
         crumbs = path.split("/")
         return [c if not c.strip("-").isdigit() else
-                int(c.strip("-")) * (0 - c.startswith("-"))
+                int(c.strip("-")) * (-1 if c.startswith("-") else 1)
                 for c in crumbs]
 
     def _dataToWidgetVal(self, data, property_dict):

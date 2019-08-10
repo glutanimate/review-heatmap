@@ -257,6 +257,10 @@ class ConfigManager(object):
         Returns:
             dict -- Dictionary of all config values
         """
+        for storage in self._storages.values():
+            if not storage["loaded"]:
+                self.load()
+                break
         return self._config
 
     @all.setter

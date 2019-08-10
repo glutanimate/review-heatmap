@@ -86,7 +86,7 @@ html_template = """\
     <p><span style="font-weight:600;">License</span></p>
     <p><i>{display_name}</i> is <b>free and open-source</b> software. The add-on code that runs within
         Anki is released under the {license} license, extended by a number of additional terms.
-        For more information please see the accompanied license file.</p>
+        For more information please see the license file that accompanied this program.</p>
     <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
         Please see the license file for more details.</p>
 </body>

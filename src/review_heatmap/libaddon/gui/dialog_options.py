@@ -94,7 +94,11 @@ class OptionsDialog(MappedDialog):
                 return
             for idx in range(tab_widget.count()):
                 tab = tab_widget.widget(idx)
+                if not tab:
+                    continue
                 layout = tab.layout()
+                if not layout:
+                    continue
                 layout.setContentsMargins(3, 3, 3, 3)
 
     def _setupAbout(self):

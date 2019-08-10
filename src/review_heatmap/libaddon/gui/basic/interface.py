@@ -115,6 +115,7 @@ class CommonWidgetInterface(object):
     QRadioButton    | bool        -         -           -         -
     QSpinBox        | numeric     -         -           numeric   numeric
     QDoubleSpinBox  | numeric     -         -           numeric   numeric
+    QSlider         | numeric     -         -           numeric   numeric
     QComboBox       | immutable   listtypes immutable   -         -
     QListWidget     | listtypes   listtypes immutable   -         -
     QDateEdit       | int         -         -           int       int
@@ -135,6 +136,7 @@ class CommonWidgetInterface(object):
     QRadioButton    | bool        -         -           -         -
     QSpinBox        | numeric     -         -           -         -
     QDoubleSpinBox  | numeric     -         -           -         -
+    QSlider         | numeric     -         -           -         -
     QComboBox       | immutable   listtypes immutable   -         -
     QListWidget     | listtypes   listtypes immutable   -         -
     QDateEdit       | int         -         -           -         -
@@ -331,7 +333,7 @@ class CommonWidgetInterface(object):
         elif isinstance(widget, (QCheckBox, QRadioButton)):
             assert isinstance(data, bool), error_msg
             widget.setChecked(data)
-        elif isinstance(widget, (QSpinBox, QDoubleSpinBox)):
+        elif isinstance(widget, (QSpinBox, QDoubleSpinBox, QSlider)):
             assert isinstance(data, NUMERICTYPES), error_msg
             widget.setValue(data)
         elif isinstance(widget, QComboBox):
@@ -391,7 +393,7 @@ class CommonWidgetInterface(object):
             return widget.key()
         elif isinstance(widget, (QCheckBox, QRadioButton)):
             return widget.isChecked()
-        elif isinstance(widget, (QSpinBox, QDoubleSpinBox)):
+        elif isinstance(widget, (QSpinBox, QDoubleSpinBox, QSlider)):
             return widget.value()
         elif isinstance(widget, QComboBox):
             return self._getComboCurrentData(widget)
@@ -668,7 +670,7 @@ class CommonWidgetInterface(object):
             error.args += ("Widget: ", widget)
             raise
 
-        if isinstance(widget, (QSpinBox, QDoubleSpinBox)):
+        if isinstance(widget, (QSpinBox, QDoubleSpinBox, QSlider)):
             return widget.setMinimum(value)
         elif isinstance(widget, QDateEdit):
             return self._setDateTimeMin(widget, value)
@@ -701,7 +703,7 @@ class CommonWidgetInterface(object):
             error.args += ("Widget: ", widget)
             raise
 
-        if isinstance(widget, (QSpinBox, QDoubleSpinBox)):
+        if isinstance(widget, (QSpinBox, QDoubleSpinBox, QSlider)):
             return widget.setMaximum(value)
         elif isinstance(widget, QDateEdit):
             return self._setDateTimeMax(widget, value)

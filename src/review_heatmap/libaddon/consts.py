@@ -79,7 +79,7 @@ except ImportError:
 try:
     from ..consts import LINKS as ADDON_LINKS  # noqa: F401
 except ImportError:
-    pass
+    ADDON_LINKS = {}
 
 # ADD-ON AGNOSTIC CONSTANTS
 
