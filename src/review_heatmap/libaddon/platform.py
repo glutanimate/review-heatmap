@@ -38,8 +38,9 @@ from __future__ import (absolute_import, division,
 
 import sys
 import os
+
 from aqt import mw
-from anki import version
+from anki import version as anki_version
 from anki.utils import isMac, isWin
 
 __all__ = ["PYTHON3", "ANKI20", "SYS_ENCODING", "MODULE_ADDON",
@@ -47,7 +48,7 @@ __all__ = ["PYTHON3", "ANKI20", "SYS_ENCODING", "MODULE_ADDON",
            "PATH_ADDON", "PATH_USERFILES", "PLATFORM"]
 
 PYTHON3 = sys.version_info[0] == 3
-ANKI20 = version.startswith("2.0.")
+ANKI20 = anki_version.startswith("2.0.")
 SYS_ENCODING = sys.getfilesystemencoding()
 
 name_components = __name__.split(".")
@@ -71,3 +72,24 @@ elif isWin:
     PLATFORM = "win"
 else:
     PLATFORM = "lin"
+
+def checkAnkiVersion(lower, upper=None):
+    """Check whether anki version is in specified range
+    
+    By default the upper boundary is set to infinite
+    
+    Arguments:
+        lower {str} -- minimum version (inclusive)
+    
+    Keyword Arguments:
+        upper {str} -- maximum version (exclusive) (default: {None})
+    
+    Returns:
+        bool -- Whether anki version is in specified range
+    """
+    from ._vendor.packaging import version
+    if upper is not None:
+        ankiv_parsed = version.parse(anki_version)
+        return (ankiv_parsed >= version.parse(lower) and
+                ankiv_parsed < version.parse(upper))
+    return version.parse(anki_version) >= version.parse(lower)
