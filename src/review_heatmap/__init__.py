@@ -99,6 +99,10 @@ def initializeAddon():
 
     setAddonProperties(ADDON)
 
+    from .libaddon.debug import maybeStartDebugging
+
+    maybeStartDebugging()
+
     from .gui import initializeQtResources
     from .gui.options import initializeOptions
     from .views import initializeViews

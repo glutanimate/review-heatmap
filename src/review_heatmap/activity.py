@@ -44,6 +44,7 @@ from aqt import mw
 from anki.utils import ids2str
 
 from .libaddon.platform import ANKI20
+from .libaddon.debug import logger, isDebuggingOn
 
 __all__ = ["ActivityReporter"]
 
@@ -80,7 +81,7 @@ class ActivityReporter(object):
     def _getActivity(self, history, forecast={}):
         if not history:
             return None
-        
+
         first_day = history[0][0] if history else None
         last_day = forecast[-1][0] if forecast else None
 
@@ -219,15 +220,14 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
         else:
             history_start = self._getConfHistoryLimit(
                 conf["limhist"], conf["limdate"])
-        
+
         if limfcst is not None:
             forecast_stop = self._daysFromToday(limfcst)
         else:
             forecast_stop = self._getConfForecastLimit(
                 conf["limfcst"])
-        
-        return (history_start, forecast_stop)
 
+        return (history_start, forecast_stop)
 
     def _getConfHistoryLimit(self, limit_days, limit_date):
         if limit_days is None and limit_date is None:
@@ -308,7 +308,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
     def _cardsDue(self, start=None, stop=None):
         # start, stop: timestamps in seconds. Set to None for unlimited.
         # start: inclusive; stop: exclusive
-        
+
         lim = ""
         if start is not None:
             lim += " AND day >= {}".format(start)
@@ -324,26 +324,30 @@ WHERE did IN {} AND queue IN (2,3)
 {}
 GROUP BY day ORDER BY day""".format(self.offset, self._didLimit(), lim)
 
-        if not ANKI20 and mw.col.schedVer() == 2:
-            offset = mw.col.conf.get("rollover", 4)
-            schedver = 2
-        else:
-            startDate = datetime.datetime.fromtimestamp(mw.col.crt)
-            offset = startDate.hour
-            schedver = 1
-
-        # print(cmd)
-        # print(self.col.sched.today)
-
-        # print("Anki version {}, Scheduler version {}".format("2.0" if ANKI20 else "2.1", schedver))
-        # print("Day starts at setting: {} hours".format(offset))
-        # print(time.strftime("dayCutoff: %Y-%m-%d %H:%M", time.localtime(mw.col.sched.dayCutoff)))
-        # print(time.strftime("local now: %Y-%m-%d %H:%M", time.localtime(time.time())))
-        # print(time.strftime("Col today: %Y-%m-%d", time.localtime(mw.col.crt + 86400 * mw.col.sched.today)))
-        # print("Col days: {}".format(mw.col.sched.today))
-
         res = self.col.db.all(cmd, today=self.col.sched.today)
-        # print(res)
+
+        if isDebuggingOn():
+            if not ANKI20 and mw.col.schedVer() == 2:
+                offset = mw.col.conf.get("rollover", 4)
+                schedver = 2
+            else:
+                startDate = datetime.datetime.fromtimestamp(mw.col.crt)
+                offset = startDate.hour
+                schedver = 1
+
+            logger.debug(cmd)
+            logger.debug(self.col.sched.today)
+            logger.debug("Anki20 %s, Scheduler version %s", ANKI20, schedver)
+            logger.debug("Day starts at setting: %s hours", offset)
+            logger.debug(time.strftime("dayCutoff: %Y-%m-%d %H:%M",
+                                       time.localtime(mw.col.sched.dayCutoff)))
+            logger.debug(time.strftime("local now: %Y-%m-%d %H:%M",
+                                       time.localtime(time.time())))
+            logger.debug(time.strftime("Col today: %Y-%m-%d",
+                                       time.localtime(mw.col.crt +
+                                                      86400 * mw.col.sched.today)))
+            logger.debug("Col days: %s", mw.col.sched.today)
+            logger.debug(res)
 
         return [i[:-1] for i in res]
 
@@ -365,7 +369,7 @@ GROUP BY day ORDER BY day""".format(self.offset, self._didLimit(), lim)
         performance penalty
         """
         offset = self.offset * 3600
-        
+
         lims = []
         if start is not None:
             lims.append("day >= {}".format(start))
