@@ -30,7 +30,7 @@
 # Any modifications to this file must keep this entire header intact.
 
 """
-Constants providing information on current system and Anki platform
+Provides information on Anki version and platform
 """
 
 from __future__ import (absolute_import, division,
@@ -40,31 +40,11 @@ import sys
 import os
 
 from aqt import mw
+
 from anki import version as anki_version
 from anki.utils import isMac, isWin
 
-__all__ = ["PYTHON3", "ANKI20", "SYS_ENCODING", "MODULE_ADDON",
-           "MODULE_LIBADDON", "DIRECTORY_ADDONS", "JSPY_BRIDGE",
-           "PATH_ADDON", "PATH_USERFILES", "PLATFORM"]
-
-PYTHON3 = sys.version_info[0] == 3
-ANKI20 = anki_version.startswith("2.0.")
-SYS_ENCODING = sys.getfilesystemencoding()
-
-name_components = __name__.split(".")
-
-MODULE_ADDON = name_components[0]
-MODULE_LIBADDON = name_components[1]
-
-if ANKI20:
-    DIRECTORY_ADDONS = mw.pm.addonFolder()
-    JSPY_BRIDGE = "py.link"
-else:
-    DIRECTORY_ADDONS = mw.addonManager.addonsFolder()
-    JSPY_BRIDGE = "pycmd"
-
-PATH_ADDON = os.path.join(DIRECTORY_ADDONS, MODULE_ADDON)
-PATH_USERFILES = os.path.join(PATH_ADDON, "user_files")
+from .utils import ensureExists
 
 if isMac:
     PLATFORM = "mac"
@@ -73,23 +53,97 @@ elif isWin:
 else:
     PLATFORM = "lin"
 
+SYS_ENCODING = sys.getfilesystemencoding()
+PYTHON3 = sys.version_info[0] == 3
+ANKI20 = anki_version.startswith("2.0.")
+
+name_components = __name__.split(".")
+
+MODULE_ADDON = name_components[0]
+MODULE_LIBADDON = name_components[1]
+
+PATH_ADDONS = mw.pm.addonFolder()
+
+if ANKI20:
+    JSPY_BRIDGE = "py.link"
+else:
+    JSPY_BRIDGE = "pycmd"
+
+PATH_THIS_ADDON = os.path.join(PATH_ADDONS, MODULE_ADDON)
+
+
+def schedVer():
+    if ANKI20:
+        return 1
+    if not mw.col:  # collection not loaded
+        return None
+    return mw.col.schedVer()
+
+
+def pathUserFiles():
+    user_files = os.path.join(PATH_THIS_ADDON, "user_files")
+    return ensureExists(user_files)
+
+
+def pathMediaFiles():
+    return mw.col.media.dir()
+
+
 def checkAnkiVersion(lower, upper=None):
     """Check whether anki version is in specified range
-    
+
     By default the upper boundary is set to infinite
-    
+
     Arguments:
         lower {str} -- minimum version (inclusive)
-    
+
     Keyword Arguments:
         upper {str} -- maximum version (exclusive) (default: {None})
-    
+
     Returns:
         bool -- Whether anki version is in specified range
     """
+    checkVersion(anki_version, lower, upper=upper)
+
+
+def checkQtVersion(lower, upper=None):
+    """Check whether Qt version is in specified range
+
+    By default the upper boundary is set to infinite
+
+    Arguments:
+        lower {str} -- minimum version (inclusive)
+
+    Keyword Arguments:
+        upper {str} -- maximum version (exclusive) (default: {None})
+
+    Returns:
+        bool -- Whether Qt version is in specified range
+    """
+    from aqt.qt import QT_VERSION_STR
+    checkVersion(QT_VERSION_STR, lower, upper=upper)
+
+
+def checkVersion(current, lower, upper=None):
+    """Generic version checker
+
+    Checks whether specified version is in specified range
+
+    Arguments:
+        current {str} -- current version
+        lower {str} -- minimum version (inclusive)
+
+    Keyword Arguments:
+        upper {str} -- maximum version (exclusive) (default: {None})
+
+    Returns:
+        bool -- Whether current version is in specified range
+    """
     from ._vendor.packaging import version
+
     if upper is not None:
-        ankiv_parsed = version.parse(anki_version)
+        ankiv_parsed = version.parse(current)
         return (ankiv_parsed >= version.parse(lower) and
                 ankiv_parsed < version.parse(upper))
-    return version.parse(anki_version) >= version.parse(lower)
+
+    return version.parse(current) >= version.parse(lower)

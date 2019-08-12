@@ -36,6 +36,8 @@ Miscellaneuos utilities used around libaddon
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
+import os
+
 from functools import reduce
 from copy import deepcopy
 
@@ -200,3 +202,11 @@ def deepMergeDicts(original, incoming, new=False):
             result[key] = incoming[key]
 
     return result
+
+
+# File system manipulation
+
+def ensureExists(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path

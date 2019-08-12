@@ -45,10 +45,10 @@ from anki.hooks import addHook, runHook
 from .._vendor.packaging import version
 
 from ..utils import deepMergeDicts
-from ..platform import ANKI20, PATH_ADDON, MODULE_ADDON
+from ..platform import ANKI20, PATH_THIS_ADDON, MODULE_ADDON
 
-DEFAULT_LOCAL_CONFIG_PATH = os.path.join(PATH_ADDON, "config.json")
-DEFAULT_LOCAL_META_PATH = os.path.join(PATH_ADDON, "meta.json")
+DEFAULT_LOCAL_CONFIG_PATH = os.path.join(PATH_THIS_ADDON, "config.json")
+DEFAULT_LOCAL_META_PATH = os.path.join(PATH_THIS_ADDON, "meta.json")
 
 
 class ConfigError(Exception):
@@ -420,11 +420,11 @@ class ConfigManager(object):
         from ..gui.dialog_configeditor import ConfigEditor
         
         from ..consts import ADDON
-        from ..platform import DIRECTORY_ADDONS
+        from ..platform import PATH_ADDONS
         
         def onEdit(mgr, file_path, _old):
             entry_point = os.path.join(
-                DIRECTORY_ADDONS, ADDON.NAME + ".py")
+                PATH_ADDONS, ADDON.NAME + ".py")
             if not file_path == entry_point:
                 return _old(mgr, file_path)
             if self.conf_action:

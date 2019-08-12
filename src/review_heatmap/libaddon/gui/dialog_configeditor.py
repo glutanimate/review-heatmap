@@ -42,7 +42,7 @@ from anki.utils import json
 from .._vendor import markdown2
 
 from ..consts import ADDON
-from ..platform import PATH_ADDON
+from ..platform import PATH_THIS_ADDON
 
 from .dialog_htmlview import HTMLViewer
 
@@ -77,7 +77,7 @@ class ConfigEditor(QDialog):
         tooltip("Restored defaults", parent=self)
         
     def onHelpRequested(self):
-        docs_path = os.path.join(PATH_ADDON, "config.md")
+        docs_path = os.path.join(PATH_THIS_ADDON, "config.md")
         if not os.path.exists(docs_path):
             return False
         with open(docs_path, "r") as f:
