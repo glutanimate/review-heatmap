@@ -61,7 +61,7 @@ _file_handler = handlers.RotatingFileHandler(
 
 _fmt = ("%(asctime)s %(filename)s:%(funcName)s:%(lineno)-8s "
         "%(levelname)-8s: %(message)s")
-_fmt_date = '%Y-%m-%dT%H:%M:%S%Z'
+_fmt_date = '%Y-%m-%dT%H:%M:%S%z'
 
 _formatter = logging.Formatter(_fmt, _fmt_date)
 _file_handler.setFormatter(_formatter)
