@@ -129,11 +129,21 @@ def stopDebugging():
 
 
 def getLatestLog():
+    if not os.path.exists(PATH_LOG):
+        return False
     with open(PATH_LOG, "r") as f:
         log = f.read()
     return log
 
 
 def openLog():
+    if not os.path.exists(PATH_LOG):
+        return False
     from .utils import openFile
     openFile(PATH_LOG)
+
+def clearLog():
+    if not os.path.exists(PATH_LOG):
+        return False
+    with open(PATH_LOG, "w") as f:
+        f.write("")

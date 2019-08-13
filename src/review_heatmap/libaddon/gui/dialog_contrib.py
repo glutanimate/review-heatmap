@@ -48,7 +48,7 @@ from .basic.dialog_basic import BasicDialog
 from .labelformatter import formatLabels
 
 from .dialog_htmlview import HTMLViewer
-from .about import get_about_string
+from .about import getAboutString
 
 
 class ContribDialog(BasicDialog):
@@ -92,7 +92,7 @@ class ContribDialog(BasicDialog):
             self._showCredits)
 
     def _showCredits(self):
-        viewer = HTMLViewer(get_about_string(title=True),
+        viewer = HTMLViewer(getAboutString(title=True),
                             title=ADDON.NAME, parent=self)
         viewer.exec_()
 
