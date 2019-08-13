@@ -151,7 +151,7 @@
         </font>
        </property>
        <property name="text">
-        <string>{ADDON_NAME} v{ADDON_VERSION} </string>
+        <string>{ADDON_NAME} &lt;a href=&quot;action://changelog&quot;&gt;v{ADDON_VERSION}&lt;/a&gt;</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -751,6 +751,9 @@ with a coffee</string>
         <widget class="QTextBrowser" name="htmlAbout">
          <property name="openExternalLinks">
           <bool>true</bool>
+         </property>
+         <property name="openLinks">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
