@@ -36,12 +36,13 @@ Main options dialog
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from aqt.qt import Qt
+from aqt.qt import Qt, QUrl, QApplication
 
-from aqt.utils import openLink
+from aqt.utils import openLink, tooltip
 
 from ..consts import ADDON
-from ..platform import PLATFORM
+from ..platform import PLATFORM, ANKI20
+from ..debug import toggleDebugging, getLatestLog, openLog
 
 from .basic.dialog_mapped import MappedDialog
 from .about import get_about_string
@@ -84,7 +85,7 @@ class OptionsDialog(MappedDialog):
     # Static widget setup
 
     def _setupUI(self):
-        formatLabels(self)
+        formatLabels(self, self._linkHandler)
         self._setupAbout()
 
         if PLATFORM == "mac":
@@ -108,6 +109,7 @@ class OptionsDialog(MappedDialog):
         if hasattr(self.form, "htmlAbout"):
             about_string = get_about_string()
             self.form.htmlAbout.setHtml(about_string)
+            self.form.htmlAbout.anchorClicked.connect(self._linkHandler)
 
     # Events
 
@@ -127,6 +129,39 @@ class OptionsDialog(MappedDialog):
             if not btn_widget:
                 continue
             btn_widget.clicked.connect(lambda _, link=link: openLink(link))
+
+    def _linkHandler(self, url):
+        """Support for binding custom actions to text links"""
+        if isinstance(url, QUrl):
+            url = url.toString()
+        if not url.startswith("action://"):
+            return openLink(url)
+        protocol, cmd = url.split("://")
+        if cmd == "debug-toggle":
+            self._toggleDebugging()
+        elif cmd == "debug-open":
+            openLog()
+        elif cmd == "debug-copy":
+            self._copyDebuglog()
+        elif cmd == "changelog":
+            self._openChangelog()
+
+    def _toggleDebugging(self):
+        if toggleDebugging():
+            msg = "enabled"
+        else:
+            msg = "disabled"
+        tooltip("Debugging {msg}".format(msg=msg))
+    
+    def _copyDebuglog(self):
+        QApplication.clipboard().setText(getLatestLog())
+        tooltip("Copied to clipboard")
+
+    def _openChangelog(self):
+        changelog = ADDON.LINKS.get("changelog")
+        if not changelog:
+            return
+        openLink(changelog)
 
     def _onAccept(self):
         """Executed only if dialog confirmed"""

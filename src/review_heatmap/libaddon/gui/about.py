@@ -86,6 +86,14 @@ html_template = """\
         For more information please see the license file that accompanied this program.</p>
     <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
         Please see the license file for more details.</p>
+    
+    <p><span style="font-weight:600;">Debugging</span></p>
+    <p>Please don't use any of the following features unless instructed to:</p>
+    <ul>
+        <li><a href="action://debug-toggle">Toggle debugging</a></li>
+        <li><a href="action://debug-copy">Copy log to clipboard</a></li>
+        <li><a href="action://debug-open">Open log</a></li>
+    </ul>
 </body>
 </html>\
 """

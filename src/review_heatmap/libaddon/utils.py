@@ -210,3 +210,18 @@ def ensureExists(path):
     if not os.path.exists(path):
         os.makedirs(path)
     return path
+
+
+def openFile(path):
+    """Open file in default viewer"""
+    import subprocess
+    from .platform import PLATFORM
+    if PLATFORM == "win":
+        try:
+            os.startfile(path)
+        except (OSError, UnicodeDecodeError):
+            pass
+    elif PLATFORM == "mac":
+        subprocess.call(('open', path))
+    else:
+        subprocess.call(("xdg-open", path))

@@ -81,19 +81,30 @@ def debugFileSet():
     return os.path.exists(PATH_DEBUG_ENABLER)
 
 
+def toggleDebugging():
+    if debugFileSet():
+        disableDebugging()
+        return False
+    else:
+        enableDebugging()
+        return True
+
+
 def enableDebugging():
     if debugFileSet():
         return
     with open(PATH_DEBUG_ENABLER, "w"):
         pass
-    startDebugging()
+    if not isDebuggingOn():
+        startDebugging()
 
 
 def disableDebugging():
     if not debugFileSet():
         return
     os.remove(PATH_DEBUG_ENABLER)
-    stopDebugging()
+    if isDebuggingOn():
+        stopDebugging()
 
 
 def maybeStartDebugging():
@@ -115,3 +126,14 @@ def startDebugging():
 
 def stopDebugging():
     logger.setLevel(logging.ERROR)
+
+
+def getLatestLog():
+    with open(PATH_LOG, "r") as f:
+        log = f.read()
+    return log
+
+
+def openLog():
+    from .utils import openFile
+    openFile(PATH_LOG)

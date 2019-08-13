@@ -57,6 +57,7 @@ class ADDON(object):
     """
     NAME = ""
     MODULE = ""
+    REPO = ""
     ID = ""
     VERSION = ""
     LICENSE = ""
