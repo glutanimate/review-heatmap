@@ -44,12 +44,13 @@ def checkFor2114ImportError():
         # litmus test for Anki import bug
         from .libaddon.platform import anki_version  # noqa: F401
         return True
-    except ImportError:
+    except ImportError as e:
+        print(e)
         # Disable add-on and inform user of the bug
         from aqt.utils import showWarning
         from aqt import mw
         from anki import version as anki_version
-
+        
         mw.addonManager.toggleEnabled(__name__, enable=False)
 
         bug = "https://anki.tenderapp.com/discussions/ankidesktop/34836"
