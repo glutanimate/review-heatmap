@@ -45,3 +45,6 @@ resources/icons/optional
 # Anki
 src/*/meta.json
 src/*/manifest.json
+# Debugging
+src/*/log.txt
+src/*/debug
