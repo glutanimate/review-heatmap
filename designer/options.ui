@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>436</width>
+    <height>589</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Review Heatmap Settings</string>
   </property>
@@ -130,6 +138,13 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="layoutSocialBtns">
+     <item>
+      <widget class="QLabel" name="labDebug">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
      <item>
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
