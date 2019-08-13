@@ -55,6 +55,7 @@ class ADDON(object):
     """
     NAME = "Review Heatmap"
     MODULE = "review_heatmap"
+    REPO = "review-heatmap"
     ID = "1771074083"
     VERSION = __version__
     LICENSE = "GNU AGPLv3"
@@ -83,5 +84,7 @@ class ADDON(object):
         "rate": "https://ankiweb.net/shared/review/{}".format(ID),
         "twitter": "https://twitter.com/glutanimate",
         "youtube": "https://www.youtube.com/c/glutanimate",
+        "changelog": ("https://github.com/glutanimate/"
+                      "{repo}/blob/master/CHANGELOG.md".format(repo=REPO)),
         "help": "https://github.com/glutanimate/review-heatmap/wiki"
     }
