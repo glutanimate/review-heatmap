@@ -45,7 +45,7 @@ UIs.
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from collections import MutableSequence, MutableSet, MutableMapping
+from collections.abc import MutableSequence, MutableSet, MutableMapping
 
 from ...utils import getNestedAttribute
 from ...platform import PYTHON3
@@ -177,7 +177,7 @@ class CommonWidgetInterface(object):
                     | - "italic": font italics state {bool}
 
     --- Legend ---
-    
+
     Property keys:
 
         "value": Corresponds to the most commonly used property of each
@@ -236,7 +236,7 @@ class CommonWidgetInterface(object):
     def set(self, widget_name, property_name, data):
         """
         Sets widget data for given widget name, property name, and data
-        
+
         Arguments:
             widget_name {str} -- Object name of Qt widget found in parent.
                                  Dot-separated attribute names are resolved
@@ -248,12 +248,12 @@ class CommonWidgetInterface(object):
                                    value, items, current, min, max
             data {obj} -- Data to set widget property to. Has to follow correct
                           type specs (see class-level docstring)
-        
+
         Returns:
             object -- Setter return value
         """
         widget = self.nameToWidget(widget_name)
-        
+
         try:
             setter = getattr(self, self.methods_by_key[property_name][0])
         except KeyError as error:
@@ -270,7 +270,7 @@ class CommonWidgetInterface(object):
     def get(self, widget_name, property_name):
         """
         Gets widget data for given widget name and property name
-        
+
         Arguments:
             widget_name {str} -- Object name of Qt widget. Dot-separated
                                  attribute names are resolved automatically
@@ -278,7 +278,7 @@ class CommonWidgetInterface(object):
                                   self.parent.form.button)
             property_name {str} -- Name of the property to update. Currently
                                    supported: value, items, current
-        
+
         Returns:
             object -- Data assigned to widget property. Types follow type specs
                       defined in class-level docstring.
@@ -295,7 +295,7 @@ class CommonWidgetInterface(object):
             error.args += ("Setter not defined for widget property name: ",
                            property_name)
             raise
-        
+
         return getter(widget)
 
     # Regular interface
@@ -303,18 +303,18 @@ class CommonWidgetInterface(object):
     def setValue(self, widget, data):
         """
         Sets the current value for the provided widget.
-        
+
         What constitutes the widget value varies depending on the widget, but
         tries to reflect the most common use case of that particular widget.
 
         For more information on the supported widgets and updated properties
         for each widget please see the class-level docstring.
-        
+
         Arguments:
             widget {QWidget} -- Qt widget to update
             data {obj} -- Data to set widget property to. Has to follow correct
                           type specs (see class-level docstring)
-        
+
         Raises:
             NotImplementedError -- In case of an unimplemented widget
             AssertionErorr -- In case of illegitimate API calls (e.g. wrong
@@ -369,16 +369,16 @@ class CommonWidgetInterface(object):
     def getValue(self, widget):
         """
         Gets the current value for the provided widget.
-        
+
         What constitutes the widget value varies depending on the widget, but
         tries to reflect the most common use case of that particular widget.
 
         For more information on the supported widgets and returned
         properties for each widget please see the class-level docstring.
-        
+
         Arguments:
             widget {QWidget} -- Qt widget to read data from
-        
+
         Raises:
             NotImplementedError -- In case of an unimplemented widget
             AssertionError -- In case of illegitimate API calls (e.g. wrong
@@ -424,26 +424,26 @@ class CommonWidgetInterface(object):
 
         For more information on the supported widgets and updated properties
         for each widget please see the class-level docstring.
-        
+
         Arguments:
             widget {QWidget} -- Qt widget to update. Supported:
                                 QComboBox, QListWidget
             values {list,tuple} -- Sequence of values to create widget items
                                    from. Each value in the sequence should be
                                    a tuple of the form: (item_text, item_data)
-        
+
         Keyword Arguments:
             current {immutable} -- Item to set as the current widget item,
                                    as characterized by its data
                                    (default: {None})
             clear {bool} -- Whether to clear all existing widget items before
                             creating any new items (default: {True})
-        
+
         Raises:
             NotImplementedError -- In case of an unimplemented widget
             AssertionError -- In case of illegitimate API calls (e.g. wrong
                               value types, missing dictionary keys, etc.)
-        
+
         Returns:
             object -- Setter return value
         """
@@ -471,7 +471,7 @@ class CommonWidgetInterface(object):
         """
         Convenience method to set a series of widget items and select
         a specific item to be the current item.
-        
+
         See setValueList docstring for the method signature.
 
         Type checking and error handling delegated to setValueList
@@ -533,11 +533,11 @@ class CommonWidgetInterface(object):
     def removeSelected(self, widget):
         """
         Removes currently selected item(s) of a widget
-        
+
         Arguments:
             widget {QWidget} -- Qt widget to update. Supported:
                                 QListWidget
-        
+
         Raises:
             NotImplementedError -- In case of an unimplemented widget
         """
@@ -552,23 +552,23 @@ class CommonWidgetInterface(object):
     def setCurrentByData(self, widget, data_current):
         """
         Set the current widget item by the provided widget data
-        
+
         Arguments:
             widget {Qt widget} -- Qt widget to update. Supported:
                                   QComboBox, QListWidget
             data_current {immutable} -- Data to identify current item by
-        
+
         Raises:
             NotImplementedError -- In case of an unimplemented widget
             AssertionError -- In case of illegitimate API calls (e.g. wrong
                               value types, missing dictionary keys, etc.)
-        
+
         Returns:
             bool -- True if item found
         """
         assert not issubclass(type(data_current), MUTABLES), \
             "data_current should be an immutable object (e.g. str or int)"
-        
+
         if isinstance(widget, QListWidget):
             return self._setListCurrentByData(widget, data_current)
         elif isinstance(widget, QComboBox):
@@ -582,14 +582,14 @@ class CommonWidgetInterface(object):
     def getValueList(self, widget):
         """
         Get list of current widget values
-        
+
         Arguments:
             widget {QWidget} -- Qt widget to read. Supported:
                                 QComboBox, QListWidget
-        
+
         Raises:
             NotImplementedError -- In case of an unimplemented widget
-        
+
         Returns:
             list -- List of tuples of the form (item_text, item_data)
         """
@@ -604,14 +604,14 @@ class CommonWidgetInterface(object):
     def getCurrentData(self, widget):
         """
         Get list of current widget data properties
-        
+
         Arguments:
             widget {QWidget} -- Qt widget to read. Supported:
                                 QComboBox, QListWidget
-        
+
         Raises:
             NotImplementedError -- In case of an unimplemented widget
-        
+
         Returns:
             list -- List of data properties (immutables, e.g. str or int)
         """
@@ -626,14 +626,14 @@ class CommonWidgetInterface(object):
     def getSelected(self, widget):
         """
         Get list of selected widget items
-        
+
         Arguments:
             widget {QWidget} -- Qt widget to read. Supported:
                                 QListWidget
-        
+
         Raises:
             NotImplementedError -- In case of an unimplemented widget
-        
+
         Returns:
             list -- List of QWidgets corresponding to the current widget items
         """
@@ -648,7 +648,7 @@ class CommonWidgetInterface(object):
     def setMinValue(self, widget, value):
         """
         Set lower boundary of widget
-        
+
         Arguments:
             widget {Qt widget} -- Qt widget to update. Supported:
                                   QSpinBox, QDoubleSpinBox, QDateEdit
@@ -656,10 +656,10 @@ class CommonWidgetInterface(object):
                                  In case of QDateEdit:
                                  - value should be valid unix time in secs
                                    since epoch
-        
+
         Raises:
             NotImplementedError -- In case of an unimplemented widget
-        
+
         Returns:
             object -- Setter return value
         """
@@ -1025,7 +1025,7 @@ class CommonWidgetInterface(object):
     def _setFontComboCurrent(self, font_widget, font_dict):
         """
         Set font combo state from dictionary of font properties
-        
+
         Arguments:
             font_widget {QFontComboBox} -- Font combo box to update
             font_dict {dict} -- Dictionary of font properties. Keys:
@@ -1061,10 +1061,10 @@ class CommonWidgetInterface(object):
     def _getFontComboCurrent(self, font_widget):
         """
         Set font combo state as dictionary of font properties
-        
+
         Arguments:
             font_widget {QFontComboBox} -- Font combo box to update
-        
+
         Returns:
             dict -- Dictionary of font properties. Keys:
                 family {str} -- Font family [required]
