@@ -45,7 +45,11 @@ UIs.
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from collections.abc import MutableSequence, MutableSet, MutableMapping
+try:
+    from collections.abc import MutableSequence, MutableSet, MutableMapping  # noqa
+except ImportError:
+    from collections import MutableMapping, MutableSet, MutableMapping  # noqa
+
 
 from ...utils import getNestedAttribute
 from ...platform import PYTHON3
