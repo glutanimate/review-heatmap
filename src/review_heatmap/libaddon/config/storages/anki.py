@@ -30,5 +30,61 @@
 # Any modifications to this file must keep this entire header intact.
 
 """
-Vendorized third-party packages
+Add-on configuration storages
 """
+
+from ..abstract.anki import AnkiConfigStorage
+from ..errors import ConfigNotReadyError
+
+__all__ = [
+    "ProfileConfigStorage",
+    "SyncedConfigStorage",
+    "MetaConfigStorage",
+    "LibaddonMetaConfigStorage",
+]
+
+
+class ProfileConfigStorage(AnkiConfigStorage):
+    # NOTE: Profile is available at add-on init time when Anki is launched
+    # with a specific profile as a parameter. This is usually not the case,
+    # but might arise when testing an add-on and lead you astray.
+
+    name = "profile"
+
+    def _ankiConfigObject(self) -> dict:
+        return self._mw.pm.profile
+
+    def _flush(self) -> None:
+        # no flushing required
+        pass
+
+
+class SyncedConfigStorage(AnkiConfigStorage):
+
+    name = "synced"
+
+    def _ankiConfigObject(self) -> dict:
+        return self._mw.col.conf
+
+    def _flush(self) -> None:
+        try:
+            self._mw.col.setMod()
+        except AttributeError:
+            raise ConfigNotReadyError("Anki base storage object is not ready")
+
+
+class MetaConfigStorage(AnkiConfigStorage):
+
+    name = "meta"
+
+    def _ankiConfigObject(self) -> dict:
+        return self._mw.pm.meta
+
+    def _flush(self) -> None:
+        # no flushing required
+        pass
+
+
+class LibaddonMetaConfigStorage(MetaConfigStorage):
+
+    root_namespace = "libaddon"

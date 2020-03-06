@@ -13,6 +13,10 @@
 # ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
 # IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+# NOTE: This module has been modified to be packaged with Anki add-ons
+# The changes are Copyright (c) 2020 Aristotelis P. <https//glutanimate.com/>
+# and licensed under the same license as the original module
+
 
 """
 Additional handlers for the logging package for Python. The core package is
@@ -23,7 +27,7 @@ Copyright (C) 2001-2016 Vinay Sajip. All Rights Reserved.
 To use, simply 'import logging.handlers' and log away!
 """
 
-import logging, socket, os, pickle, struct, time, re
+from .. import logging; import socket; import os; import pickle; import struct; import time; import re
 from stat import ST_DEV, ST_INO, ST_MTIME
 import queue
 try:

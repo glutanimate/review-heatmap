@@ -29,6 +29,20 @@
 #
 # Any modifications to this file must keep this entire header intact.
 
-"""
-Vendorized third-party packages
-"""
+
+class ConfigError(Exception):
+    """
+    Thrown whenever a config-specific exception occurs
+    """
+
+    pass
+
+class FutureConfigError(ConfigError):
+    pass
+
+class ConfigNotReadyError(ConfigError):
+    pass
+
+
+class ConfigNotLoadedError(ConfigError):
+    pass

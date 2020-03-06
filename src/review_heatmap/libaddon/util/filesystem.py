@@ -30,5 +30,34 @@
 # Any modifications to this file must keep this entire header intact.
 
 """
-Vendorized third-party packages
+File system manipulation utilities
 """
+
+import os
+import sys
+
+from .types import PathOrString
+
+
+def ensureExists(path: PathOrString) -> str:
+    path = str(path)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path
+
+
+def openFile(path: PathOrString) -> None:
+    """Open file in default viewer"""
+    import subprocess
+
+    path = str(path)
+
+    if sys.platform.startswith("win32"):
+        try:
+            os.startfile(path)  # type: ignore
+        except (OSError, UnicodeDecodeError):
+            pass
+    elif sys.platform.startswith("darwin"):
+        subprocess.call(("open", path))
+    else:
+        subprocess.call(("xdg-open", path))

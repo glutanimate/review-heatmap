@@ -29,6 +29,13 @@
 #
 # Any modifications to this file must keep this entire header intact.
 
-"""
-Vendorized third-party packages
-"""
+from PyQt5.QtCore import pyqtSignal, QObject
+
+
+class ConfigSignals(QObject):
+    initialized = pyqtSignal()
+    saved = pyqtSignal()
+    loaded = pyqtSignal()
+    reset = pyqtSignal()
+    deleted = pyqtSignal()
+    unloaded = pyqtSignal()

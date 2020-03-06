@@ -125,6 +125,7 @@ class CommonWidgetInterface(object):
     QTextEdit       | str         -         -           -         -
     QPlainTextEdit  | str         -         -           -         -
     QFontComboBox   | dict        -         -           -         -
+    QKeySequenceEdit| str         -         -           -         -
 
     --- Getters ---
 
@@ -146,6 +147,7 @@ class CommonWidgetInterface(object):
     QTextEdit       | str         -         -           -         -
     QPlainTextEdit  | str         -         -           -         -
     QFontComboBox   | dict        -         -           -         -
+    QKeySequenceEdit| str         -         -           -         -
 
     --- Additional notes ---
 
@@ -330,7 +332,7 @@ class CommonWidgetInterface(object):
         elif isinstance(widget, QKeyGrabButton):
             assert (isinstance(data, STRINGTYPES)), error_msg
             widget.setKey(data)
-        elif isinstance(widget, (QCheckBox, QRadioButton)):
+        elif isinstance(widget, (QCheckBox, QRadioButton, QGroupBox)):
             assert isinstance(data, bool), error_msg
             widget.setChecked(data)
         elif isinstance(widget, (QSpinBox, QDoubleSpinBox, QSlider)):
@@ -361,7 +363,10 @@ class CommonWidgetInterface(object):
             widget.setPlainText(data)
         elif isinstance(widget, QFontComboBox):
             assert isinstance(data, dict)
-            self._setFontComboCurrent(data)
+            self._setFontComboCurrent(widget, data)
+        elif isinstance(widget, QKeySequenceEdit):
+            widget.clear()
+            widget.setKeySequence(QKeySequence(data))
         else:
             raise NotImplementedError(
                 "setValue not implemented for widget ", widget)
@@ -391,7 +396,7 @@ class CommonWidgetInterface(object):
             return widget.color()
         elif isinstance(widget, QKeyGrabButton):
             return widget.key()
-        elif isinstance(widget, (QCheckBox, QRadioButton)):
+        elif isinstance(widget, (QCheckBox, QRadioButton, QGroupBox)):
             return widget.isChecked()
         elif isinstance(widget, (QSpinBox, QDoubleSpinBox, QSlider)):
             return widget.value()
@@ -409,6 +414,8 @@ class CommonWidgetInterface(object):
             return widget.toPlainText()
         elif isinstance(widget, QFontComboBox):
             return self._getFontComboCurrent(widget)
+        elif isinstance(widget, QKeySequenceEdit):
+            return widget.keySequence().toString()
         else:
             raise NotImplementedError(
                 "getValue not implemented for widget ", widget)

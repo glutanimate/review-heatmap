@@ -2,7 +2,7 @@
 
 # Libaddon for Anki
 #
-# Copyright (C) 2018-2019  Aristotelis P. <https//glutanimate.com/>
+# Copyright (C) 2018-2020  Aristotelis P. <https//glutanimate.com/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -30,5 +30,34 @@
 # Any modifications to this file must keep this entire header intact.
 
 """
-Packages specific to Anki 2.0
+Utilities for semantic version comparisons
 """
+
+from .._vendor.packaging import version
+
+from typing import Optional
+
+
+def checkVersion(current: str, lower: str, upper: Optional[str] = None) -> bool:
+    """Generic version checker
+
+    Checks whether specified version is in specified range
+
+    Arguments:
+        current {str} -- current version
+        lower {str} -- minimum version (inclusive)
+
+    Keyword Arguments:
+        upper {str} -- maximum version (exclusive) (default: {None})
+
+    Returns:
+        bool -- Whether current version is in specified range
+    """
+
+    if upper is not None:
+        current_parsed = version.parse(current)
+        return current_parsed >= version.parse(
+            lower
+        ) and current_parsed < version.parse(upper)
+
+    return version.parse(current) >= version.parse(lower)

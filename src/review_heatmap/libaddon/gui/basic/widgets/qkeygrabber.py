@@ -137,6 +137,9 @@ class QKeyGrab(QDialog):
             self.shift = True
         elif key == Qt.Key_Meta:
             self.meta = True
+        else:
+            self.extra = QKeySequence(key).toString()
+            self.other = True
 
     def keyReleaseEvent(self, evt):
         """
@@ -154,11 +157,11 @@ class QKeyGrab(QDialog):
 
         # TODO: platform-specific messages
         msg = None
-        if not (self.shift or self.ctrl or self.alt or self.meta):
+        if not (self.shift or self.ctrl or self.alt or self.meta or self.other):
             msg = ("Please use at least one keyboard modifier\n"
                    "({meta}, {ctrl}, {alt}, {shift})".format(
                        **self.modkey_names))
-        if (self.shift and not (self.ctrl or self.alt or self.meta)):
+        if (self.shift and not (self.ctrl or self.alt or self.meta or self.other)):
             msg = ("Shift needs to be combined with at least one\n"
                    "other modifier ({meta}, {ctrl}, {alt})".format(
                        **self.modkey_names))
