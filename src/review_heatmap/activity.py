@@ -33,8 +33,7 @@
 Components related to gathering and analyzing user activity
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import time
 import datetime
@@ -50,7 +49,6 @@ __all__ = ["ActivityReporter"]
 
 
 class ActivityReporter(object):
-
     def __init__(self, col, config, whole=False):
         self.col = col
         self.config = config
@@ -70,8 +68,7 @@ class ActivityReporter(object):
         if mode == "reviews":
             return self._getActivity(**self._reviewsData(time_limits))
         else:
-            raise NotImplementedError(
-                "activity mode {} not implemented".format(mode))
+            raise NotImplementedError("activity mode {} not implemented".format(mode))
 
     # Activity calculations
     #########################################################################
@@ -88,14 +85,14 @@ class ActivityReporter(object):
         # Stats: cumulative activity and streaks
 
         streak_max = streak_cur = streak_last = 0
-        current = total = 0
+        current = total = total_time_spent = 0
 
         for idx, item in enumerate(history):
             current += 1
-            timestamp, activity = item
+            timestamp, activity, time_spent = item
 
             try:
-                next_timestamp = history[idx+1][0]
+                next_timestamp = history[idx + 1][0]
             except IndexError:  # last item
                 streak_last = current
                 next_timestamp = None
@@ -106,6 +103,7 @@ class ActivityReporter(object):
                 current = 0
 
             total += activity
+            total_time_spent += time_spent
 
         days_learned = idx + 1
 
@@ -116,6 +114,8 @@ class ActivityReporter(object):
 
         # Stats: average count on days with activity
         avg_cur = int(round(total / max(days_learned, 1)))
+        # Stats: average time spent per days reviewing cards
+        time_spent_daily_avg = int(round(total_time_spent / max(days_learned, 1)))
 
         # Stats: percentage of days with activity
         #
@@ -130,8 +130,8 @@ class ActivityReporter(object):
         else:
             pdays = int(round((days_learned / days_total) * 100))
 
-        # Compose activity data
-        activity = dict(history + forecast)
+        # Compose activity data (remove time spent data to match forecast size)
+        activity = dict([i[:2] for i in history] + forecast)
         if history[-1][0] == self.today:  # history takes precedence for today
             activity[self.today] = history[-1][1]
 
@@ -143,23 +143,16 @@ class ActivityReporter(object):
             "today": self.today * 1000,
             "offset": self.offset,
             "stats": {
-                "streak_max": {
-                    "type": "streak",
-                    "value": streak_max
+                "streak_max": {"type": "streak", "value": streak_max},
+                "streak_cur": {"type": "streak", "value": streak_cur},
+                "pct_days_active": {"type": "percentage", "value": pdays},
+                "activity_daily_avg": {"type": "cards", "value": avg_cur},
+                "time_spent_max": {"type": "time_day", "value": total_time_spent},
+                "time_spent_daily_avg": {
+                    "type": "time_minute",
+                    "value": time_spent_daily_avg,
                 },
-                "streak_cur": {
-                    "type": "streak",
-                    "value": streak_cur
-                },
-                "pct_days_active": {
-                    "type": "percentage",
-                    "value": pdays
-                },
-                "activity_daily_avg": {
-                    "type": "cards",
-                    "value": avg_cur
-                }
-            }
+            },
         }
 
     # Mode-specific
@@ -167,8 +160,7 @@ class ActivityReporter(object):
     def _reviewsData(self, time_limits):
         return {
             "history": self._cardsDone(start=time_limits[0]),
-            "forecast": self._cardsDue(start=self.today,
-                                       stop=time_limits[1])
+            "forecast": self._cardsDue(start=self.today, stop=time_limits[1]),
         }
 
     # Collection properties
@@ -198,9 +190,9 @@ class ActivityReporter(object):
 
         cmd = """
 SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
-'localtime', 'start of day') AS int)""".format(timestr=timestr,
-                                               unixepoch=unixepoch,
-                                               offset=offset)
+'localtime', 'start of day') AS int)""".format(
+            timestr=timestr, unixepoch=unixepoch, offset=offset
+        )
         return mw.col.db.scalar(cmd)
 
     def _getToday(self, offset):
@@ -218,14 +210,12 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
         if limhist is not None:
             history_start = self._daysFromToday(-limhist)
         else:
-            history_start = self._getConfHistoryLimit(
-                conf["limhist"], conf["limdate"])
+            history_start = self._getConfHistoryLimit(conf["limhist"], conf["limdate"])
 
         if limfcst is not None:
             forecast_stop = self._daysFromToday(limfcst)
         else:
-            forecast_stop = self._getConfForecastLimit(
-                conf["limfcst"])
+            forecast_stop = self._getConfForecastLimit(conf["limfcst"])
 
         return (history_start, forecast_stop)
 
@@ -240,8 +230,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
 
         limit_date = self.daystartEpoch(limit_date) if limit_date else None
 
-        if (not limit_date or
-                limit_date == self.daystartEpoch(self.col.crt)):
+        if not limit_date or limit_date == self.daystartEpoch(self.col.crt):
             # ignore zero value or default value
             limit_date = 0
         else:
@@ -270,8 +259,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
 
         all_excluded.extend(excluded)
 
-        return [d['id'] for d in self.col.decks.all()
-                if d['id'] not in all_excluded]
+        return [d["id"] for d in self.col.decks.all() if d["id"] not in all_excluded]
 
     def _didLimit(self):
         excluded_dids = self.config["synced"]["limdecks"]
@@ -279,7 +267,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
             if excluded_dids:
                 dids = self._validDecks(excluded_dids)
             else:
-                dids = [d['id'] for d in self.col.decks.all()]
+                dids = [d["id"] for d in self.col.decks.all()]
         else:
             dids = self.col.decks.active()
         return ids2str(dids)
@@ -299,8 +287,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
                 return ""
         else:
             dids = self.col.decks.active()
-        return ("cid IN (SELECT id FROM cards WHERE did IN %s)" %
-                ids2str(dids))
+        return "cid IN (SELECT id FROM cards WHERE did IN %s)" % ids2str(dids)
 
     # Database queries for user activity
     #########################################################################
@@ -322,7 +309,9 @@ AS day, -COUNT(), due -- nsegative to support heatmap legend
 FROM cards
 WHERE did IN {} AND queue IN (2,3)
 {}
-GROUP BY day ORDER BY day""".format(self.offset, self._didLimit(), lim)
+GROUP BY day ORDER BY day""".format(
+            self.offset, self._didLimit(), lim
+        )
 
         res = self.col.db.all(cmd, today=self.col.sched.today)
 
@@ -339,13 +328,20 @@ GROUP BY day ORDER BY day""".format(self.offset, self._didLimit(), lim)
             logger.debug(self.col.sched.today)
             logger.debug("Anki20 %s, Scheduler version %s", ANKI20, schedver)
             logger.debug("Day starts at setting: %s hours", offset)
-            logger.debug(time.strftime("dayCutoff: %Y-%m-%d %H:%M",
-                                       time.localtime(mw.col.sched.dayCutoff)))
-            logger.debug(time.strftime("local now: %Y-%m-%d %H:%M",
-                                       time.localtime(time.time())))
-            logger.debug(time.strftime("Col today: %Y-%m-%d",
-                                       time.localtime(mw.col.crt +
-                                                      86400 * mw.col.sched.today)))
+            logger.debug(
+                time.strftime(
+                    "dayCutoff: %Y-%m-%d %H:%M", time.localtime(mw.col.sched.dayCutoff)
+                )
+            )
+            logger.debug(
+                time.strftime("local now: %Y-%m-%d %H:%M", time.localtime(time.time()))
+            )
+            logger.debug(
+                time.strftime(
+                    "Col today: %Y-%m-%d",
+                    time.localtime(mw.col.crt + 86400 * mw.col.sched.today),
+                )
+            )
             logger.debug("Col days: %s", mw.col.sched.today)
             logger.debug(res)
 
@@ -383,8 +379,10 @@ GROUP BY day ORDER BY day""".format(self.offset, self._didLimit(), lim)
         cmd = """
 SELECT CAST(STRFTIME('%s', id / 1000 - {}, 'unixepoch',
                      'localtime', 'start of day') AS int)
-AS day, COUNT()
+AS day, COUNT(), SUM(time) as time_spent
 FROM revlog {}
-GROUP BY day ORDER BY day""".format(offset, lim)
+GROUP BY day ORDER BY day""".format(
+            offset, lim
+        )
 
         return self.col.db.all(cmd)
