@@ -61,12 +61,27 @@ class HeatmapCreator(object):
     def compress_levels(colors, indices):
         return [colors[i] for i in indices]
 
+    MINUTE = 60 * 1000  # milliseconds
+    DAY = 24 * 60 * MINUTE  # milliseconds
+
     stat_levels = {
         # tuples of threshold value, css_colors index
         "streak": list(zip((0, 14, 30, 90, 180, 365),
                        compress_levels(css_colors, (0, 2, 4, 6, 9, 10)))),
         "percentage": list(zip((0, 25, 50, 60, 70, 80, 85, 90, 95, 99),
                            css_colors)),
+        "time_minute": list(
+            zip(
+                (0, 30 * MINUTE, 40 * MINUTE, 50 * MINUTE, 60 * MINUTE, 70 * MINUTE),
+                compress_levels(css_colors, (0, 2, 4, 6, 9, 10)),
+            )
+        ),
+        "time_day": list(
+            zip(
+                (0, DAY, 3 * DAY, 10 * DAY, 30 * DAY, 100 * DAY),
+                compress_levels(css_colors, (0, 2, 4, 6, 9, 10)),
+            )
+
     }
 
     legend_factors = (0.125, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 4)
@@ -74,7 +89,9 @@ class HeatmapCreator(object):
     stat_units = {
         "streak": "day",
         "percentage": None,
-        "cards": "card"
+        "cards": "card",
+        "time_day": "hours",
+        "time_minute": "minutes",
     }
 
     def __init__(self, config, whole=False):
@@ -191,6 +208,14 @@ class HeatmapCreator(object):
     def _dayS(self, count, term):
         if not term:
             return count
+        if term == "hours":
+            hours = count // 3600000
+            minutes = count % 3600000 // 60000
+            return f"{hours}h {minutes}min"
+        elif term == "minutes":
+            minutes = count % 3600000 // 60000
+            return f"{minutes}min"
+
         return "{} {}{}".format(
             str(count), term,
             "s" if abs(count) > 1 else ""
