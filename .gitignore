@@ -48,3 +48,4 @@ src/*/manifest.json
 # Debugging
 src/*/log.txt
 src/*/debug
+.pytest_cache/
