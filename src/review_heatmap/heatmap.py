@@ -118,7 +118,7 @@ class HeatmapCreator(object):
             heatmap = self._generateHeatmapElm(data, heatmap_legend)
         else:
             classes.append("rh-disable-heatmap")
-        
+
         if prefs["display"][view] or prefs["statsvis"]:
             stats = self._generateStatsElm(data, stats_legend)
         else:
@@ -199,7 +199,7 @@ class HeatmapCreator(object):
         # implement different color schemes for past and future without
         # having to modify cal-heatmap:
         return [-i for i in legend[::-1]] + [0] + legend
-    
+
     def _dynamicLegend(self, average):
         # set default average if average too low for informational levels
         avg = max(20, average)

@@ -33,7 +33,12 @@
 Components related to gathering and analyzing user activity
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals,
+)
 
 import time
 import datetime
@@ -147,7 +152,7 @@ class ActivityReporter(object):
                 "streak_cur": {"type": "streak", "value": streak_cur},
                 "pct_days_active": {"type": "percentage", "value": pdays},
                 "activity_daily_avg": {"type": "cards", "value": avg_cur},
-                "time_spent_max": {"type": "time_day", "value": total_time_spent},
+                "time_spent_max": {"type": "time_day", "value": total_time_spent,},
                 "time_spent_daily_avg": {
                     "type": "time_minute",
                     "value": time_spent_daily_avg,
@@ -330,7 +335,7 @@ GROUP BY day ORDER BY day""".format(
             logger.debug("Day starts at setting: %s hours", offset)
             logger.debug(
                 time.strftime(
-                    "dayCutoff: %Y-%m-%d %H:%M", time.localtime(mw.col.sched.dayCutoff)
+                    "dayCutoff: %Y-%m-%d %H:%M", time.localtime(mw.col.sched.dayCutoff),
                 )
             )
             logger.debug(

@@ -33,11 +33,21 @@
 Static web components and templates
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals,
+)
 
 from .libaddon.platform import JSPY_BRIDGE, ANKI20, PLATFORM
 
-__all__ = ["html_main_element", "html_heatmap", "html_streak", "html_info_nodata"]
+__all__ = [
+    "html_main_element",
+    "html_heatmap",
+    "html_streak",
+    "html_info_nodata",
+]
 
 html_main_element = """
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
