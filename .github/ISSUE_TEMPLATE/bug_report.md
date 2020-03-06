@@ -40,7 +40,7 @@ assignees: ''
 
 #####  If you are using Anki 2.0
 
-*Please open Anki, go to Help → About, find the two lines starting with `Version:` and `Qt`, and copy-paste them between the backticks below:*
+*__ONLY IF YOU ARE USING ANKI 2.0__: Please open Anki, go to Help → About, find the two lines starting with `Version:` and `Qt`, and copy-paste them between the backticks below:*
 
 ```
 
