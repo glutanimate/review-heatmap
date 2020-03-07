@@ -81,7 +81,7 @@ class HeatmapCreator(object):
                 (0, DAY, 3 * DAY, 10 * DAY, 30 * DAY, 100 * DAY),
                 compress_levels(css_colors, (0, 2, 4, 6, 9, 10)),
             )
-
+        ),
     }
 
     legend_factors = (0.125, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 4)
