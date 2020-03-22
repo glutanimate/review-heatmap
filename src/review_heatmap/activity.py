@@ -317,14 +317,14 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
         cmd = """
 SELECT
 STRFTIME('%s', 'now', '-{} hours', 'localtime', 'start of day')
-    + (due - :today) * 86400
+    + (due - ?) * 86400
 AS day, -COUNT(), due -- nsegative to support heatmap legend
 FROM cards
 WHERE did IN {} AND queue IN (2,3)
 {}
 GROUP BY day ORDER BY day""".format(self.offset, self._didLimit(), lim)
 
-        res = self.col.db.all(cmd, today=self.col.sched.today)
+        res = self.col.db.all(cmd, self.col.sched.today)
 
         if isDebuggingOn():
             if not ANKI20 and mw.col.schedVer() == 2:
