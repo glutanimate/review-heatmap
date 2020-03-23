@@ -39,6 +39,7 @@ from __future__ import (absolute_import, division,
 from anki.hooks import wrap
 
 from aqt.qt import *
+from aqt.qt import sip
 
 from aqt import mw
 from aqt.overview import Overview
@@ -65,21 +66,29 @@ def toggleHeatmap():
     config["profile"]["display"][state] = not hm_active
     mw.reset()
 
+
 def initializeHotkey():
-    """
-    Create toggle action if it does not exist, yet, and assign it the
-    hotkey defined in the user config
-    """
-    toggle_action = getattr(mw, "_hmToggleAction", None)
-    
-    if toggle_action is None:
-        toggle_action = QAction(mw, triggered=toggleHeatmap)
-        mw.addAction(toggle_action)
-        mw._hmToggleAction = toggle_action
-    
-    hotkey = config["profile"]["hotkeys"]["toggle"]
-    toggle_action.setShortcut(QKeySequence(hotkey))
-    
+    """Create toggle shortcut if it does not exist"""
+    if getattr(mw, "_hmToggleScut", None) is None:
+        hotkey = config["profile"]["hotkeys"]["toggle"]
+        toggle_scut = QShortcut(QKeySequence(hotkey), mw)
+        toggle_scut.activated.connect(toggleHeatmap)
+        toggle_scut.setAutoRepeat(False)
+
+        mw._hmToggleScut = toggle_scut
+
+
+def afterStateChange(state, oldState, *args):
+    state = state.lower()
+    hm_active = (config["profile"]["display"].get(state, None) is not None)
+    shortcut_active = (getattr(mw, "_hmToggleScut", None) is not None)
+
+    if hm_active: 
+        #initializeHotkey checks if shortcut is active
+        initializeHotkey()
+    elif not hm_active and shortcut_active:
+        sip.delete(mw._hmToggleScut)
+        mw._hmToggleScut = None    
 
 # Deck Browser (Main view)
 ######################################################################
@@ -233,3 +242,5 @@ def initializeViews():
     addHook("profileLoaded", initializeHotkey)
     # Update hotkey on config save:
     addHook("config_saved_heatmap", initializeHotkey)
+    # Create or remove hotkey on state change
+    addHook("afterStateChange", afterStateChange)
