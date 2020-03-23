@@ -33,13 +33,21 @@
 Static web components and templates
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import (
+    absolute_import,
+    division,
+    print_function,
+    unicode_literals,
+)
 
 from .libaddon.platform import JSPY_BRIDGE, ANKI20, PLATFORM
 
-__all__ = ["html_main_element", "html_heatmap",
-           "html_streak", "html_info_nodata"]
+__all__ = [
+    "html_main_element",
+    "html_heatmap",
+    "html_streak",
+    "html_info_nodata",
+]
 
 html_main_element = """
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
@@ -59,7 +67,9 @@ var rhPlatform = "{platform}";
 <div class="rh-container {{classes}}">
 {{content}}
 </div>
-""".format(bridge=JSPY_BRIDGE, anki21=not ANKI20, platform=PLATFORM)
+""".format(
+    bridge=JSPY_BRIDGE, anki21=not ANKI20, platform=PLATFORM
+)
 
 html_heatmap = """
 <div class="heatmap">
@@ -109,6 +119,12 @@ html_streak = """
     <span class="streak-info">Current streak:</span>
     <span title="Current card review activity streak. All types of repetitions included."
         class="sstats {class_streak_cur}">{text_streak_cur}</span>
+    <span class="streak-info">Total time spent:</span>
+    <span title="Total time spent reviewing cards"
+        class="sstats {class_time_spent_max}">{text_time_spent_max}</span>
+    <span class="streak-info">Daily time average:</span>
+    <span title="Daily average of time spent reviewing cards"
+        class="sstats {class_time_spent_daily_avg}">{text_time_spent_daily_avg}</span>
 </div>
 """
 
