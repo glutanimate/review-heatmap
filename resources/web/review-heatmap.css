@@ -8,7 +8,6 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 */
 
 /* Special classes:
-"rh-anki-20": Set when run on Anki 2.0.x
 "rh-platform-mac": Set when run on macOS
 "rh-platform-win": Set when run on Windows
 "rh-platform-lin": Set when run on Linux
@@ -169,17 +168,6 @@ select.hm-sel:hover {
 }
 select.hm-sel:active, select.hm-sel:focus {
     background: url(qrc:/review_heatmap/icons/down.svg) 96% / 10% no-repeat #e6e6e6;
-}
-
-/* Workaround for background images not working on 2.0: */
-.rh-anki-20 .hm-sel {
-    background: #e6e6e6;
-}
-.rh-anki-20 select.hm-sel:hover {
-    background: #bfbfbf;
-}
-.rh-anki-20 select.hm-sel:active, select.hm-sel:focus {
-    background: #e6e6e6;
 }
 
 /* Heatmap links */
@@ -480,24 +468,3 @@ select.hm-sel:active, select.hm-sel:focus {
 
 /* Platform-specific adjustments / workarounds */
 /* ################################################################### */
-
-/* anki20: workaround for layout issues on Linux under some Qt versions */
-.rh-platform-lin.rh-anki-20.rh-mode-year #cal-heatmap {
-    width: 640px;
-}
-.rh-platform-lin.rh-anki-20.rh-mode-months #cal-heatmap {
-    width: 610px;
-}
-/* without these adjustments, buttons are comically large on the stats screen  */
-.rh-anki-20.rh-view-stats .hm-btn {
-    height: 0.8em;
-}
-.rh-platform-win.rh-anki-20.rh-view-stats .hm-btn {
-    height: 1em;
-}
-/* seems to be necessary to vertically center button icons on macOS anki20: */
-.rh-platform-mac.rh-anki-20.rh-view-deckbrowser .hm-btn, 
-.rh-platform-mac.rh-anki-20.rh-view-overview .hm-btn {
-    height: 1em;
-    padding-top: 5px;
-}

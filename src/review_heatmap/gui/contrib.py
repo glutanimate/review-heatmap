@@ -33,8 +33,6 @@
 Contributions dialog
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 from aqt.qt import QApplication
 
 from ..libaddon.gui.dialog_contrib import ContribDialog

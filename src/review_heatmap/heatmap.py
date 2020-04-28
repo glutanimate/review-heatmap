@@ -33,14 +33,12 @@
 Heatmap and stats elements generation
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 from anki.utils import json
 from aqt import mw
 
 from .activity import ActivityReporter
 from .config import heatmap_modes
-from .libaddon.platform import ANKI20, PLATFORM
+from .libaddon.platform import PLATFORM
 from .web import *
 
 __all__ = ["HeatmapCreator"]
@@ -126,8 +124,6 @@ class HeatmapCreator(object):
             "rh-mode-{}".format(conf["mode"]),
             "rh-view-{}".format(view),
         ]
-        if ANKI20:
-            classes.append("rh-anki-20")
         return classes
 
     def _generateHeatmapElm(self, data, dynamic_legend):

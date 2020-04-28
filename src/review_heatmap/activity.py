@@ -33,8 +33,6 @@
 Components related to gathering and analyzing user activity
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import datetime
 import time
 
@@ -42,7 +40,6 @@ from anki.utils import ids2str
 from aqt import mw
 
 from .libaddon.debug import isDebuggingOn, logger
-from .libaddon.platform import ANKI20
 
 __all__ = ["ActivityReporter"]
 
@@ -161,7 +158,7 @@ class ActivityReporter(object):
         """
         Return daily scheduling cutoff time in hours
         """
-        if not ANKI20 and self.col.schedVer() == 2:
+        if self.col.schedVer() == 2:
             return self.col.conf.get("rollover", 4)
         start_date = datetime.datetime.fromtimestamp(self.col.crt)
         return start_date.hour
@@ -307,7 +304,7 @@ GROUP BY day ORDER BY day""".format(
         res = self.col.db.all(cmd, self.col.sched.today)
 
         if isDebuggingOn():
-            if not ANKI20 and mw.col.schedVer() == 2:
+            if mw.col.schedVer() == 2:
                 offset = mw.col.conf.get("rollover", 4)
                 schedver = 2
             else:
@@ -317,7 +314,7 @@ GROUP BY day ORDER BY day""".format(
 
             logger.debug(cmd)
             logger.debug(self.col.sched.today)
-            logger.debug("Anki20 %s, Scheduler version %s", ANKI20, schedver)
+            logger.debug("Scheduler version %s", schedver)
             logger.debug("Day starts at setting: %s hours", offset)
             logger.debug(
                 time.strftime(

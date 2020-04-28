@@ -33,9 +33,7 @@
 Static web components and templates
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-from .libaddon.platform import ANKI20, JSPY_BRIDGE, PLATFORM
+from .libaddon.platform import JSPY_BRIDGE, PLATFORM
 
 __all__ = ["html_main_element", "html_heatmap", "html_streak", "html_info_nodata"]
 
@@ -50,7 +48,6 @@ html_main_element = """
 var pybridge = function(arg){{{{
     {bridge}(arg);
 }}}};
-var rhAnki21 = "{anki21}" === "True";
 var rhPlatform = "{platform}";
 </script>
 
@@ -58,7 +55,7 @@ var rhPlatform = "{platform}";
 {{content}}
 </div>
 """.format(
-    bridge=JSPY_BRIDGE, anki21=not ANKI20, platform=PLATFORM
+    bridge=JSPY_BRIDGE, platform=PLATFORM
 )
 
 html_heatmap = """

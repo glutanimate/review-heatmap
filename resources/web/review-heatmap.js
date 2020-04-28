@@ -128,7 +128,7 @@ function initHeatmap(options, data) {
         legend: options.legend,
         displayLegend: false,
         domainLabelFormat: options.domLabForm,
-        tooltip: rhAnki21, // disable custom tooltips on anki20
+        tooltip: true,
         subDomainTitleFormat: function (isEmpty, fmt, rawData) {
             // format tooltips
             var timeNow = Date.now();
@@ -150,11 +150,6 @@ function initHeatmap(options, data) {
                 label = Math.abs(rawData.v) == 1 ? "card" : "cards";
                 tip = "<b>" + count + "</b> " + label + " <b>" + action + "</b> " + fmt.connector + " " + fmt.date;
             }
-
-            if (!cal.options.tooltip) {
-                // anki20: quick hack to remove HTML for regular tooltips
-                tip = tip.replace(/<\/?b>/g, "");
-            };
 
             return tip;
         },

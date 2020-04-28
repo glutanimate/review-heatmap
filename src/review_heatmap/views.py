@@ -33,8 +33,6 @@
 Integration with Anki views
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 from anki.hooks import addHook, remHook, wrap
 from anki.stats import CollectionStats
 from aqt import mw
@@ -45,7 +43,6 @@ from aqt.stats import DeckStats
 
 from .config import config
 from .heatmap import HeatmapCreator
-from .libaddon.platform import ANKI20
 
 # Common
 ######################################################################
@@ -124,31 +121,18 @@ def overviewRenderPage(self):
 
     hmap = HeatmapCreator(config, whole=False)
 
-    if ANKI20:
-        self.web.stdHtml(
-            self._body
-            % dict(
-                deck=deck["name"],
-                shareLink=shareLink,
-                desc=self._desc(deck),
-                table=self._table(),
-                stats=hmap.generate(view="overview"),
-            ),
-            self.mw.sharedCSS + self._css,
-        )
-    else:
-        self.web.stdHtml(
-            self._body
-            % dict(
-                deck=deck["name"],
-                shareLink=shareLink,
-                desc=self._desc(deck),
-                table=self._table(),
-                stats=hmap.generate(view="overview"),
-            ),
-            css=["overview.css"],
-            js=["jquery.js", "overview.js"],
-        )
+    self.web.stdHtml(
+        self._body
+        % dict(
+            deck=deck["name"],
+            shareLink=shareLink,
+            desc=self._desc(deck),
+            table=self._table(),
+            stats=hmap.generate(view="overview"),
+        ),
+        css=["overview.css"],
+        js=["jquery.js", "overview.js"],
+    )
 
 
 # CollectionStats (Stats window)
@@ -237,10 +221,7 @@ def initializeViews():
     DeckBrowser._renderStats = wrap(
         DeckBrowser._renderStats, deckbrowserRenderStats, "around"
     )
-    if not ANKI20:
-        DeckStats.__init__ = wrap(DeckStats.__init__, deckStatsInit21, "after")
-    else:
-        DeckStats.__init__ = deckStatsInit20
+    DeckStats.__init__ = wrap(DeckStats.__init__, deckStatsInit21, "after")
     DeckStats.reject = wrap(DeckStats.reject, deckStatsReject)
     # Initially set up hotkey:
     addHook("profileLoaded", initializeHotkey)

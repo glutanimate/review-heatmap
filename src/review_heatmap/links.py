@@ -47,7 +47,6 @@ from .config import config, heatmap_colors, heatmap_modes
 from .gui.contrib import invokeContributionsDialog
 from .gui.extra import invokeSnanki
 from .gui.options import invokeOptionsDialog
-from .libaddon.platform import ANKI20
 
 __all__ = [
     "heatmapLinkHandler",
@@ -115,10 +114,7 @@ def cycleHmModes():
 def invokeBrowser(search):
     browser = aqt.dialogs.open("Browser", mw)
     browser.form.searchEdit.lineEdit().setText(search)
-    if not ANKI20:
-        browser.onSearchActivated()
-    else:
-        browser.onSearch()
+    browser.onSearchActivated()
 
 
 # Finder extensions
