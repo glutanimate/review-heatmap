@@ -36,18 +36,16 @@ Extra dialogs
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from random import randrange
 import time
-
-from aqt.qt import *
+from random import randrange
 
 from aqt import mw
-from aqt.utils import tooltip, openLink
-
-from ..libaddon.anki.configmanager import ConfigManager
-from ..libaddon.platform import isMac
+from aqt.qt import *
+from aqt.utils import openLink, tooltip
 
 from ..consts import ADDON
+from ..libaddon.anki.configmanager import ConfigManager
+from ..libaddon.platform import isMac
 
 __all__ = ["invokeSnanki"]
 

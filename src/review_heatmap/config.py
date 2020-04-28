@@ -39,9 +39,8 @@ from collections import OrderedDict
 
 from aqt import mw
 
-from .libaddon.anki.configmanager import ConfigManager
-
 from .consts import ADDON
+from .libaddon.anki.configmanager import ConfigManager
 
 __all__ = ["heatmap_colors", "heatmap_modes", "config_defaults", "config"]
 

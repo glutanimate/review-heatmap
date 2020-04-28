@@ -38,15 +38,13 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import time
 
 from aqt import mw
-
 from aqt.qt import *
 from aqt.studydeck import StudyDeck
 
+from ..activity import ActivityReporter
+from ..config import config, heatmap_colors, heatmap_modes
 from ..libaddon.gui.dialog_options import OptionsDialog
 from ..libaddon.platform import PLATFORM
-from ..config import config, heatmap_colors, heatmap_modes
-from ..activity import ActivityReporter
-
 from .forms import options as qtform_options
 
 __all__ = ["RevHmOptions", "invokeOptionsDialog"]

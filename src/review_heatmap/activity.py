@@ -35,15 +35,14 @@ Components related to gathering and analyzing user activity
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import time
 import datetime
-
-from aqt import mw
+import time
 
 from anki.utils import ids2str
+from aqt import mw
 
+from .libaddon.debug import isDebuggingOn, logger
 from .libaddon.platform import ANKI20
-from .libaddon.debug import logger, isDebuggingOn
 
 __all__ = ["ActivityReporter"]
 

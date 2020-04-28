@@ -35,7 +35,7 @@ Static web components and templates
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from .libaddon.platform import JSPY_BRIDGE, ANKI20, PLATFORM
+from .libaddon.platform import ANKI20, JSPY_BRIDGE, PLATFORM
 
 __all__ = ["html_main_element", "html_heatmap", "html_streak", "html_info_nodata"]
 

@@ -35,21 +35,17 @@ Integration with Anki views
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from anki.hooks import wrap
-
-from aqt.qt import *
-
-from aqt import mw
-from aqt.overview import Overview
-from aqt.deckbrowser import DeckBrowser
-from aqt.stats import DeckStats
+from anki.hooks import addHook, remHook, wrap
 from anki.stats import CollectionStats
-from anki.hooks import addHook, remHook
-
-from .libaddon.platform import ANKI20
+from aqt import mw
+from aqt.deckbrowser import DeckBrowser
+from aqt.overview import Overview
+from aqt.qt import *
+from aqt.stats import DeckStats
 
 from .config import config
 from .heatmap import HeatmapCreator
+from .libaddon.platform import ANKI20
 
 # Common
 ######################################################################
