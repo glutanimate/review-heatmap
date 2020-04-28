@@ -33,8 +33,9 @@
 Webview link handlers and associated components
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import re
 
 import aqt
 
@@ -46,7 +47,6 @@ from aqt.deckbrowser import DeckBrowser
 from aqt.stats import DeckStats
 
 from anki.hooks import wrap
-from anki.find import Finder
 
 from .libaddon.platform import ANKI20
 
@@ -116,6 +116,8 @@ def invokeBrowser(search):
 # Finder extensions
 ######################################################################
 
+# LEGACY
+
 # Used when clicking on heatmap date
 def findRevlogEntries(self, val):
     """Find cards by revlog timestamp range"""
@@ -149,15 +151,79 @@ def addFinders(self, col):
     self.search["seen"] = self.findSeenOn
     self.search["rid"] = self.findRevlogEntries
 
+# NEW
+
+def _find_cards_reviewed_between(start_date: int, end_date: int):
+    # select from cards instead of just selecting uniques from revlog
+    # in order to exclude deleted cards
+    return mw.col.db.list(  # type: ignore
+        "SELECT id FROM cards where id in "
+        "(SELECT cid FROM revlog where id between ? and ?)",
+        start_date,
+        end_date,
+    )
+
+_re_rid = re.compile(r"^rid:([0-9]+):([0-9]+)$")
+_re_seen = re.compile(r"^seen:([0-9]+)$")
+
+def find_rid(search: str):
+    match = _re_rid.match(search)
+
+    if not match:
+        return False
+
+    start_date = int(match[1])
+    end_date = int(match[2])
+    
+    return _find_cards_reviewed_between(start_date, end_date)
+
+def find_seen(search: str):
+    match = _re_seen.match(search)
+    
+    if not match:
+        return False
+    
+    days_since_crt = int(match[1])
+    
+    # upper cutoff set to dayCutOff x days ago
+    end_date = (mw.col.sched.dayCutoff - 86400 * days_since_crt) * 1000
+    # lower cutoff set to 24 hours before upper cutoff
+    start_date = end_date - 86400000
+    
+    return _find_cards_reviewed_between(start_date, end_date)
+
+def on_browser_will_search(search_context):
+    search = search_context.search
+    if search.startswith("rid"):
+        found_ids = find_rid(search)
+    elif search.startswith("seen"):
+        found_ids = find_seen(search)
+    else:
+        return
+    
+    if found_ids is False:
+        return
+    
+    search_context.card_ids = found_ids
+
 # Hooks
 ######################################################################
 
+
 def initializeLinks():
-    Overview._linkHandler = wrap(Overview._linkHandler, heatmapLinkHandler,
-                                 "around")
+    Overview._linkHandler = wrap(Overview._linkHandler, heatmapLinkHandler, "around")
     DeckBrowser._linkHandler = wrap(
-        DeckBrowser._linkHandler, heatmapLinkHandler, "around")
+        DeckBrowser._linkHandler, heatmapLinkHandler, "around"
+    )
     DeckStats._linkHandler = heatmapLinkHandler
-    Finder.findSeenOn = findSeenOn
-    Finder.findRevlogEntries = findRevlogEntries
-    Finder.__init__ = wrap(Finder.__init__, addFinders, "after")
+
+    try:
+        from aqt.gui_hooks import browser_will_search
+
+        browser_will_search.append(on_browser_will_search)
+    except (ImportError, ModuleNotFoundError):
+        from anki.find import Finder
+
+        Finder.findSeenOn = findSeenOn
+        Finder.findRevlogEntries = findRevlogEntries
+        Finder.__init__ = wrap(Finder.__init__, addFinders, "after")
