@@ -33,13 +33,11 @@
 Static web components and templates
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from .libaddon.platform import JSPY_BRIDGE, ANKI20, PLATFORM
 
-__all__ = ["html_main_element", "html_heatmap",
-           "html_streak", "html_info_nodata"]
+__all__ = ["html_main_element", "html_heatmap", "html_streak", "html_info_nodata"]
 
 html_main_element = """
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
@@ -59,7 +57,9 @@ var rhPlatform = "{platform}";
 <div class="rh-container {{classes}}">
 {{content}}
 </div>
-""".format(bridge=JSPY_BRIDGE, anki21=not ANKI20, platform=PLATFORM)
+""".format(
+    bridge=JSPY_BRIDGE, anki21=not ANKI20, platform=PLATFORM
+)
 
 html_heatmap = """
 <div class="heatmap">

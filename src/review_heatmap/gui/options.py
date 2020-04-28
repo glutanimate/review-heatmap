@@ -33,8 +33,7 @@
 Options dialog and associated components
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import time
 
@@ -52,6 +51,7 @@ from .forms import options as qtform_options
 
 __all__ = ["RevHmOptions", "invokeOptionsDialog"]
 
+
 class RevHmOptions(OptionsDialog):
 
     """
@@ -59,81 +59,46 @@ class RevHmOptions(OptionsDialog):
     """
 
     _mapped_widgets = (
-        ("form.selHmColor", (
-            # order is important (e.g. to set-up items before current item)
-            ("items", {
-                "setter": "_setSelHmColorItems"
-            }),
-            ("value", {
-                "dataPath": "synced/colors",
-            }),
-        )),
-        ("form.selHmCalMode", (
-            ("items", {
-                "setter": "_setSelHmCalModeItems"
-            }),
-            ("value", {
-                "dataPath": "synced/mode"
-            }),
-        )),
-        ("form.cbHmMain", (
-            ("value", {
-                "dataPath": "profile/display/deckbrowser"
-            }),
-        )),
-        ("form.cbHmDeck", (
-            ("value", {
-                "dataPath": "profile/display/overview"
-            }),
-        )),
-        ("form.cbHmStats", (
-            ("value", {
-                "dataPath": "profile/display/stats"
-            }),
-        )),
-        ("form.cbStreakAll", (
-            ("value", {
-                "dataPath": "profile/statsvis"
-            }),
-        )),
-        ("form.spinLimHist", (
-            ("value", {
-                "dataPath": "synced/limhist"
-            }),
-        )),
-        ("form.spinLimFcst", (
-            ("value", {
-                "dataPath": "synced/limfcst"
-            }),
-        )),
-        ("form.dateLimData", (
-            ("value", {
-                "dataPath": "synced/limdate",
-                "getter": "_getDateLimData"
-            }),
-            ("min", {
-                "setter": "_setDateLimDataMin"
-            }),
-            ("max", {
-                "setter": "_setDateLimDataMax"
-            }),
-        )),
-        ("form.cbLimDel", (
-            ("value", {
-                "dataPath": "synced/limcdel"
-            }),
-        )),
-        ("form.keyGrabToggle", (
-            ("value", {
-                "dataPath": "profile/hotkeys/toggle"
-            }),
-        )),
-        ("form.listDecks", (
-            ("value", {
-                "dataPath": "synced/limdecks",
-                "setter": "_setListDecksValue",
-            }),
-        )),
+        (
+            "form.selHmColor",
+            (
+                # order is important (e.g. to set-up items before current item)
+                ("items", {"setter": "_setSelHmColorItems"}),
+                ("value", {"dataPath": "synced/colors",}),
+            ),
+        ),
+        (
+            "form.selHmCalMode",
+            (
+                ("items", {"setter": "_setSelHmCalModeItems"}),
+                ("value", {"dataPath": "synced/mode"}),
+            ),
+        ),
+        ("form.cbHmMain", (("value", {"dataPath": "profile/display/deckbrowser"}),)),
+        ("form.cbHmDeck", (("value", {"dataPath": "profile/display/overview"}),)),
+        ("form.cbHmStats", (("value", {"dataPath": "profile/display/stats"}),)),
+        ("form.cbStreakAll", (("value", {"dataPath": "profile/statsvis"}),)),
+        ("form.spinLimHist", (("value", {"dataPath": "synced/limhist"}),)),
+        ("form.spinLimFcst", (("value", {"dataPath": "synced/limfcst"}),)),
+        (
+            "form.dateLimData",
+            (
+                ("value", {"dataPath": "synced/limdate", "getter": "_getDateLimData"}),
+                ("min", {"setter": "_setDateLimDataMin"}),
+                ("max", {"setter": "_setDateLimDataMax"}),
+            ),
+        ),
+        ("form.cbLimDel", (("value", {"dataPath": "synced/limcdel"}),)),
+        ("form.keyGrabToggle", (("value", {"dataPath": "profile/hotkeys/toggle"}),)),
+        (
+            "form.listDecks",
+            (
+                (
+                    "value",
+                    {"dataPath": "synced/limdecks", "setter": "_setListDecksValue",},
+                ),
+            ),
+        ),
     )
 
     def __init__(self, config, mw, parent=None, **kwargs):
@@ -143,9 +108,13 @@ class RevHmOptions(OptionsDialog):
         # beforehand:
         self.parent = parent or mw
         self.mw = mw
-        super(RevHmOptions, self).__init__(self._mapped_widgets, config,
-                                           form_module=qtform_options,
-                                           parent=self.parent, **kwargs)
+        super(RevHmOptions, self).__init__(
+            self._mapped_widgets,
+            config,
+            form_module=qtform_options,
+            parent=self.parent,
+            **kwargs
+        )
         # Instance methods that modify the initialized UI should either be
         # called from self._setupUI or from here
 
@@ -179,9 +148,14 @@ class RevHmOptions(OptionsDialog):
 
     def _onAddIgnoredDeck(self):
         list_widget = self.form.listDecks
-        ret = StudyDeck(self.mw, accept=_("Choose"),
-                        title=_("Choose Deck"), help="",
-                        parent=self, geomKey="selectDeck")
+        ret = StudyDeck(
+            self.mw,
+            accept=_("Choose"),
+            title=_("Choose Deck"),
+            help="",
+            parent=self,
+            geomKey="selectDeck",
+        )
         deck_name = ret.name
         if not deck_name:
             return False
@@ -223,9 +197,9 @@ class RevHmOptions(OptionsDialog):
                 continue
             item_tuples.append((name, did))
         return item_tuples
-    
+
     # Config getters:
-    
+
     def _getDateLimData(self, widget_val):
         val = ActivityReporter.daystartEpoch(widget_val)
         default = ActivityReporter.daystartEpoch(self._setDateLimDataMin(None))
@@ -238,6 +212,7 @@ def invokeOptionsDialog(parent=None):
     """Call settings dialog"""
     dialog = RevHmOptions(config, mw, parent=parent)
     return dialog.exec_()
+
 
 def initializeOptions():
     config.setConfigAction(invokeOptionsDialog)

@@ -34,6 +34,7 @@ Package that bundles UI components used by the add-on
 (e.g. dialogs, Qt forms, other resources)
 """
 
+
 def initializeQtResources():
     """
     Load Qt resources into memory

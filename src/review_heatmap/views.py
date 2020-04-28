@@ -33,8 +33,7 @@
 Integration with Anki views
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from anki.hooks import wrap
 
@@ -55,6 +54,7 @@ from .heatmap import HeatmapCreator
 # Common
 ######################################################################
 
+
 def toggleHeatmap():
     """Toggle heatmap display on demand"""
     state = mw.state.lower()
@@ -65,24 +65,26 @@ def toggleHeatmap():
     config["profile"]["display"][state] = not hm_active
     mw.reset()
 
+
 def initializeHotkey():
     """
     Create toggle action if it does not exist, yet, and assign it the
     hotkey defined in the user config
     """
     toggle_action = getattr(mw, "_hmToggleAction", None)
-    
+
     if toggle_action is None:
         toggle_action = QAction(mw, triggered=toggleHeatmap)
         mw.addAction(toggle_action)
         mw._hmToggleAction = toggle_action
-    
+
     hotkey = config["profile"]["hotkeys"]["toggle"]
     toggle_action.setShortcut(QKeySequence(hotkey))
-    
+
 
 # Deck Browser (Main view)
 ######################################################################
+
 
 def deckbrowserRenderStats(self, _old):
     """Add heatmap to _renderStats() return"""
@@ -91,6 +93,7 @@ def deckbrowserRenderStats(self, _old):
     hmap = HeatmapCreator(config, whole=True)
     html = ret + hmap.generate(view="deckbrowser")
     return html
+
 
 # Overview (Deck view)
 ######################################################################
@@ -105,6 +108,7 @@ ov_body = """
 </center>
 <script>$(function () { $("#study").focus(); });</script>
 """
+
 
 def overviewRenderPage(self):
     """Replace original _renderPage()
@@ -125,27 +129,35 @@ def overviewRenderPage(self):
     hmap = HeatmapCreator(config, whole=False)
 
     if ANKI20:
-        self.web.stdHtml(self._body % dict(
-            deck=deck['name'],
-            shareLink=shareLink,
-            desc=self._desc(deck),
-            table=self._table(),
-            stats=hmap.generate(view="overview")
-        ), self.mw.sharedCSS + self._css)
+        self.web.stdHtml(
+            self._body
+            % dict(
+                deck=deck["name"],
+                shareLink=shareLink,
+                desc=self._desc(deck),
+                table=self._table(),
+                stats=hmap.generate(view="overview"),
+            ),
+            self.mw.sharedCSS + self._css,
+        )
     else:
-        self.web.stdHtml(self._body % dict(
-            deck=deck['name'],
-            shareLink=shareLink,
-            desc=self._desc(deck),
-            table=self._table(),
-            stats=hmap.generate(view="overview")
-        ),
+        self.web.stdHtml(
+            self._body
+            % dict(
+                deck=deck["name"],
+                shareLink=shareLink,
+                desc=self._desc(deck),
+                table=self._table(),
+                stats=hmap.generate(view="overview"),
+            ),
             css=["overview.css"],
-            js=["jquery.js", "overview.js"])
+            js=["jquery.js", "overview.js"],
+        )
 
 
 # CollectionStats (Stats window)
 ######################################################################
+
 
 def collectionStatsDueGraph(self, _old):
     """Wraps dueGraph and adds our heatmap to the stats screen"""
@@ -165,7 +177,7 @@ def collectionStatsDueGraph(self, _old):
 def deckStatsInit21(self, mw):
     self.form.web.onBridgeCmd = self._linkHandler
     # refresh heatmap on options change:
-    addHook('reset', self.refresh)
+    addHook("reset", self.refresh)
 
 
 def deckStatsInit20(self, mw):
@@ -174,6 +186,7 @@ def deckStatsInit20(self, mw):
     import aqt
     from aqt.webview import AnkiWebView
     from aqt.utils import restoreGeom, maybeHideClose, addCloseShortcut
+
     #########################################################
     QDialog.__init__(self, mw, Qt.Window)
     self.mw = mw
@@ -193,7 +206,7 @@ def deckStatsInit20(self, mw):
     f.web = AnkiWebView()  # need to use AnkiWebView for linkhandler to work
     f.web.setLinkHandler(self._linkHandler)
     self.form.verticalLayout.insertWidget(0, f.web)
-    addHook('reset', self.refresh)
+    addHook("reset", self.refresh)
     #########################################################
     restoreGeom(self, self.name)
     b = f.buttonBox.addButton(_("Save Image"), QDialogButtonBox.ActionRole)
@@ -213,17 +226,21 @@ def deckStatsInit20(self, mw):
     self.refresh()
     self.show()  # show instead of exec in order for browser to open properly
 
+
 def deckStatsReject(self):
     # clean up after ourselves:
-    remHook('reset', self.refresh)
+    remHook("reset", self.refresh)
+
 
 def initializeViews():
     CollectionStats.dueGraph = wrap(
-        CollectionStats.dueGraph, collectionStatsDueGraph, "around")
+        CollectionStats.dueGraph, collectionStatsDueGraph, "around"
+    )
     Overview._body = ov_body
     Overview._renderPage = overviewRenderPage
     DeckBrowser._renderStats = wrap(
-        DeckBrowser._renderStats, deckbrowserRenderStats, "around")
+        DeckBrowser._renderStats, deckbrowserRenderStats, "around"
+    )
     if not ANKI20:
         DeckStats.__init__ = wrap(DeckStats.__init__, deckStatsInit21, "after")
     else:

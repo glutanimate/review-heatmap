@@ -34,8 +34,7 @@
 Extra dialogs
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from random import randrange
 import time
@@ -83,22 +82,34 @@ class Snanki(QDialog):
     def keyPressEvent(self, e):
         if not self.isPaused:
             # print("inflection point: ", self.x, " ", self.y)
-            if (e.key() == Qt.Key_Up and self.lastKeyPress != 'UP' and
-                    self.lastKeyPress != 'DOWN'):
+            if (
+                e.key() == Qt.Key_Up
+                and self.lastKeyPress != "UP"
+                and self.lastKeyPress != "DOWN"
+            ):
                 self.direction("UP")
-                self.lastKeyPress = 'UP'
-            elif (e.key() == Qt.Key_Down and self.lastKeyPress != 'DOWN' and
-                    self.lastKeyPress != 'UP'):
+                self.lastKeyPress = "UP"
+            elif (
+                e.key() == Qt.Key_Down
+                and self.lastKeyPress != "DOWN"
+                and self.lastKeyPress != "UP"
+            ):
                 self.direction("DOWN")
-                self.lastKeyPress = 'DOWN'
-            elif (e.key() == Qt.Key_Left and self.lastKeyPress != 'LEFT' and
-                    self.lastKeyPress != 'RIGHT'):
+                self.lastKeyPress = "DOWN"
+            elif (
+                e.key() == Qt.Key_Left
+                and self.lastKeyPress != "LEFT"
+                and self.lastKeyPress != "RIGHT"
+            ):
                 self.direction("LEFT")
-                self.lastKeyPress = 'LEFT'
-            elif (e.key() == Qt.Key_Right and self.lastKeyPress != 'RIGHT' and
-                    self.lastKeyPress != 'LEFT'):
+                self.lastKeyPress = "LEFT"
+            elif (
+                e.key() == Qt.Key_Right
+                and self.lastKeyPress != "RIGHT"
+                and self.lastKeyPress != "LEFT"
+            ):
                 self.direction("RIGHT")
-                self.lastKeyPress = 'RIGHT'
+                self.lastKeyPress = "RIGHT"
             elif e.key() == Qt.Key_P:
                 self.pause()
         elif e.key() == Qt.Key_P:
@@ -122,10 +133,13 @@ class Snanki(QDialog):
         self.score = 0
         self.x = 12
         self.y = 36
-        self.lastKeyPress = 'RIGHT'
+        self.lastKeyPress = "RIGHT"
         self.timer = QBasicTimer()
-        self.snakeArray = [[self.x, self.y], [
-            self.x-12, self.y], [self.x-24, self.y]]
+        self.snakeArray = [
+            [self.x, self.y],
+            [self.x - 12, self.y],
+            [self.x - 24, self.y],
+        ]
         self.foodx = 0
         self.foody = 0
         self.isPaused = False
@@ -145,19 +159,19 @@ class Snanki(QDialog):
         self.update()
 
     def direction(self, dir):
-        if (dir == "DOWN" and self.checkStatus(self.x, self.y+12)):
+        if dir == "DOWN" and self.checkStatus(self.x, self.y + 12):
             self.y += 12
             self.repaint()
             self.snakeArray.insert(0, [self.x, self.y])
-        elif (dir == "UP" and self.checkStatus(self.x, self.y-12)):
+        elif dir == "UP" and self.checkStatus(self.x, self.y - 12):
             self.y -= 12
             self.repaint()
             self.snakeArray.insert(0, [self.x, self.y])
-        elif (dir == "RIGHT" and self.checkStatus(self.x+12, self.y)):
+        elif dir == "RIGHT" and self.checkStatus(self.x + 12, self.y):
             self.x += 12
             self.repaint()
             self.snakeArray.insert(0, [self.x, self.y])
-        elif (dir == "LEFT" and self.checkStatus(self.x-12, self.y)):
+        elif dir == "LEFT" and self.checkStatus(self.x - 12, self.y):
             self.x -= 12
             self.repaint()
             self.snakeArray.insert(0, [self.x, self.y])
@@ -169,7 +183,7 @@ class Snanki(QDialog):
 
     def scoreText(self, event, qp):
         qp.setPen(QColor("#ffffff"))
-        qp.setFont(QFont('Decorative', 10))
+        qp.setFont(QFont("Decorative", 10))
         qp.drawText(4, 17, "LIVES: " + str(self.lives))
         qp.drawText(120, 17, "SCORE: " + str(self.score))
         qp.drawText(230, 17, "BEST: " + str(self.highscore))
@@ -182,19 +196,21 @@ class Snanki(QDialog):
             info = "\n\nNew high score! 1 life replenished."
         font_size = 10 if not isMac else 12
         qp.setPen(QColor(0, 34, 3))
-        qp.setFont(QFont('Decorative', font_size))
+        qp.setFont(QFont("Decorative", font_size))
         if self.lives > 0:
             msg = "GAME OVER{}\n\nPress space to play again".format(info)
         else:
             self.setCursor(Qt.PointingHandCursor)
-            msg = ("GAME OVER\n\nYou're out of lives for today,\n"
-                   "but tomorrow is another day :)\n\n"
-                   "Tip: Get more lives by\nkeeping up with your reviews!\n\n"
-                   "Pro-Tip: Pledge your support on Patreon\n"
-                   "and get access to other secret\n"
-                   "features and add-ons :)"
-                   "\n\nClick here to go to\n"
-                   "patreon.com/glutanimate")
+            msg = (
+                "GAME OVER\n\nYou're out of lives for today,\n"
+                "but tomorrow is another day :)\n\n"
+                "Tip: Get more lives by\nkeeping up with your reviews!\n\n"
+                "Pro-Tip: Pledge your support on Patreon\n"
+                "and get access to other secret\n"
+                "features and add-ons :)"
+                "\n\nClick here to go to\n"
+                "patreon.com/glutanimate"
+            )
         qp.drawText(event.rect(), Qt.AlignCenter, msg)
 
     def checkStatus(self, x, y):
@@ -204,7 +220,7 @@ class Snanki(QDialog):
             self.isOver = True
             self.lives -= 1
             return False
-        elif self.snakeArray[0] in self.snakeArray[1:len(self.snakeArray)]:
+        elif self.snakeArray[0] in self.snakeArray[1 : len(self.snakeArray)]:
             self.pause()
             self.isPaused = True
             self.isOver = True
@@ -224,8 +240,8 @@ class Snanki(QDialog):
     # places the food when theres none on the board
     def placeFood(self, qp):
         if self.FoodPlaced is False:
-            self.foodx = randrange(24)*12
-            self.foody = randrange(2, 24)*12
+            self.foodx = randrange(24) * 12
+            self.foody = randrange(2, 24) * 12
             if not [self.foodx, self.foody] in self.snakeArray:
                 self.FoodPlaced = True
         qp.setBrush(QColor("#ffdd55"))
@@ -263,7 +279,7 @@ defaults = {
         "highscore": 0,
         "lastplayed": 0,
         "livesleft": None,
-        "version": SNANKI_VERSION
+        "version": SNANKI_VERSION,
     }
 }
 
@@ -276,15 +292,19 @@ def invokeSnanki(parent=None):
     streak_cur = getattr(mw, "_hmStreakCur", None)
     activity_daily_avg = getattr(mw, "_hmActivityDailyAvg", None)
 
-    done_today = mw.col.db.scalar("""select count() from revlog where id > ?""",
-                                  (mw.col.sched.dayCutoff-86400)*1000)
+    done_today = mw.col.db.scalar(
+        """select count() from revlog where id > ?""",
+        (mw.col.sched.dayCutoff - 86400) * 1000,
+    )
 
     goal = max(1, int(round(activity_daily_avg / 2)))
 
     if done_today < goal:
-        tooltip("Psst! You've stumbled on a secret.<br>"
-                "Return when you've done at least<br>"
-                "{} cards for the day :)".format(goal))
+        tooltip(
+            "Psst! You've stumbled on a secret.<br>"
+            "Return when you've done at least<br>"
+            "{} cards for the day :)".format(goal)
+        )
         return
 
     lastplayed = conf["lastplayed"]
@@ -302,8 +322,10 @@ def invokeSnanki(parent=None):
     elif lastplayed != 0 and lastplayed < day_cutoff:
         # same day
         if not livesleft:
-            tooltip("No more Snanki rounds left for today,<br>"
-                    "but feel free to check back tomorrow :) !")
+            tooltip(
+                "No more Snanki rounds left for today,<br>"
+                "but feel free to check back tomorrow :) !"
+            )
             return
         else:
             pass  # play with remaining lives

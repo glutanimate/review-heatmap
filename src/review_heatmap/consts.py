@@ -33,8 +33,7 @@
 Addon-wide constants
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from ._version import __version__
 
@@ -43,16 +42,16 @@ try:
 except ImportError:
     MEMBERS_CREDITED = MEMBERS_TOP = ()
 
-__all__ = [
-    "ADDON"
-]
+__all__ = ["ADDON"]
 
 # PROPERTIES DESCRIBING ADDON
+
 
 class ADDON(object):
     """Class storing general add-on properties
     Property names need to be all-uppercase with no leading underscores
     """
+
     NAME = "Review Heatmap"
     MODULE = "review_heatmap"
     REPO = "review-heatmap"
@@ -60,17 +59,28 @@ class ADDON(object):
     VERSION = __version__
     LICENSE = "GNU AGPLv3"
     AUTHORS = (
-        {"name": "Aristotelis P. (Glutanimate)", "years": "2016-2019",
-         "contact": "https://glutanimate.com"},
+        {
+            "name": "Aristotelis P. (Glutanimate)",
+            "years": "2016-2019",
+            "contact": "https://glutanimate.com",
+        },
     )
     AUTHOR_MAIL = "ankiglutanimate@gmail.com"
     LIBRARIES = (
-        {"name": "d3.js", "version": "v3.5.17",
-         "author": "Mike Bostock", "license": "BSD license",
-         "url": "https://d3js.org/"},
-        {"name": "cal-heatmap", "version": "v3.6.3.2-anki",
-         "author": "Wan Qi Chen", "license": "MIT license",
-         "url": "https://github.com/glutanimate/cal-heatmap"},
+        {
+            "name": "d3.js",
+            "version": "v3.5.17",
+            "author": "Mike Bostock",
+            "license": "BSD license",
+            "url": "https://d3js.org/",
+        },
+        {
+            "name": "cal-heatmap",
+            "version": "v3.6.3.2-anki",
+            "author": "Wan Qi Chen",
+            "license": "MIT license",
+            "url": "https://github.com/glutanimate/cal-heatmap",
+        },
     )
     CONTRIBUTORS = ()
     SPONSORS = ()
@@ -84,7 +94,9 @@ class ADDON(object):
         "rate": "https://ankiweb.net/shared/review/{}".format(ID),
         "twitter": "https://twitter.com/glutanimate",
         "youtube": "https://www.youtube.com/c/glutanimate",
-        "changelog": ("https://github.com/glutanimate/"
-                      "{repo}/blob/master/CHANGELOG.md".format(repo=REPO)),
-        "help": "https://github.com/glutanimate/review-heatmap/wiki"
+        "changelog": (
+            "https://github.com/glutanimate/"
+            "{repo}/blob/master/CHANGELOG.md".format(repo=REPO)
+        ),
+        "help": "https://github.com/glutanimate/review-heatmap/wiki",
     }
