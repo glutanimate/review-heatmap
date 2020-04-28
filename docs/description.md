@@ -25,7 +25,7 @@ The use of this add-on is documented in the [official Wiki](https://github.com/G
 
 ### CREDITS AND LICENSE
 
-*Copyright © 2016-2019 [Aristotelis P.](https://glutanimate.com/)  (Glutanimate)*
+*Copyright © 2016-2020 [Aristotelis P.](https://glutanimate.com/)  (Glutanimate)*
 
 Inspired by GitHub's contribution calendar and *Forecast graph on Overview page* by Steve AW. Ships with the following javascript libraries:
 

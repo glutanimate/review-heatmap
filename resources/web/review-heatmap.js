@@ -3,7 +3,7 @@ This file is part of the Review Heatmap add-on for Anki
 
 Custom Heatmap JS
 
-Copyright: (c) 2016-2019 Glutanimate <https://glutanimate.com/>
+Copyright: (c) 2016-2020 Glutanimate <https://glutanimate.com/>
 License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 */
 

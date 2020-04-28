@@ -101,7 +101,7 @@ Contributions are welcome! Please review the [contribution guidelines](./CONTRIB
 
 ### License and Credits
 
-*Review Heatmap* is *Copyright © 2016-2019 [Aristotelis P.](https://glutanimate.com/) (Glutanimate)*
+*Review Heatmap* is *Copyright © 2016-2020 [Aristotelis P.](https://glutanimate.com/) (Glutanimate)*
 
 Inspired by GitHub's contribution calendar and *Forecast graph on Overview page* by Steve AW.
 
