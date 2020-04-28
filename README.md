@@ -18,12 +18,12 @@ Adds a **heatmap graph** to [Anki](https://apps.ankiweb.net/)'s main window whic
 
 <!-- MarkdownTOC -->
 
-- [Video Demonstration](#Video-Demonstration)
-- [Installation](#Installation)
-- [Documentation](#Documentation)
-- [Building](#Building)
-- [Contributing](#Contributing)
-- [License and Credits](#License-and-Credits)
+- [Video Demonstration](#video-demonstration)
+- [Installation](#installation)
+- [Documentation](#documentation)
+- [Building](#building)
+- [Contributing](#contributing)
+- [License and Credits](#license-and-credits)
 
 <!-- /MarkdownTOC -->
 
@@ -37,9 +37,9 @@ General Overview | Customization
 
 ### Installation
 
-#### AnkiWeb <!-- omit in toc -->
+<!-- #### AnkiWeb --><!-- omit in toc -->
 
-The easiest way to install Review Heatmap is through [AnkiWeb](https://ankiweb.net/shared/info/1771074083).
+<!-- The easiest way to install Review Heatmap is through [AnkiWeb](https://ankiweb.net/shared/info/1771074083). -->
 
 #### Manual installation <!-- omit in toc -->
 
@@ -47,9 +47,23 @@ Please click on the entry corresponding to your Anki version:
 
 <details>
 
-<summary><i>Anki 2.1</i></summary>
+<summary><i>Recent Anki 2.1 versions</i></summary>
 
-1. Make sure you have the [latest version](https://apps.ankiweb.net/#download) of Anki 2.1 installed. Earlier releases (e.g. found in various Linux distros) do not support `.ankiaddon` packages.
+<br>
+
+*Note: These instructions only work on Anki 2.1.17 and up. For older Anki releases please see the next section.*
+
+1. Download the latest `.ankiaddon` file from the [releases tab](https://github.com/glutanimate/review-heatmap/releases) (you might need to click on *Assets* below the description to reveal the download links)
+2. Open the folder where your downloads are located and double-click on the downloaded `.ankiaddon` file.
+3. Follow the installation prompt and restart Anki if it asks you to
+
+</details>
+
+<details>
+
+<summary><i>Older Anki 2.1 versions</i></summary>
+
+1. Make sure you are [using at least Anki 2.1.10](https://apps.ankiweb.net/#download). Earlier releases (e.g. found in various Linux distros) do not support `.ankiaddon` packages.
 2. Download the latest `.ankiaddon` package from the [releases tab](https://github.com/glutanimate/review-heatmap/releases) (you might need to click on *Assets* below the description to reveal the download links)
 3. From Anki's main window, head to *Tools* → *Add-ons*
 4. Drag-and-drop the `.ankiaddon` package onto the add-ons list
@@ -57,25 +71,10 @@ Please click on the entry corresponding to your Anki version:
 
 Video summary:
 
-<img src="https://raw.githubusercontent.com/glutanimate/docs/master/anki/add-ons/media/ankiaddon-installation.gif" width=640>
+<img src="https://raw.githubusercontent.com/glutanimate/docs/master/anki/add-ons/media/ankiaddon-installation-macos.gif" width=640>
 
 </details>
 
-<details>
-
-<summary><i>Anki 2.0</i></summary>
-
-1. Go to *Tools* → *Add-ons* → *Open add-ons folder*
-2. Find and delete the `Review Heatmap.py` file if it already exists.
-3. See if you can find a `review_heatmap` folder. If so:
-    1. If the folder contains a `meta.json` file, copy the file to a safe location. This will allow you to preserve your current settings.
-    2. Proceed to delete the `review_heatmap` folder
-4. Download and extract the latest Anki 2.0 add-on release from the [releases tab](https://github.com/glutanimate/review-heatmap/releases) (you might need to click on *Assets* below the description to reveal the download links)
-5. Move the extracted `Review Heatmap.py` and `review_heatmap` into the add-ons folder
-6. Optional: Place the `meta.json` file back into the directory if you created a copy beforehand.
-7. Restart Anki
-
-</details>
 
 ### Documentation
 
