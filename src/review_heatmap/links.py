@@ -33,34 +33,33 @@
 Webview link handlers and associated components
 """
 
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import re
 
 import aqt
-
-from aqt.qt import QWidget
-
+from anki.hooks import wrap
 from aqt import mw
-from aqt.overview import Overview
 from aqt.deckbrowser import DeckBrowser
+from aqt.overview import Overview
+from aqt.qt import QWidget
 from aqt.stats import DeckStats
 
-from anki.hooks import wrap
-
-from .libaddon.platform import ANKI20
-
-from .gui.options import invokeOptionsDialog
+from .config import config, heatmap_colors, heatmap_modes
 from .gui.contrib import invokeContributionsDialog
 from .gui.extra import invokeSnanki
+from .gui.options import invokeOptionsDialog
+from .libaddon.platform import ANKI20
 
-from .config import config, heatmap_colors, heatmap_modes
-
-__all__ = ["heatmapLinkHandler", "invokeBrowser", "findSeenOn",
-           "findRevlogEntries", "addFinders"]
+__all__ = [
+    "heatmapLinkHandler",
+    "invokeBrowser",
+    "findSeenOn",
+    "findRevlogEntries",
+    "addFinders",
+]
 
 # Link handler
 ######################################################################
+
 
 def heatmapLinkHandler(self, url, _old=None):
     """Launches Browser when clicking on a graph subdomain"""
@@ -68,9 +67,14 @@ def heatmapLinkHandler(self, url, _old=None):
         (cmd, arg) = url.split(":", 1)
     else:
         cmd, arg = url, ""
-    if not cmd or cmd not in ("revhm_browse", "revhm_opts",
-                              "revhm_contrib", "revhm_modeswitch",
-                              "revhm_themeswitch", "revhm_snanki"):
+    if not cmd or cmd not in (
+        "revhm_browse",
+        "revhm_opts",
+        "revhm_contrib",
+        "revhm_modeswitch",
+        "revhm_themeswitch",
+        "revhm_snanki",
+    ):
         return None if not _old else _old(self, url)
 
     if isinstance(self, QWidget):
@@ -90,13 +94,15 @@ def heatmapLinkHandler(self, url, _old=None):
         cycleHmThemes()
     elif cmd == "revhm_snanki":
         invokeSnanki(parent=parent)
-        
+
+
 def cycleHmThemes():
     themes = list(heatmap_colors.keys())
     cur_idx = themes.index(config["synced"]["colors"])
     new_idx = (cur_idx + 1) % len(themes)
     config["synced"]["colors"] = themes[new_idx]
     config.save()
+
 
 def cycleHmModes():
     modes = list(heatmap_modes.keys())
@@ -105,6 +111,7 @@ def cycleHmModes():
     config["synced"]["mode"] = modes[new_idx]
     config.save()
 
+
 def invokeBrowser(search):
     browser = aqt.dialogs.open("Browser", mw)
     browser.form.searchEdit.lineEdit().setText(search)
@@ -112,6 +119,7 @@ def invokeBrowser(search):
         browser.onSearchActivated()
     else:
         browser.onSearch()
+
 
 # Finder extensions
 ######################################################################
@@ -123,8 +131,10 @@ def findRevlogEntries(self, val):
     """Find cards by revlog timestamp range"""
     args = val[0]
     cutoff1, cutoff2 = [int(i) for i in args.split(":")]
-    return ("c.id in (select cid from revlog where id between %d and %d)"
-            % (cutoff1, cutoff2))
+    return "c.id in (select cid from revlog where id between %d and %d)" % (
+        cutoff1,
+        cutoff2,
+    )
 
 
 # NOTE: Deprecated as click handler due to rare off-by-one bugs,
@@ -138,20 +148,25 @@ def findSeenOn(self, val):
         return
     days = max(days, 0)
     # upper cutoff set to dayCutOff x days ago
-    cutoff2 = (self.col.sched.dayCutoff - 86400*days)*1000
+    cutoff2 = (self.col.sched.dayCutoff - 86400 * days) * 1000
     # lower cutoff set to 24 hours before upper cutoff
     cutoff1 = cutoff2 - 86400000
     # select cards that were seen at some point in that day
     # empty results expected when cards have been deleted since
-    return ("c.id in (select cid from revlog where id between %d and %d)"
-            % (cutoff1, cutoff2))
+    return "c.id in (select cid from revlog where id between %d and %d)" % (
+        cutoff1,
+        cutoff2,
+    )
+
 
 def addFinders(self, col):
     """Add custom finder to search dictionary"""
     self.search["seen"] = self.findSeenOn
     self.search["rid"] = self.findRevlogEntries
 
+
 # NEW
+
 
 def _find_cards_reviewed_between(start_date: int, end_date: int):
     # select from cards instead of just selecting uniques from revlog
@@ -163,8 +178,10 @@ def _find_cards_reviewed_between(start_date: int, end_date: int):
         end_date,
     )
 
+
 _re_rid = re.compile(r"^rid:([0-9]+):([0-9]+)$")
 _re_seen = re.compile(r"^seen:([0-9]+)$")
+
 
 def find_rid(search: str):
     match = _re_rid.match(search)
@@ -174,23 +191,25 @@ def find_rid(search: str):
 
     start_date = int(match[1])
     end_date = int(match[2])
-    
+
     return _find_cards_reviewed_between(start_date, end_date)
+
 
 def find_seen(search: str):
     match = _re_seen.match(search)
-    
+
     if not match:
         return False
-    
+
     days_since_crt = int(match[1])
-    
+
     # upper cutoff set to dayCutOff x days ago
     end_date = (mw.col.sched.dayCutoff - 86400 * days_since_crt) * 1000
     # lower cutoff set to 24 hours before upper cutoff
     start_date = end_date - 86400000
-    
+
     return _find_cards_reviewed_between(start_date, end_date)
+
 
 def on_browser_will_search(search_context):
     search = search_context.search
@@ -200,11 +219,12 @@ def on_browser_will_search(search_context):
         found_ids = find_seen(search)
     else:
         return
-    
+
     if found_ids is False:
         return
-    
+
     search_context.card_ids = found_ids
+
 
 # Hooks
 ######################################################################
