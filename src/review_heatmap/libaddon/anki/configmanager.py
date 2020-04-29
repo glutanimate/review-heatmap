@@ -533,45 +533,45 @@ class ConfigManager(object):
     # Synced storage
     ######################################################################
 
-    def _getSynced(self):
+    def _getSynced(self) -> dict:
         """
         Read synced storage config from Anki collection object
 
         Returns:
             dict -- Dictionary of synced config values
         """
-        return self._getStorageObj("synced")[self._conf_key]
+        return dict(self._getStorageObj("synced")[self._conf_key])
 
-    def _saveSynced(self, config):
+    def _saveSynced(self, config: dict):
         """
         Save synced storage config to Anki collection object
 
         Arguments:
             dict -- Dictionary of synced config values
         """
-        self._getStorageObj("synced")[self._conf_key] = config
+        self._getStorageObj("synced")[self._conf_key] = dict(config)
         self.mw.col.setMod()
 
     # Profile storage
     ######################################################################
 
-    def _getProfile(self):
+    def _getProfile(self) -> dict:
         """
         Read profile storage config from Anki profile object
 
         Returns:
             dict -- Dictionary of profile config values
         """
-        return self._getStorageObj("profile")[self._conf_key]
+        return dict(self._getStorageObj("profile")[self._conf_key])
 
-    def _saveProfile(self, config):
+    def _saveProfile(self, config: dict):
         """
         Save profile storage config to Anki profile object
 
         Arguments:
             dict -- Dictionary of profile config values
         """
-        self._getStorageObj("profile")[self._conf_key] = config
+        self._getStorageObj("profile")[self._conf_key] = dict(config)
         self.mw.col.setMod()
 
     # Helper methods for synced & profile storage
