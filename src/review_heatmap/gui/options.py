@@ -60,7 +60,7 @@ class RevHmOptions(OptionsDialog):
             (
                 # order is important (e.g. to set-up items before current item)
                 ("items", {"setter": "_setSelHmColorItems"}),
-                ("value", {"dataPath": "synced/colors",}),
+                ("value", {"dataPath": "synced/colors"}),
             ),
         ),
         (
@@ -91,7 +91,7 @@ class RevHmOptions(OptionsDialog):
             (
                 (
                     "value",
-                    {"dataPath": "synced/limdecks", "setter": "_setListDecksValue",},
+                    {"dataPath": "synced/limdecks", "setter": "_setListDecksValue"},
                 ),
             ),
         ),

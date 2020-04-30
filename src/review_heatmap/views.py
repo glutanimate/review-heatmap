@@ -174,13 +174,16 @@ def deckStatsReject(self):
 # NEW HOOKS
 ######################################################################
 
+
 def on_deckbrowser_will_render_content(deck_browser, content):
     heatmap = HeatmapCreator(config, whole=True)
     content.stats += heatmap.generate(view="deckbrowser")
 
+
 def on_overview_will_render_content(overview, content):
     heatmap = HeatmapCreator(config, whole=False)
     content.table += heatmap.generate(view="overview")
+
 
 def initializeViews():
     try:
