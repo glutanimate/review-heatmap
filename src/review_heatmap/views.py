@@ -75,6 +75,11 @@ def initializeHotkey():
     toggle_action.setShortcut(QKeySequence(hotkey))
 
 
+######################################################################
+# LEGACY
+######################################################################
+
+
 # Deck Browser (Main view)
 ######################################################################
 
@@ -160,70 +165,54 @@ def deckStatsInit21(self, mw):
     addHook("reset", self.refresh)
 
 
-def deckStatsInit20(self, mw):
-    """Custom stats window that uses AnkiWebView instead of QWebView"""
-    # self is aqt.stats.DeckWindow
-    import aqt
-    from aqt.webview import AnkiWebView
-    from aqt.utils import restoreGeom, maybeHideClose, addCloseShortcut
-
-    #########################################################
-    QDialog.__init__(self, mw, Qt.Window)
-    self.mw = mw
-    self.name = "deckStats"
-    self.period = 0
-    self.form = aqt.forms.stats.Ui_Dialog()
-    self.oldPos = None
-    self.wholeCollection = False
-    self.setMinimumWidth(700)
-    f = self.form
-    f.setupUi(self)
-    #########################################################
-    # remove old webview created in form:
-    # (TODO: find a less hacky solution)
-    f.verticalLayout.removeWidget(f.web)
-    f.web.deleteLater()
-    f.web = AnkiWebView()  # need to use AnkiWebView for linkhandler to work
-    f.web.setLinkHandler(self._linkHandler)
-    self.form.verticalLayout.insertWidget(0, f.web)
-    addHook("reset", self.refresh)
-    #########################################################
-    restoreGeom(self, self.name)
-    b = f.buttonBox.addButton(_("Save Image"), QDialogButtonBox.ActionRole)
-    b.clicked.connect(self.browser)
-    b.setAutoDefault(False)
-    c = self.connect
-    s = SIGNAL("clicked()")
-    c(f.groups, s, lambda: self.changeScope("deck"))
-    f.groups.setShortcut("g")
-    c(f.all, s, lambda: self.changeScope("collection"))
-    c(f.month, s, lambda: self.changePeriod(0))
-    c(f.year, s, lambda: self.changePeriod(1))
-    c(f.life, s, lambda: self.changePeriod(2))
-    c(f.web, SIGNAL("loadFinished(bool)"), self.loadFin)
-    maybeHideClose(self.form.buttonBox)
-    addCloseShortcut(self)
-    self.refresh()
-    self.show()  # show instead of exec in order for browser to open properly
-
-
 def deckStatsReject(self):
     # clean up after ourselves:
     remHook("reset", self.refresh)
 
 
+######################################################################
+# NEW HOOKS
+######################################################################
+
+def on_deckbrowser_will_render_content(deck_browser, content):
+    heatmap = HeatmapCreator(config, whole=True)
+    content.stats += heatmap.generate(view="deckbrowser")
+
+def on_overview_will_render_content(overview, content):
+    heatmap = HeatmapCreator(config, whole=False)
+    content.table += heatmap.generate(view="overview")
+
 def initializeViews():
+    try:
+        from aqt.gui_hooks import (
+            deck_browser_will_render_content,
+            overview_will_render_content,
+        )
+
+        deck_browser_will_render_content.append(on_deckbrowser_will_render_content)
+        overview_will_render_content.append(on_overview_will_render_content)
+    except (ImportError, ModuleNotFoundError):
+        Overview._body = ov_body
+        Overview._renderPage = overviewRenderPage
+        DeckBrowser._renderStats = wrap(
+            DeckBrowser._renderStats, deckbrowserRenderStats, "around"
+        )
+
+    # TODO: Submit Anki PR to add hook to CollectionStats.report
     CollectionStats.dueGraph = wrap(
         CollectionStats.dueGraph, collectionStatsDueGraph, "around"
     )
-    Overview._body = ov_body
-    Overview._renderPage = overviewRenderPage
-    DeckBrowser._renderStats = wrap(
-        DeckBrowser._renderStats, deckbrowserRenderStats, "around"
-    )
     DeckStats.__init__ = wrap(DeckStats.__init__, deckStatsInit21, "after")
     DeckStats.reject = wrap(DeckStats.reject, deckStatsReject)
+
     # Initially set up hotkey:
-    addHook("profileLoaded", initializeHotkey)
+    # TODO: Migrate to config.json storage, so that profile hook is not required
+    try:
+        from aqt.gui_hooks import profile_did_open
+
+        profile_did_open.append(initializeHotkey)
+    except (ImportError, ModuleNotFoundError):
+        addHook("profileLoaded", initializeHotkey)
+
     # Update hotkey on config save:
     addHook("config_saved_heatmap", initializeHotkey)
