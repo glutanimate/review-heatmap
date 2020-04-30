@@ -12,6 +12,24 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 
 ## [Unreleased]
 
+### Added
+
+- Added support for **Anki 2.1.24** and up (database access, new hook system, new finder extensions)
+
+### Fixed
+
+- Improved **timezone handling**. This should hopefully fix some of the issues users were experiencing around DST changes. If you are still experiencing issues [please let me know](https://github.com/glutanimate/review-heatmap/issues/71). Troubleshooting timezone-related problems [is hard](https://www.youtube.com/watch?v=-5wpm-gesOY), so I'm grateful for every additional tester that can help replicate things (#71)
+- Fixed **daily average** calculation towards beginning of streaks (#40, #50)
+- Improved assignment of forecasts to calendar days
+- Added a workaround for an Anki bug present on 2.1.14 and lower
+
+### Changed
+
+- **Dropped support for Anki 2.0** (thus the major add-on version bump)
+- Added debugging utilities that allow users to submit detailed debug logs when troubleshooting
+- Added link to changelog in options screen
+- **Removed the `seen:` query phrase**. This had been deprecated in the past, and with Anki 2.1.24 now no longer supporting addon-provided queries for filtered decks, it no longer made sense to keep it.
+
 ## [0.7.0-beta.1] - 2018-10-28
 
 ### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v0.7.0-beta.1)
