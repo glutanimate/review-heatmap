@@ -33,4 +33,4 @@
 Version information
 """
 
-__version__ = "0.7.0-beta.1"
+__version__ = "1.0.0-beta.1"

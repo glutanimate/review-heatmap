@@ -12,6 +12,10 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 
 ## [Unreleased]
 
+## [1.0.0-beta.1] - 2020-04-30
+
+### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v1.0.0-beta.1)
+
 ### Added
 
 - Added support for **Anki 2.1.24** and up (database access, new hook system, new finder extensions)
@@ -147,7 +151,8 @@ If you enjoy Review Heatmap, please consider supporting my work on Patreon, or b
 
 First release of Review Heatmap.
 
-[Unreleased]: https://github.com/glutanimate/review-heatmap/compare/v0.7.0-beta.1...HEAD
+[Unreleased]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0-beta.1...HEAD
+[1.0.0-beta.1]: https://github.com/glutanimate/review-heatmap/compare/v0.7.0-beta.1...v1.0.0-beta.1
 [0.7.0-beta.1]: https://github.com/glutanimate/review-heatmap/compare/v0.6.1-anki21-alpha...v0.7.0-beta.1
 [0.6.1-anki21-alpha]: https://github.com/glutanimate/review-heatmap/compare/v0.6.0...v0.6.1-anki21-alpha
 [0.6.0]: https://github.com/glutanimate/review-heatmap/compare/v0.5.2...v0.6.0
