@@ -48,14 +48,6 @@ from .gui.contrib import invokeContributionsDialog
 from .gui.extra import invokeSnanki
 from .gui.options import invokeOptionsDialog
 
-__all__ = [
-    "heatmapLinkHandler",
-    "invokeBrowser",
-    "findSeenOn",
-    "findRevlogEntries",
-    "addFinders",
-]
-
 # Link handler
 ######################################################################
 
@@ -133,31 +125,8 @@ def findRevlogEntries(self, val):
     )
 
 
-# NOTE: Deprecated as click handler due to rare off-by-one bugs,
-# but preserved for legacy support in case users use it
-# to create filtered decks). Might drop this in the future.
-def findSeenOn(self, val):
-    """Find cards seen on a specific day"""
-    try:
-        days = int(val[0])
-    except ValueError:
-        return
-    days = max(days, 0)
-    # upper cutoff set to dayCutOff x days ago
-    cutoff2 = (self.col.sched.dayCutoff - 86400 * days) * 1000
-    # lower cutoff set to 24 hours before upper cutoff
-    cutoff1 = cutoff2 - 86400000
-    # select cards that were seen at some point in that day
-    # empty results expected when cards have been deleted since
-    return "c.id in (select cid from revlog where id between %d and %d)" % (
-        cutoff1,
-        cutoff2,
-    )
-
-
 def addFinders(self, col):
     """Add custom finder to search dictionary"""
-    self.search["seen"] = self.findSeenOn
     self.search["rid"] = self.findRevlogEntries
 
 
@@ -176,7 +145,6 @@ def _find_cards_reviewed_between(start_date: int, end_date: int):
 
 
 _re_rid = re.compile(r"^rid:([0-9]+):([0-9]+)$")
-_re_seen = re.compile(r"^seen:([0-9]+)$")
 
 
 def find_rid(search: str):
@@ -191,28 +159,10 @@ def find_rid(search: str):
     return _find_cards_reviewed_between(start_date, end_date)
 
 
-def find_seen(search: str):
-    match = _re_seen.match(search)
-
-    if not match:
-        return False
-
-    days_since_crt = int(match[1])
-
-    # upper cutoff set to dayCutOff x days ago
-    end_date = (mw.col.sched.dayCutoff - 86400 * days_since_crt) * 1000
-    # lower cutoff set to 24 hours before upper cutoff
-    start_date = end_date - 86400000
-
-    return _find_cards_reviewed_between(start_date, end_date)
-
-
 def on_browser_will_search(search_context):
     search = search_context.search
     if search.startswith("rid"):
         found_ids = find_rid(search)
-    elif search.startswith("seen"):
-        found_ids = find_seen(search)
     else:
         return
 
@@ -240,6 +190,5 @@ def initializeLinks():
     except (ImportError, ModuleNotFoundError):
         from anki.find import Finder
 
-        Finder.findSeenOn = findSeenOn
         Finder.findRevlogEntries = findRevlogEntries
         Finder.__init__ = wrap(Finder.__init__, addFinders, "after")
