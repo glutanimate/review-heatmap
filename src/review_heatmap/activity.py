@@ -373,4 +373,9 @@ GROUP BY day ORDER BY day""".format(
             offset, lim
         )
 
-        return self.col.db.all(cmd)
+        res = self.col.db.all(cmd)
+        
+        if isDebuggingOn():
+            logger.debug(res)
+
+        return res
