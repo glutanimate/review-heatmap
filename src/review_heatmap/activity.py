@@ -35,11 +35,18 @@ Components related to gathering and analyzing user activity
 
 import datetime
 import time
+from typing import Dict, List, Optional, Tuple
 
 from anki.utils import ids2str
 from aqt import mw
 
 from .libaddon.debug import isDebuggingOn, logger
+
+try:
+    from anki.collection import Collection
+except ImportError:
+    from anki.collection import _Collection as Collection
+
 
 __all__ = ["ActivityReporter"]
 
@@ -48,20 +55,25 @@ MAX_FORECAST_DAYS = 73000
 
 
 class ActivityReporter:
-    def __init__(self, col, config, whole=False):
+    def __init__(self, col: Collection, config: Dict, whole: bool = False):
         self.col = col
         self.config = config
         # NOTE: Refactor the following instance variables if we
         # ever decide to persist ActivityReporter objects across
         # multiple invocations (e.g. to cache results)
         self.whole = whole
-        self.offset = self._get_col_offset()
-        self.today = self._get_today(self.offset)
+        self.offset: int = self._get_col_offset()
+        self.today: int = self._get_today(self.offset)
 
     # Public API
     #########################################################################
 
-    def get_data(self, limhist=None, limfcst=None, mode="reviews"):
+    def get_data(
+        self,
+        limhist: Optional[int] = None,
+        limfcst: Optional[int] = None,
+        mode: str = "reviews",
+    ):
 
         if mode != "reviews":
             raise NotImplementedError("activity mode {} not implemented".format(mode))
@@ -151,7 +163,9 @@ class ActivityReporter:
 
     # Mode-specific
 
-    def _reviews_data(self, time_limits):
+    def _reviews_data(
+        self, time_limits: Tuple[Optional[int], Optional[int]]
+    ) -> Dict[str, List[List[int]]]:
         return {
             "history": self._cards_done(start=time_limits[0]),
             "forecast": self._cards_due(start=self.today, stop=time_limits[1]),
@@ -160,7 +174,7 @@ class ActivityReporter:
     # Collection properties
     #########################################################################
 
-    def _get_col_offset(self):
+    def _get_col_offset(self) -> int:
         """
         Return daily scheduling cutoff time in hours
         """
@@ -170,7 +184,7 @@ class ActivityReporter:
         return start_date.hour
 
     @staticmethod
-    def daystart_epoch(timestr, is_timestamp=True, offset=0):
+    def daystart_epoch(timestr: str, is_timestamp: bool = True, offset: int = 0) -> int:
         """
         Convert strftime date string into unix timestamp of 00:00 UTC
         """
@@ -179,17 +193,17 @@ class ActivityReporter:
         # to ship 'pytz' by default, and 'calendar' might be removed from
         # packaging at some point, as Anki's code does not directly depend
         # on it)
-        offset = " '-{} hours', ".format(offset) if offset else ""
+        offset_str = " '-{} hours', ".format(offset) if offset else ""
         unixepoch = " 'unixepoch', " if is_timestamp else ""
 
         cmd = """
 SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
 'localtime', 'start of day') AS int)""".format(
-            timestr=timestr, unixepoch=unixepoch, offset=offset
+            timestr=timestr, unixepoch=unixepoch, offset=offset_str
         )
         return mw.col.db.scalar(cmd)
 
-    def _get_today(self, offset):
+    def _get_today(self, offset: int) -> int:
         """
         Return unix epoch timestamp in seconds for today (00:00 UTC)
         """
@@ -198,13 +212,21 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
     # Time limits
     #########################################################################
 
-    def _get_time_limits(self, limhist=None, limfcst=None):
+    def _get_time_limits(
+        self, limhist: Optional[int] = None, limfcst: Optional[int] = None
+    ) -> Tuple[Optional[int], Optional[int]]:
+
         conf = self.config["synced"]
+
+        history_start: Optional[int]
+        forecast_stop: Optional[int]
 
         if limhist is not None:
             history_start = self._days_from_today(-limhist)
         else:
-            history_start = self._get_conf_history_limit(conf["limhist"], conf["limdate"])
+            history_start = self._get_conf_history_limit(
+                conf["limhist"], conf["limdate"]
+            )
 
         if limfcst is not None:
             forecast_stop = self._days_from_today(limfcst)
@@ -213,7 +235,10 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
 
         return (history_start, forecast_stop)
 
-    def _get_conf_history_limit(self, limit_days, limit_date):
+    def _get_conf_history_limit(
+        self, limit_days: Optional[int], limit_date: Optional[int]
+    ) -> Optional[int]:
+
         if limit_days is None and limit_date is None:
             return None
 
@@ -222,7 +247,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
         else:
             limit_days_date = 0
 
-        limit_date = self.daystart_epoch(limit_date) if limit_date else None
+        limit_date = self.daystart_epoch(str(limit_date)) if limit_date else None
 
         if not limit_date or limit_date == self.daystart_epoch(self.col.crt):
             # ignore zero value or default value
@@ -233,17 +258,17 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
         # choose most restricting limit
         return max(limit_days_date, limit_date) or None
 
-    def _get_conf_forecast_limit(self, limit_days):
+    def _get_conf_forecast_limit(self, limit_days: int) -> int:
         limit_days = limit_days or MAX_FORECAST_DAYS
         return self._days_from_today(limit_days)
 
-    def _days_from_today(self, days):
+    def _days_from_today(self, days: int) -> int:
         return self.today + 86400 * days
 
     # Deck limits
     #########################################################################
 
-    def _valid_decks(self, excluded):
+    def _valid_decks(self, excluded: List[int]) -> List[int]:
         all_excluded = []
 
         for did in excluded:
@@ -254,7 +279,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
 
         return [d["id"] for d in self.col.decks.all() if d["id"] not in all_excluded]
 
-    def _did_limit(self):
+    def _did_limit(self) -> str:
         excluded_dids = self.config["synced"]["limdecks"]
         if self.whole:
             if excluded_dids:
@@ -265,7 +290,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
             dids = self.col.decks.active()
         return ids2str(dids)
 
-    def _revlog_limit(self):
+    def _revlog_limit(self) -> str:
         excluded_dids = self.config["synced"]["limdecks"]
         ignore_deleted = self.config["synced"]["limcdel"]
         if self.whole:
@@ -285,7 +310,9 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
     # Database queries for user activity
     #########################################################################
 
-    def _cards_due(self, start=None, stop=None):
+    def _cards_due(
+        self, start: Optional[int] = None, stop: Optional[int] = None
+    ) -> List[List[int]]:
         # start, stop: timestamps in seconds. Set to None for unlimited.
         # start: inclusive; stop: exclusive
 
@@ -340,7 +367,7 @@ GROUP BY day ORDER BY day""".format(
 
         return [i[:-1] for i in res]
 
-    def _cards_done(self, start=None):
+    def _cards_done(self, start: Optional[int] = None) -> List[List[int]]:
         """
         start: timestamp in seconds to start reporting from
 
@@ -378,7 +405,7 @@ GROUP BY day ORDER BY day""".format(
             offset, lim
         )
 
-        res = self.col.db.all(cmd)
+        res = self.col.db.all(cmd)  # type: ignore
 
         if isDebuggingOn():
             logger.debug(res)
