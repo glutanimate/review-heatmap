@@ -43,8 +43,9 @@ from .libaddon.debug import isDebuggingOn, logger
 
 __all__ = ["ActivityReporter"]
 
-MAX_FORECAST_DAYS = 73000  # limit max forecast to 200 years as a preventative
-                           # measure vs bugged cards messing up the heatmap
+# limit max forecast to 200 years to protect against invalid due dates
+MAX_FORECAST_DAYS = 73000
+
 
 class ActivityReporter(object):
     def __init__(self, col, config, whole=False):
@@ -61,16 +62,15 @@ class ActivityReporter(object):
     #########################################################################
 
     def getData(self, limhist=None, limfcst=None, mode="reviews"):
-        
+
         if mode != "reviews":
             raise NotImplementedError("activity mode {} not implemented".format(mode))
-        
+
         time_limits = self._getTimeLimits(limhist, limfcst)
 
         review_activity = self._getActivity(**self._reviewsData(time_limits))
 
         return review_activity
-            
 
     # Activity calculations
     #########################################################################
@@ -379,7 +379,7 @@ GROUP BY day ORDER BY day""".format(
         )
 
         res = self.col.db.all(cmd)
-        
+
         if isDebuggingOn():
             logger.debug(res)
 
