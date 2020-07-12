@@ -59,12 +59,16 @@ class ActivityReporter(object):
     #########################################################################
 
     def getData(self, limhist=None, limfcst=None, mode="reviews"):
+        
+        if mode != "reviews":
+            raise NotImplementedError("activity mode {} not implemented".format(mode))
+        
         time_limits = self._getTimeLimits(limhist, limfcst)
 
-        if mode == "reviews":
-            return self._getActivity(**self._reviewsData(time_limits))
-        else:
-            raise NotImplementedError("activity mode {} not implemented".format(mode))
+        review_activity = self._getActivity(**self._reviewsData(time_limits))
+
+        return review_activity
+            
 
     # Activity calculations
     #########################################################################
