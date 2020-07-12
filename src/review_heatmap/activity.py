@@ -43,6 +43,8 @@ from .libaddon.debug import isDebuggingOn, logger
 
 __all__ = ["ActivityReporter"]
 
+MAX_FORECAST_DAYS = 73000  # limit max forecast to 200 years as a preventative
+                           # measure vs bugged cards messing up the heatmap
 
 class ActivityReporter(object):
     def __init__(self, col, config, whole=False):
@@ -232,8 +234,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
         return max(limit_days_date, limit_date) or None
 
     def _getConfForecastLimit(self, limit_days):
-        if not limit_days:
-            return None
+        limit_days = limit_days or MAX_FORECAST_DAYS
         return self._daysFromToday(limit_days)
 
     def _daysFromToday(self, days):
@@ -297,7 +298,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
 SELECT
 STRFTIME('%s', 'now', '-{} hours', 'localtime', 'start of day')
     + (due - ?) * 86400
-AS day, -COUNT(), due -- nsegative to support heatmap legend
+AS day, -COUNT(), due -- negative to support heatmap legend
 FROM cards
 WHERE did IN {} AND queue IN (2,3)
 {}
