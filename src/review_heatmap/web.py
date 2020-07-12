@@ -37,7 +37,7 @@ from .libaddon.platform import JSPY_BRIDGE, PLATFORM
 
 __all__ = ["html_main_element", "html_heatmap", "html_streak", "html_info_nodata"]
 
-html_main_element = """
+html_main_element: str = """
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
 <script type="text/javascript" src="qrc:/review_heatmap/web/cal-heatmap.js"></script>
 <link rel="stylesheet" href="qrc:/review_heatmap/web/cal-heatmap.css">
@@ -58,7 +58,7 @@ var rhPlatform = "{platform}";
     bridge=JSPY_BRIDGE, platform=PLATFORM
 )
 
-html_heatmap = """
+html_heatmap: str = """
 <div class="heatmap">
     <div class="heatmap-controls">
         <div class="alignleft">
@@ -92,7 +92,7 @@ html_heatmap = """
 </script>
 """
 
-html_streak = """
+html_streak: str = """
 <div class="streak">
     <span class="streak-info">Daily average:</span>
     <span title="Average reviews on active days"
@@ -109,6 +109,6 @@ html_streak = """
 </div>
 """
 
-html_info_nodata = """
+html_info_nodata: str = """
 No activity data to show (<span class="linkspan" onclick='pybridge("revhm_opts");'>options</span>).
 """
