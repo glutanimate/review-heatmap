@@ -8,7 +8,10 @@
     "homepage": "https://github.com/glutanimate/review-heatmap",
     "copyright_start": 2016,
     "tags": "stats motivation streak heatmap overview",
-    "conflicts": [],
+    "conflicts": [
+        "1722241614",
+        "723520343"
+    ],
     "targets": [
         "anki21"
     ]
