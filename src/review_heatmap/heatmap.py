@@ -33,6 +33,8 @@
 Heatmap and stats elements generation
 """
 
+from typing import Dict, List, Optional, Tuple, Union
+
 from anki.utils import json
 from aqt import mw
 
@@ -46,7 +48,7 @@ __all__ = ["HeatmapCreator"]
 
 class HeatmapCreator:
 
-    css_colors = (
+    css_colors: Tuple[str, ...] = (
         "rh-col0",
         "rh-col11",
         "rh-col12",
@@ -62,9 +64,9 @@ class HeatmapCreator:
 
     # workaround for list comprehensions not working in class-scope
     def compress_levels(colors, indices):
-        return [colors[i] for i in indices]
+        return [colors[i] for i in indices]  # type: ignore
 
-    stat_levels = {
+    stat_levels: Dict[str, List[Tuple[int, str]]] = {
         # tuples of threshold value, css_colors index
         "streak": list(
             zip(
@@ -75,17 +77,26 @@ class HeatmapCreator:
         "percentage": list(zip((0, 25, 50, 60, 70, 80, 85, 90, 95, 99), css_colors)),
     }
 
-    legend_factors = (0.125, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 4)
+    legend_factors: Tuple[float, ...] = (0.125, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 4)
 
-    stat_units = {"streak": "day", "percentage": None, "cards": "card"}
+    stat_units: Dict[str, Optional[str]] = {
+        "streak": "day",
+        "percentage": None,
+        "cards": "card",
+    }
 
-    def __init__(self, config, whole=False):
+    def __init__(self, config: Dict, whole: bool = False):
         # TODO: rethink "whole" support
         self.config = config
         self.whole = whole
         self.activity = ActivityReporter(mw.col, self.config, whole=whole)
 
-    def generate(self, view="deckbrowser", limhist=None, limfcst=None):
+    def generate(
+        self,
+        view: str = "deckbrowser",
+        limhist: Optional[int] = None,
+        limfcst: Optional[int] = None,
+    ) -> str:
         prefs = self.config["profile"]
         data = self.activity.get_data(limhist=limhist, limfcst=limfcst)
 
@@ -116,7 +127,7 @@ class HeatmapCreator:
             content=heatmap + stats, classes=" ".join(classes)
         )
 
-    def _get_css_classes(self, view):
+    def _get_css_classes(self, view: str) -> List[str]:
         conf = self.config["synced"]
         classes = [
             "rh-platform-{}".format(PLATFORM),
@@ -126,7 +137,7 @@ class HeatmapCreator:
         ]
         return classes
 
-    def _generate_heatmap_elm(self, data, dynamic_legend):
+    def _generate_heatmap_elm(self, data: dict, dynamic_legend) -> str:
         mode = heatmap_modes[self.config["synced"]["mode"]]
 
         # TODO: pass on "whole" to govern browser link "deck:current" addition
@@ -147,8 +158,8 @@ class HeatmapCreator:
             options=json.dumps(options), data=json.dumps(data["activity"])
         )
 
-    def _generate_stats_elm(self, data, dynamic_legend):
-        stat_levels = {"cards": zip(dynamic_legend, self.css_colors)}
+    def _generate_stats_elm(self, data: dict, dynamic_legend) -> str:
+        stat_levels = {"cards": list(zip(dynamic_legend, self.css_colors))}
         stat_levels.update(self.stat_levels)
 
         format_dict = {}
@@ -170,29 +181,30 @@ class HeatmapCreator:
 
         return html_streak.format(**format_dict)
 
-    def _get_dynamic_legends(self, average):
+    def _get_dynamic_legends(self, average: int) -> Tuple[List[float], List[float]]:
         legend = self._dynamic_legend(average)
-        stats_legend = [0] + legend
+        stats_legend: List[float] = [0] + legend  # type: ignore
         heatmap_legend = self._heatmap_legend(legend)
         return stats_legend, heatmap_legend
 
-    def _heatmap_legend(self, legend):
+    def _heatmap_legend(self, legend: List[float]) -> List[float]:
         # Inverted negative legend for future dates. Allows us to
         # implement different color schemes for past and future without
         # having to modify cal-heatmap:
-        return [-i for i in legend[::-1]] + [0] + legend
+        return [-i for i in legend[::-1]] + [0] + legend  # type: ignore
 
-    def _dynamic_legend(self, average):
+    def _dynamic_legend(self, average: int) -> List[float]:
         # set default average if average too low for informational levels
         avg = max(20, average)
         return [fct * avg for fct in self.legend_factors]
 
-    def _maybe_pluralize(self, count, term):
+    @staticmethod
+    def _maybe_pluralize(count: float, term: str) -> Union[str, float]:
         if not term:
             return count
         return "{} {}{}".format(str(count), term, "s" if abs(count) > 1 else "")
 
-    def _save_current_perf(self, data):
+    def _save_current_perf(self, data: dict):
         """
         Store current performance in mw object
 
