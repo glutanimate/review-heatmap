@@ -33,6 +33,8 @@
 Integration with Anki views
 """
 
+from typing import TYPE_CHECKING
+
 from anki.hooks import addHook, remHook, wrap
 from anki.stats import CollectionStats
 from aqt import mw
@@ -43,6 +45,10 @@ from aqt.stats import DeckStats
 
 from .config import config
 from .heatmap import HeatmapCreator
+
+if TYPE_CHECKING:
+    from aqt.deckbrowser import DeckBrowserContent
+    from aqt.overview import OverviewContent
 
 # Common
 ######################################################################
@@ -84,7 +90,7 @@ def initializeHotkey():
 ######################################################################
 
 
-def deckbrowserRenderStats(self, _old):
+def deckbrowserRenderStats(self, _old) -> str:
     """Add heatmap to _renderStats() return"""
     # self is deckbrowser
     ret = _old(self)
@@ -96,7 +102,7 @@ def deckbrowserRenderStats(self, _old):
 # Overview (Deck view)
 ######################################################################
 
-ov_body = """
+ov_body: str = """
 <center>
 <h3>%(deck)s</h3>
 %(shareLink)s
@@ -144,7 +150,7 @@ def overviewRenderPage(self):
 ######################################################################
 
 
-def collectionStatsDueGraph(self, _old):
+def collectionStatsDueGraph(self, _old) -> str:
     """Wraps dueGraph and adds our heatmap to the stats screen"""
     # self is anki.stats.CollectionStats
     ret = _old(self)
@@ -175,12 +181,14 @@ def deckStatsReject(self):
 ######################################################################
 
 
-def on_deckbrowser_will_render_content(deck_browser, content):
+def on_deckbrowser_will_render_content(
+    deck_browser: DeckBrowser, content: "DeckBrowserContent"
+):
     heatmap = HeatmapCreator(config, whole=True)
     content.stats += heatmap.generate(view="deckbrowser")
 
 
-def on_overview_will_render_content(overview, content):
+def on_overview_will_render_content(overview: Overview, content: "OverviewContent"):
     heatmap = HeatmapCreator(config, whole=False)
     content.table += heatmap.generate(view="overview")
 
