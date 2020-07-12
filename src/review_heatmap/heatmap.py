@@ -44,7 +44,7 @@ from .web import *
 __all__ = ["HeatmapCreator"]
 
 
-class HeatmapCreator(object):
+class HeatmapCreator:
 
     css_colors = (
         "rh-col0",
@@ -87,36 +87,36 @@ class HeatmapCreator(object):
 
     def generate(self, view="deckbrowser", limhist=None, limfcst=None):
         prefs = self.config["profile"]
-        data = self.activity.getData(limhist=limhist, limfcst=limfcst)
+        data = self.activity.get_data(limhist=limhist, limfcst=limfcst)
 
         if not data:
             return html_main_element.format(content=html_info_nodata, classes="")
 
-        stats_legend, heatmap_legend = self._getDynamicLegends(
+        stats_legend, heatmap_legend = self._get_dynamic_legends(
             data["stats"]["activity_daily_avg"]["value"]
         )
 
-        classes = self._getCSSclasses(view)
+        classes = self._get_css_classes(view)
 
         heatmap = stats = ""
         if prefs["display"][view]:
-            heatmap = self._generateHeatmapElm(data, heatmap_legend)
+            heatmap = self._generate_heatmap_elm(data, heatmap_legend)
         else:
             classes.append("rh-disable-heatmap")
 
         if prefs["display"][view] or prefs["statsvis"]:
-            stats = self._generateStatsElm(data, stats_legend)
+            stats = self._generate_stats_elm(data, stats_legend)
         else:
             classes.append("rh-disable-stats")
 
         if self.whole:
-            self._saveCurrentPerf(data)
+            self._save_current_perf(data)
 
         return html_main_element.format(
             content=heatmap + stats, classes=" ".join(classes)
         )
 
-    def _getCSSclasses(self, view):
+    def _get_css_classes(self, view):
         conf = self.config["synced"]
         classes = [
             "rh-platform-{}".format(PLATFORM),
@@ -126,7 +126,7 @@ class HeatmapCreator(object):
         ]
         return classes
 
-    def _generateHeatmapElm(self, data, dynamic_legend):
+    def _generate_heatmap_elm(self, data, dynamic_legend):
         mode = heatmap_modes[self.config["synced"]["mode"]]
 
         # TODO: pass on "whole" to govern browser link "deck:current" addition
@@ -147,7 +147,7 @@ class HeatmapCreator(object):
             options=json.dumps(options), data=json.dumps(data["activity"])
         )
 
-    def _generateStatsElm(self, data, dynamic_legend):
+    def _generate_stats_elm(self, data, dynamic_legend):
         stat_levels = {"cards": zip(dynamic_legend, self.css_colors)}
         stat_levels.update(self.stat_levels)
 
@@ -163,36 +163,36 @@ class HeatmapCreator(object):
                 if value <= threshold:
                     break
 
-            label = self._dayS(value, self.stat_units[stype])
+            label = self._maybe_pluralize(value, self.stat_units[stype])
 
             format_dict["class_" + name] = css_class
             format_dict["text_" + name] = label
 
         return html_streak.format(**format_dict)
 
-    def _getDynamicLegends(self, average):
-        legend = self._dynamicLegend(average)
+    def _get_dynamic_legends(self, average):
+        legend = self._dynamic_legend(average)
         stats_legend = [0] + legend
-        heatmap_legend = self._heatmapLegend(legend)
+        heatmap_legend = self._heatmap_legend(legend)
         return stats_legend, heatmap_legend
 
-    def _heatmapLegend(self, legend):
+    def _heatmap_legend(self, legend):
         # Inverted negative legend for future dates. Allows us to
         # implement different color schemes for past and future without
         # having to modify cal-heatmap:
         return [-i for i in legend[::-1]] + [0] + legend
 
-    def _dynamicLegend(self, average):
+    def _dynamic_legend(self, average):
         # set default average if average too low for informational levels
         avg = max(20, average)
         return [fct * avg for fct in self.legend_factors]
 
-    def _dayS(self, count, term):
+    def _maybe_pluralize(self, count, term):
         if not term:
             return count
         return "{} {}{}".format(str(count), term, "s" if abs(count) > 1 else "")
 
-    def _saveCurrentPerf(self, data):
+    def _save_current_perf(self, data):
         """
         Store current performance in mw object
 

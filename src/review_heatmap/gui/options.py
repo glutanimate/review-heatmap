@@ -197,22 +197,22 @@ class RevHmOptions(OptionsDialog):
     # Config getters:
 
     def _getDateLimData(self, widget_val):
-        val = ActivityReporter.daystartEpoch(widget_val)
-        default = ActivityReporter.daystartEpoch(self._setDateLimDataMin(None))
+        val = ActivityReporter.daystart_epoch(widget_val)
+        default = ActivityReporter.daystart_epoch(self._setDateLimDataMin(None))
         if val == default:
             return 0
         return widget_val
 
 
-def invokeOptionsDialog(parent=None):
+def invoke_options_dialog(parent=None):
     """Call settings dialog"""
     dialog = RevHmOptions(config, mw, parent=parent)
     return dialog.exec_()
 
 
-def initializeOptions():
-    config.setConfigAction(invokeOptionsDialog)
+def initialize_options():
+    config.setConfigAction(invoke_options_dialog)
     # Set up menu entry:
     options_action = QAction("Review &Heatmap Options...", mw)
-    options_action.triggered.connect(lambda _: invokeOptionsDialog())
+    options_action.triggered.connect(lambda _: invoke_options_dialog())
     mw.form.menuTools.addAction(options_action)

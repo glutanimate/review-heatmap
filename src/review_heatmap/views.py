@@ -185,7 +185,7 @@ def on_overview_will_render_content(overview, content):
     content.table += heatmap.generate(view="overview")
 
 
-def initializeViews():
+def initialize_views():
     try:
         from aqt.gui_hooks import (
             deck_browser_will_render_content,

@@ -35,7 +35,7 @@ Package that bundles UI components used by the add-on
 """
 
 
-def initializeQtResources():
+def initialize_qt_resources():
     """
     Load Qt resources into memory
     """

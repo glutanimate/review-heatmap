@@ -45,14 +45,14 @@ from aqt.stats import DeckStats
 
 from .config import config, heatmap_colors, heatmap_modes
 from .gui.contrib import invokeContributionsDialog
-from .gui.extra import invokeSnanki
-from .gui.options import invokeOptionsDialog
+from .gui.extra import invoke_snanki
+from .gui.options import invoke_options_dialog
 
 # Link handler
 ######################################################################
 
 
-def heatmapLinkHandler(self, url, _old=None):
+def heatmap_link_handler(self, url, _old=None):
     """Launches Browser when clicking on a graph subdomain"""
     if ":" in url:
         (cmd, arg) = url.split(":", 1)
@@ -74,20 +74,20 @@ def heatmapLinkHandler(self, url, _old=None):
         parent = mw
 
     if cmd == "revhm_opts":
-        invokeOptionsDialog(parent)
+        invoke_options_dialog(parent)
     elif cmd == "revhm_contrib":
         invokeContributionsDialog(parent)
     elif cmd == "revhm_browse":
-        invokeBrowser(arg)
+        invoke_browser(arg)
     elif cmd == "revhm_modeswitch":
-        cycleHmModes()
+        cycle_hm_modes()
     elif cmd == "revhm_themeswitch":
-        cycleHmThemes()
+        cycle_hm_themes()
     elif cmd == "revhm_snanki":
-        invokeSnanki(parent=parent)
+        invoke_snanki(parent=parent)
 
 
-def cycleHmThemes():
+def cycle_hm_themes():
     themes = list(heatmap_colors.keys())
     cur_idx = themes.index(config["synced"]["colors"])
     new_idx = (cur_idx + 1) % len(themes)
@@ -95,7 +95,7 @@ def cycleHmThemes():
     config.save()
 
 
-def cycleHmModes():
+def cycle_hm_modes():
     modes = list(heatmap_modes.keys())
     cur_idx = modes.index(config["synced"]["mode"])
     new_idx = (cur_idx + 1) % len(modes)
@@ -103,7 +103,7 @@ def cycleHmModes():
     config.save()
 
 
-def invokeBrowser(search):
+def invoke_browser(search):
     browser = aqt.dialogs.open("Browser", mw)
     browser.form.searchEdit.lineEdit().setText(search)
     browser.onSearchActivated()
@@ -115,7 +115,7 @@ def invokeBrowser(search):
 # LEGACY
 
 # Used when clicking on heatmap date
-def findRevlogEntries(self, val):
+def find_revlog_entries(self, val):
     """Find cards by revlog timestamp range"""
     args = val[0]
     cutoff1, cutoff2 = [int(i) for i in args.split(":")]
@@ -125,7 +125,7 @@ def findRevlogEntries(self, val):
     )
 
 
-def addFinders(self, col):
+def add_finders(self, col):
     """Add custom finder to search dictionary"""
     self.search["rid"] = self.findRevlogEntries
 
@@ -176,12 +176,12 @@ def on_browser_will_search(search_context):
 ######################################################################
 
 
-def initializeLinks():
-    Overview._linkHandler = wrap(Overview._linkHandler, heatmapLinkHandler, "around")
+def initialize_links():
+    Overview._linkHandler = wrap(Overview._linkHandler, heatmap_link_handler, "around")
     DeckBrowser._linkHandler = wrap(
-        DeckBrowser._linkHandler, heatmapLinkHandler, "around"
+        DeckBrowser._linkHandler, heatmap_link_handler, "around"
     )
-    DeckStats._linkHandler = heatmapLinkHandler
+    DeckStats._linkHandler = heatmap_link_handler
 
     try:
         from aqt.gui_hooks import browser_will_search
@@ -190,5 +190,5 @@ def initializeLinks():
     except (ImportError, ModuleNotFoundError):
         from anki.find import Finder
 
-        Finder.findRevlogEntries = findRevlogEntries
-        Finder.__init__ = wrap(Finder.__init__, addFinders, "after")
+        Finder.findRevlogEntries = find_revlog_entries
+        Finder.__init__ = wrap(Finder.__init__, add_finders, "after")

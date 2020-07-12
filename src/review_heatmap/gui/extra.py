@@ -282,7 +282,7 @@ defaults = {
 snanki_config = ConfigManager(mw, config_dict=defaults, conf_key="snanki")
 
 
-def invokeSnanki(parent=None):
+def invoke_snanki(parent=None):
     conf = snanki_config["profile"]
     streak_max = getattr(mw, "_hmStreakMax", None)
     streak_cur = getattr(mw, "_hmStreakCur", None)
