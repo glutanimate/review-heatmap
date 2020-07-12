@@ -34,6 +34,7 @@ Webview link handlers and associated components
 """
 
 import re
+from typing import TYPE_CHECKING, List, Optional
 
 import aqt
 from anki.hooks import wrap
@@ -44,15 +45,19 @@ from aqt.qt import QWidget
 from aqt.stats import DeckStats
 
 from .config import config, heatmap_colors, heatmap_modes
-from .gui.contrib import invokeContributionsDialog
+from .gui.contrib import invoke_contributions_dialog
 from .gui.extra import invoke_snanki
 from .gui.options import invoke_options_dialog
+
+if TYPE_CHECKING:
+    from aqt.browser import SearchContext
+
 
 # Link handler
 ######################################################################
 
 
-def heatmap_link_handler(self, url, _old=None):
+def heatmap_link_handler(self, url: str, _old=None):
     """Launches Browser when clicking on a graph subdomain"""
     if ":" in url:
         (cmd, arg) = url.split(":", 1)
@@ -71,12 +76,12 @@ def heatmap_link_handler(self, url, _old=None):
     if isinstance(self, QWidget):
         parent = self
     else:
-        parent = mw
+        parent = mw  # type: ignore
 
     if cmd == "revhm_opts":
         invoke_options_dialog(parent)
     elif cmd == "revhm_contrib":
-        invokeContributionsDialog(parent)
+        invoke_contributions_dialog(parent)
     elif cmd == "revhm_browse":
         invoke_browser(arg)
     elif cmd == "revhm_modeswitch":
@@ -103,7 +108,7 @@ def cycle_hm_modes():
     config.save()
 
 
-def invoke_browser(search):
+def invoke_browser(search: str):
     browser = aqt.dialogs.open("Browser", mw)
     browser.form.searchEdit.lineEdit().setText(search)
     browser.onSearchActivated()
@@ -115,7 +120,7 @@ def invoke_browser(search):
 # LEGACY
 
 # Used when clicking on heatmap date
-def find_revlog_entries(self, val):
+def find_revlog_entries(self, val: tuple):
     """Find cards by revlog timestamp range"""
     args = val[0]
     cutoff1, cutoff2 = [int(i) for i in args.split(":")]
@@ -133,7 +138,7 @@ def add_finders(self, col):
 # NEW
 
 
-def _find_cards_reviewed_between(start_date: int, end_date: int):
+def _find_cards_reviewed_between(start_date: int, end_date: int) -> List[int]:
     # select from cards instead of just selecting uniques from revlog
     # in order to exclude deleted cards
     return mw.col.db.list(  # type: ignore
@@ -147,11 +152,11 @@ def _find_cards_reviewed_between(start_date: int, end_date: int):
 _re_rid = re.compile(r"^rid:([0-9]+):([0-9]+)$")
 
 
-def find_rid(search: str):
+def find_rid(search: str) -> Optional[List[int]]:
     match = _re_rid.match(search)
 
     if not match:
-        return False
+        return None
 
     start_date = int(match[1])
     end_date = int(match[2])
@@ -159,14 +164,14 @@ def find_rid(search: str):
     return _find_cards_reviewed_between(start_date, end_date)
 
 
-def on_browser_will_search(search_context):
+def on_browser_will_search(search_context: "SearchContext"):
     search = search_context.search
     if search.startswith("rid"):
         found_ids = find_rid(search)
     else:
         return
 
-    if found_ids is False:
+    if found_ids is None:
         return
 
     search_context.card_ids = found_ids

@@ -66,6 +66,6 @@ class RevHmContrib(ContribDialog):
                 label.setFont(font)
 
 
-def invokeContributionsDialog(parent):
+def invoke_contributions_dialog(parent):
     dialog = RevHmContrib(parent)
     dialog.exec_()
