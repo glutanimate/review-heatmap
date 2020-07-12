@@ -33,8 +33,6 @@
 Handles add-on configuration
 """
 
-from collections import OrderedDict
-
 from aqt import mw
 
 from .consts import ADDON
@@ -42,43 +40,35 @@ from .libaddon.anki.configmanager import ConfigManager
 
 __all__ = ["heatmap_colors", "heatmap_modes", "config_defaults", "config"]
 
-# Order is important for a predictable selection dropdown (anki20)
-# Preserving the (key, dict) tuple in case we need to provide additional
-# info on each theme in the future.
-heatmap_colors = OrderedDict(
-    (
-        ("lime", {"label": "Lime"}),
-        ("olive", {"label": "Olive"}),
-        ("ice", {"label": "Ice"}),
-        ("magenta", {"label": "Magenta"}),
-        ("flame", {"label": "Flame"}),
-    )
-)
+# NOTE: Order is important for a predictable selection dropdown.
+# NOTE: Preserving the (key, dict) pair even though the dict only contains one
+# key in case we need to provide additional info on each theme in the future.
 
-heatmap_modes = OrderedDict(
-    (
-        (
-            "year",
-            {
-                "label": "Yearly Overview",
-                "domain": "year",
-                "subDomain": "day",
-                "range": 1,
-                "domLabForm": "%Y",
-            },
-        ),
-        (
-            "months",
-            {
-                "label": "Continuous Timeline",
-                "domain": "month",
-                "subDomain": "day",
-                "range": 9,
-                "domLabForm": "%b '%y",
-            },
-        ),
-    )
-)
+heatmap_colors = {
+    "lime": {"label": "Lime"},
+    "olive": {"label": "Olive"},
+    "ice": {"label": "Ice"},
+    "magenta": {"label": "Magenta"},
+    "flame": {"label": "Flame"},
+}
+
+heatmap_modes = {
+    "year": {
+        "label": "Yearly Overview",
+        "domain": "year",
+        "subDomain": "day",
+        "range": 1,
+        "domLabForm": "%Y",
+    },
+    "months": {
+        "label": "Continuous Timeline",
+        "domain": "month",
+        "subDomain": "day",
+        "range": 9,
+        "domLabForm": "%b '%y",
+    },
+}
+
 
 config_defaults = {
     "synced": {
