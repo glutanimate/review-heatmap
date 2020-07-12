@@ -33,6 +33,8 @@
 Handles add-on configuration
 """
 
+from typing import Dict
+
 from aqt import mw
 
 from .consts import ADDON
@@ -44,7 +46,7 @@ __all__ = ["heatmap_colors", "heatmap_modes", "config_defaults", "config"]
 # NOTE: Preserving the (key, dict) pair even though the dict only contains one
 # key in case we need to provide additional info on each theme in the future.
 
-heatmap_colors = {
+heatmap_colors: Dict[str, Dict[str, str]] = {
     "lime": {"label": "Lime"},
     "olive": {"label": "Olive"},
     "ice": {"label": "Ice"},
@@ -52,7 +54,7 @@ heatmap_colors = {
     "flame": {"label": "Flame"},
 }
 
-heatmap_modes = {
+heatmap_modes: Dict[str, Dict] = {
     "year": {
         "label": "Yearly Overview",
         "domain": "year",
@@ -70,7 +72,7 @@ heatmap_modes = {
 }
 
 
-config_defaults = {
+config_defaults: Dict[str, Dict] = {
     "synced": {
         "colors": "lime",
         "mode": "year",
@@ -89,6 +91,6 @@ config_defaults = {
     },
 }
 
-config = ConfigManager(
+config: ConfigManager = ConfigManager(
     mw, config_dict=config_defaults, conf_key="heatmap", reset_req=True
 )
