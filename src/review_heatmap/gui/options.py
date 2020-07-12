@@ -34,9 +34,12 @@ Options dialog and associated components
 """
 
 import time
+from typing import Optional
 
+from PyQt5.QtWidgets import QAction, QApplication, QWidget
+
+from anki.lang import _
 from aqt import mw
-from aqt.qt import *
 from aqt.studydeck import StudyDeck
 
 from ..activity import ActivityReporter
@@ -44,8 +47,6 @@ from ..config import config, heatmap_colors, heatmap_modes
 from ..libaddon.gui.dialog_options import OptionsDialog
 from ..libaddon.platform import PLATFORM
 from .forms import options as qtform_options
-
-__all__ = ["RevHmOptions", "invokeOptionsDialog"]
 
 
 class RevHmOptions(OptionsDialog):
@@ -204,7 +205,7 @@ class RevHmOptions(OptionsDialog):
         return widget_val
 
 
-def invoke_options_dialog(parent=None):
+def invoke_options_dialog(parent: Optional[QWidget] = None) -> int:
     """Call settings dialog"""
     dialog = RevHmOptions(config, mw, parent=parent)
     return dialog.exec_()

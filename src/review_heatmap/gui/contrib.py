@@ -39,8 +39,6 @@ from ..libaddon.gui.dialog_contrib import ContribDialog
 from ..libaddon.platform import PLATFORM
 from .forms import contrib as qtform_contrib
 
-__all__ = ["RevHmContrib", "invokeContributionsDialog"]
-
 
 class RevHmContrib(ContribDialog):
 

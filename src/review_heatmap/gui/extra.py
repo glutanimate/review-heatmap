@@ -36,23 +36,40 @@ Extra dialogs
 
 import time
 from random import randrange
+from typing import Dict, Optional
+
+from PyQt5.QtCore import QBasicTimer, QTimerEvent, Qt
+from PyQt5.QtGui import QColor, QFont, QKeyEvent, QMouseEvent, QPaintEvent, QPainter
+from PyQt5.QtWidgets import QDialog, QFrame, QWidget
 
 from aqt import mw
-from aqt.qt import *
 from aqt.utils import openLink, tooltip
 
 from ..consts import ADDON
 from ..libaddon.anki.configmanager import ConfigManager
 from ..libaddon.platform import isMac
 
-__all__ = ["invokeSnanki"]
-
-SNANKI_VERSION = "0.0.2"
-STARTING_LIVES = 3
+SNANKI_VERSION: str = "0.0.2"
+STARTING_LIVES: int = 3
 
 
 class Snanki(QDialog):
-    def __init__(self, highscore=0, lives=5, parent=None):
+
+    snakeX: int
+    snakeY: int
+    foodX: int
+    foodY: int
+    score: int
+    speed: int
+    isPaused: bool
+    isOver: bool
+    foodPlaced: bool
+    lastKeyPress: str
+    timer: QBasicTimer
+
+    def __init__(
+        self, highscore: int = 0, lives: int = 5, parent: Optional[QWidget] = None
+    ):
         super(Snanki, self).__init__(parent=parent)
         self.highscore = highscore
         self.lives = lives
@@ -64,7 +81,7 @@ class Snanki(QDialog):
         self.setFixedSize(300, 300)
         self.setWindowTitle("Snanki v{} by Glutanimate".format(SNANKI_VERSION))
 
-    def paintEvent(self, event):
+    def paintEvent(self, event: QPaintEvent):
         qp = QPainter()
         qp.begin(self)
         self.scoreBoard(qp)
@@ -75,9 +92,9 @@ class Snanki(QDialog):
             self.gameOver(event, qp)
         qp.end()
 
-    def keyPressEvent(self, e):
+    def keyPressEvent(self, e: QKeyEvent):
         if not self.isPaused:
-            # print("inflection point: ", self.x, " ", self.y)
+            # print("inflection point: ", self.snakeX, " ", self.snakeY)
             if (
                 e.key() == Qt.Key_Up
                 and self.lastKeyPress != "UP"
@@ -115,7 +132,7 @@ class Snanki(QDialog):
         elif e.key() == Qt.Key_Escape:
             self.close()
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QMouseEvent):
         """
         Quick hacky workaround to open Patreon link on gameOver screen click.
         """
@@ -127,20 +144,20 @@ class Snanki(QDialog):
         if self.lives < 1:
             return
         self.score = 0
-        self.x = 12
-        self.y = 36
+        self.snakeX = 12
+        self.snakeY = 36
         self.lastKeyPress = "RIGHT"
         self.timer = QBasicTimer()
         self.snakeArray = [
-            [self.x, self.y],
-            [self.x - 12, self.y],
-            [self.x - 24, self.y],
+            [self.snakeX, self.snakeY],
+            [self.snakeX - 12, self.snakeY],
+            [self.snakeX - 24, self.snakeY],
         ]
-        self.foodx = 0
-        self.foody = 0
+        self.foodX = 0
+        self.foodY = 0
         self.isPaused = False
         self.isOver = False
-        self.FoodPlaced = False
+        self.foodPlaced = False
         self.speed = 100
         self.start()
 
@@ -154,45 +171,45 @@ class Snanki(QDialog):
         self.timer.start(self.speed, self)
         self.update()
 
-    def direction(self, dir):
-        if dir == "DOWN" and self.checkStatus(self.x, self.y + 12):
-            self.y += 12
+    def direction(self, dir: str):
+        if dir == "DOWN" and self.checkStatus(self.snakeX, self.snakeY + 12):
+            self.snakeY += 12
             self.repaint()
-            self.snakeArray.insert(0, [self.x, self.y])
-        elif dir == "UP" and self.checkStatus(self.x, self.y - 12):
-            self.y -= 12
+            self.snakeArray.insert(0, [self.snakeX, self.snakeY])
+        elif dir == "UP" and self.checkStatus(self.snakeX, self.snakeY - 12):
+            self.snakeY -= 12
             self.repaint()
-            self.snakeArray.insert(0, [self.x, self.y])
-        elif dir == "RIGHT" and self.checkStatus(self.x + 12, self.y):
-            self.x += 12
+            self.snakeArray.insert(0, [self.snakeX, self.snakeY])
+        elif dir == "RIGHT" and self.checkStatus(self.snakeX + 12, self.snakeY):
+            self.snakeX += 12
             self.repaint()
-            self.snakeArray.insert(0, [self.x, self.y])
-        elif dir == "LEFT" and self.checkStatus(self.x - 12, self.y):
-            self.x -= 12
+            self.snakeArray.insert(0, [self.snakeX, self.snakeY])
+        elif dir == "LEFT" and self.checkStatus(self.snakeX - 12, self.snakeY):
+            self.snakeX -= 12
             self.repaint()
-            self.snakeArray.insert(0, [self.x, self.y])
+            self.snakeArray.insert(0, [self.snakeX, self.snakeY])
 
-    def scoreBoard(self, qp):
-        qp.setPen(Qt.NoPen)
-        qp.setBrush(QColor("#3e7a78"))
-        qp.drawRect(0, 0, 300, 24)
+    def scoreBoard(self, painter: QPainter):
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor("#3e7a78"))
+        painter.drawRect(0, 0, 300, 24)
 
-    def scoreText(self, event, qp):
-        qp.setPen(QColor("#ffffff"))
-        qp.setFont(QFont("Decorative", 10))
-        qp.drawText(4, 17, "LIVES: " + str(self.lives))
-        qp.drawText(120, 17, "SCORE: " + str(self.score))
-        qp.drawText(230, 17, "BEST: " + str(self.highscore))
+    def scoreText(self, event: QPaintEvent, painter: QPainter):
+        painter.setPen(QColor("#ffffff"))
+        painter.setFont(QFont("Decorative", 10))
+        painter.drawText(4, 17, "LIVES: " + str(self.lives))
+        painter.drawText(120, 17, "SCORE: " + str(self.score))
+        painter.drawText(230, 17, "BEST: " + str(self.highscore))
 
-    def gameOver(self, event, qp):
+    def gameOver(self, event: QPaintEvent, painter: QPainter):
         info = ""
         if self.score > self.highscore:
             self.lives += 1
             self.highscore = self.score
             info = "\n\nNew high score! 1 life replenished."
         font_size = 10 if not isMac else 12
-        qp.setPen(QColor(0, 34, 3))
-        qp.setFont(QFont("Decorative", font_size))
+        painter.setPen(QColor(0, 34, 3))
+        painter.setFont(QFont("Decorative", font_size))
         if self.lives > 0:
             msg = "GAME OVER{}\n\nPress space to play again".format(info)
         else:
@@ -207,9 +224,9 @@ class Snanki(QDialog):
                 "\n\nClick here to go to\n"
                 "patreon.com/glutanimate"
             )
-        qp.drawText(event.rect(), Qt.AlignCenter, msg)
+        painter.drawText(event.rect(), Qt.AlignCenter, msg)
 
-    def checkStatus(self, x, y):
+    def checkStatus(self, x: int, y: int):
         if y > 288 or x > 288 or x < 0 or y < 24:
             self.pause()
             self.isPaused = True
@@ -222,8 +239,8 @@ class Snanki(QDialog):
             self.isOver = True
             self.lives -= 1
             return False
-        elif self.y == self.foody and self.x == self.foodx:
-            self.FoodPlaced = False
+        elif self.snakeY == self.foodY and self.snakeX == self.foodX:
+            self.foodPlaced = False
             self.score += 1
             return True
         elif self.score >= 573:
@@ -234,24 +251,24 @@ class Snanki(QDialog):
         return True
 
     # places the food when theres none on the board
-    def placeFood(self, qp):
-        if self.FoodPlaced is False:
-            self.foodx = randrange(24) * 12
-            self.foody = randrange(2, 24) * 12
-            if not [self.foodx, self.foody] in self.snakeArray:
-                self.FoodPlaced = True
-        qp.setBrush(QColor("#ffdd55"))
-        qp.drawRect(self.foodx, self.foody, 12, 12)
+    def placeFood(self, painter: QPainter):
+        if self.foodPlaced is False:
+            self.foodX = randrange(24) * 12
+            self.foodY = randrange(2, 24) * 12
+            if not [self.foodX, self.foodY] in self.snakeArray:
+                self.foodPlaced = True
+        painter.setBrush(QColor("#ffdd55"))
+        painter.drawRect(self.foodX, self.foodY, 12, 12)
 
     # draws each component of the snake
-    def drawSnake(self, qp):
-        qp.setPen(Qt.NoPen)
-        qp.setBrush(QColor("#ffffff"))
+    def drawSnake(self, painter: QPainter):
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor("#ffffff"))
         for i in self.snakeArray:
-            qp.drawRect(i[0], i[1], 12, 12)
+            painter.drawRect(i[0], i[1], 12, 12)
 
     # game thread
-    def timerEvent(self, event):
+    def timerEvent(self, event: QTimerEvent):
         if event.timerId() == self.timer.timerId():
             self.direction(self.lastKeyPress)
             self.repaint()
@@ -263,14 +280,14 @@ class Snanki(QDialog):
 
     def accept(self):
         self._onClose()
-        super(Snanki, self).accept()
+        super().accept()
 
     def reject(self):
         self._onClose()
-        super(Snanki, self).reject()
+        super().reject()
 
 
-defaults = {
+defaults: Dict[str, Dict] = {
     "profile": {
         "highscore": 0,
         "lastplayed": 0,
@@ -282,7 +299,7 @@ defaults = {
 snanki_config = ConfigManager(mw, config_dict=defaults, conf_key="snanki")
 
 
-def invoke_snanki(parent=None):
+def invoke_snanki(parent: Optional[QWidget] = None):
     conf = snanki_config["profile"]
     streak_max = getattr(mw, "_hmStreakMax", None)
     streak_cur = getattr(mw, "_hmStreakCur", None)
