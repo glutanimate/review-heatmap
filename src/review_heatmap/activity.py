@@ -35,7 +35,8 @@ Components related to gathering and analyzing user activity
 
 import datetime
 import time
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, MutableMapping, NamedTuple
+from enum import Enum
 
 from anki.utils import ids2str
 from aqt import mw
@@ -48,20 +49,42 @@ except ImportError:
     from anki.collection import _Collection as Collection
 
 
-__all__ = ["ActivityReporter"]
-
 # limit max forecast to 200 years to protect against invalid due dates
 MAX_FORECAST_DAYS = 73000
 
 
+class StatsEntryType(Enum):
+    streak = 0
+    percentage = 1
+    cards = 2
+
+
+class StatsEntry(NamedTuple):
+    name: str
+    type: StatsEntryType
+    value: int
+
+
+class ActivityReport(NamedTuple):
+    activity: Dict[int, int]
+    start: int
+    stop: int
+    today: int
+    offset: int
+    stats: Dict[str, StatsEntry]
+
+class _ActivityData(NamedTuple):
+    history: List[List[int]]
+    forecast: List[List[int]]
+
 class ActivityReporter:
-    def __init__(self, col: Collection, config: Dict, whole: bool = False):
-        self.col = col
-        self.config = config
+    def __init__(self, col: Collection, config: MutableMapping, whole: bool = False):
+        self.col: Collection = col
+        self.config: MutableMapping = config
         # NOTE: Refactor the following instance variables if we
         # ever decide to persist ActivityReporter objects across
         # multiple invocations (e.g. to cache results)
-        self.whole = whole
+        self.whole: bool = whole
         self.offset: int = self._get_col_offset()
         self.today: int = self._get_today(self.offset)
 
@@ -313,6 +336,15 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
     def _cards_due(
         self, start: Optional[int] = None, stop: Optional[int] = None
     ) -> List[List[int]]:
+        """[summary]
+
+        Args:
+            start (Optional[int], optional): [description]. Defaults to None.
+            stop (Optional[int], optional): [description]. Defaults to None.
+
+        Returns:
+            List[List[int]]: [[int, int]]
+        """
         # start, stop: timestamps in seconds. Set to None for unlimited.
         # start: inclusive; stop: exclusive
 
@@ -383,6 +415,9 @@ GROUP BY day ORDER BY day""".format(
         timestamps to the correct day. For that reason we include the
         'localtime' strftime modifier, even though it does come at a
         performance penalty
+        
+        Returns:
+            [[int, int]**]
         """
         offset = self.offset * 3600
 
