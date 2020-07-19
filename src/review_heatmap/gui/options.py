@@ -42,10 +42,10 @@ from anki.lang import _
 from aqt import mw
 from aqt.studydeck import StudyDeck
 
-from ..activity import ActivityReporter
 from ..config import config, heatmap_colors, heatmap_modes
 from ..libaddon.gui.dialog_options import OptionsDialog
 from ..libaddon.platform import PLATFORM
+from ..times import daystart_epoch
 from .forms import options as qtform_options
 
 
@@ -198,8 +198,9 @@ class RevHmOptions(OptionsDialog):
     # Config getters:
 
     def _getDateLimData(self, widget_val):
-        val = ActivityReporter.daystart_epoch(widget_val)
-        default = ActivityReporter.daystart_epoch(self._setDateLimDataMin(None))
+        db = self.mw.col.db
+        val = daystart_epoch(db, widget_val)
+        default = daystart_epoch(db, self._setDateLimDataMin(None))
         if val == default:
             return 0
         return widget_val

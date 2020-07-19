@@ -48,6 +48,7 @@ try:
 except ImportError:
     from anki.collection import _Collection as Collection
 
+from .times import daystart_epoch
 
 # limit max forecast to 200 years to protect against invalid due dates
 MAX_FORECAST_DAYS = 73000
@@ -231,31 +232,11 @@ class ActivityReporter:
         start_date = datetime.datetime.fromtimestamp(self.col.crt)
         return start_date.hour
 
-    @staticmethod
-    def daystart_epoch(timestr: str, is_timestamp: bool = True, offset: int = 0) -> int:
-        """
-        Convert strftime date string into unix timestamp of 00:00 UTC
-        """
-        # Use db query instead of Python time-related modules to guarantee
-        # consistency with rest of activity data (also: Anki does not seem
-        # to ship 'pytz' by default, and 'calendar' might be removed from
-        # packaging at some point, as Anki's code does not directly depend
-        # on it)
-        offset_str = " '-{} hours', ".format(offset) if offset else ""
-        unixepoch = " 'unixepoch', " if is_timestamp else ""
-
-        cmd = """
-SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
-'localtime', 'start of day') AS int)""".format(
-            timestr=timestr, unixepoch=unixepoch, offset=offset_str
-        )
-        return mw.col.db.scalar(cmd)
-
     def _get_today(self, offset: int) -> int:
         """
         Return unix epoch timestamp in seconds for today (00:00 UTC)
         """
-        return self.daystart_epoch("now", is_timestamp=False, offset=offset)
+        return daystart_epoch(self.col.db, "now", is_timestamp=False, offset=offset)
 
     # Time limits
     #########################################################################
@@ -295,9 +276,11 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
         else:
             limit_days_date = 0
 
-        limit_date = self.daystart_epoch(str(limit_date)) if limit_date else None
+        limit_date = (
+            daystart_epoch(self.col.db, str(limit_date)) if limit_date else None
+        )
 
-        if not limit_date or limit_date == self.daystart_epoch(self.col.crt):
+        if not limit_date or limit_date == daystart_epoch(self.col.db, self.col.crt):
             # ignore zero value or default value
             limit_date = 0
         else:
@@ -393,34 +376,7 @@ GROUP BY day ORDER BY day""".format(
         res: List[Sequence[int]] = self.col.db.all(cmd, self.col.sched.today)
 
         if isDebuggingOn():
-            if mw.col.schedVer() == 2:
-                offset = mw.col.conf.get("rollover", 4)
-                schedver = 2
-            else:
-                startDate = datetime.datetime.fromtimestamp(mw.col.crt)
-                offset = startDate.hour
-                schedver = 1
-
-            logger.debug(cmd)
-            logger.debug(self.col.sched.today)
-            logger.debug("Scheduler version %s", schedver)
-            logger.debug("Day starts at setting: %s hours", offset)
-            logger.debug(
-                time.strftime(
-                    "dayCutoff: %Y-%m-%d %H:%M", time.localtime(mw.col.sched.dayCutoff)
-                )
-            )
-            logger.debug(
-                time.strftime("local now: %Y-%m-%d %H:%M", time.localtime(time.time()))
-            )
-            logger.debug(
-                time.strftime(
-                    "Col today: %Y-%m-%d",
-                    time.localtime(mw.col.crt + 86400 * mw.col.sched.today),
-                )
-            )
-            logger.debug("Col days: %s", mw.col.sched.today)
-            logger.debug(res)
+            self.__debug_cards_due(cmd, res)
 
         return [i[:-1] for i in res]
 
@@ -468,6 +424,40 @@ GROUP BY day ORDER BY day""".format(
         res = self.col.db.all(cmd)
 
         if isDebuggingOn():
-            logger.debug(res)
+            self.__debug_cards_done(cmd, res)
 
         return res
+
+    def __debug_cards_due(self, cmd: str, res: List[Sequence[int]]):
+        if self.col.schedVer() == 2:
+            offset = self.col.conf.get("rollover", 4)
+            schedver = 2
+        else:
+            startDate = datetime.datetime.fromtimestamp(mw.col.crt)
+            offset = startDate.hour
+            schedver = 1
+
+        logger.debug(cmd)
+        logger.debug(self.col.sched.today)
+        logger.debug("Scheduler version %s", schedver)
+        logger.debug("Day starts at setting: %s hours", offset)
+        logger.debug(
+            time.strftime(
+                "dayCutoff: %Y-%m-%d %H:%M", time.localtime(self.col.sched.dayCutoff),
+            )
+        )
+        logger.debug(
+            time.strftime("local now: %Y-%m-%d %H:%M", time.localtime(time.time()))
+        )
+        logger.debug(
+            time.strftime(
+                "Col today: %Y-%m-%d",
+                time.localtime(self.col.crt + 86400 * mw.col.sched.today),
+            )
+        )
+        logger.debug("Col days: %s", self.col.sched.today)
+        logger.debug(res)
+
+    def __debug_cards_done(self, cmd: str, res: List[Sequence[int]]):
+        logger.debug(cmd)
+        logger.debug(res)
