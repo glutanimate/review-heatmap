@@ -35,7 +35,7 @@ Components related to gathering and analyzing user activity
 
 import datetime
 import time
-from typing import Dict, List, Optional, Tuple, MutableMapping, NamedTuple
+from typing import Dict, List, Optional, Sequence, Tuple, MutableMapping, NamedTuple
 from enum import Enum
 
 from anki.utils import ids2str
@@ -53,29 +53,46 @@ except ImportError:
 MAX_FORECAST_DAYS = 73000
 
 
-class StatsEntryType(Enum):
+class ActivityType(Enum):
+    reviews = 0
+
+
+class StatsType(Enum):
     streak = 0
     percentage = 1
     cards = 2
 
 
-class StatsEntry(NamedTuple):
-    name: str
-    type: StatsEntryType
+class StatsEntryStreak(NamedTuple):
     value: int
+    type: StatsType = StatsType.streak
+
+
+class StatsEntryPercentage(NamedTuple):
+    value: int
+    type: StatsType = StatsType.percentage
+
+
+class StatsEntryCards(NamedTuple):
+    value: int
+    type: StatsType = StatsType.cards
+
+
+class StatsReport(NamedTuple):
+    streak_max: StatsEntryStreak
+    streak_cur: StatsEntryStreak
+    pct_days_active: StatsEntryPercentage
+    activity_daily_avg: StatsEntryCards
 
 
 class ActivityReport(NamedTuple):
     activity: Dict[int, int]
-    start: int
-    stop: int
+    start: Optional[int]
+    stop: Optional[int]
     today: int
     offset: int
-    stats: Dict[str, StatsEntry]
+    stats: StatsReport
 
-class _ActivityData(NamedTuple):
-    history: List[List[int]]
-    forecast: List[List[int]]
 
 class ActivityReporter:
     def __init__(self, col: Collection, config: MutableMapping, whole: bool = False):
@@ -95,34 +112,49 @@ class ActivityReporter:
         self,
         limhist: Optional[int] = None,
         limfcst: Optional[int] = None,
-        mode: str = "reviews",
-    ):
+        activity_type: ActivityType = ActivityType.reviews,
+    ) -> Optional[ActivityReport]:
 
-        if mode != "reviews":
-            raise NotImplementedError("activity mode {} not implemented".format(mode))
+        history_start, forecast_stop = self._get_time_limits(limhist, limfcst)
 
-        time_limits = self._get_time_limits(limhist, limfcst)
+        if activity_type == ActivityType.reviews:
+            history = self._cards_done(start=history_start)
+            forecast = self._cards_due(start=self.today, stop=forecast_stop)
 
-        review_activity = self._get_activity(**self._reviews_data(time_limits))
+            if not history:
+                return None
 
-        return review_activity
+            activity_report = self._get_activity(history=history, forecast=forecast)
+        else:
+            raise NotImplementedError(
+                "activity type {} not implemented".format(activity_type)
+            )
+
+        return activity_report
 
     # Activity calculations
     #########################################################################
 
     # General
 
-    def _get_activity(self, history, forecast={}):
-        if not history:
-            return None
+    def _get_activity(
+        self,
+        history: List[Sequence[int]],
+        forecast: Optional[List[Sequence[int]]] = None,
+    ) -> ActivityReport:
 
-        first_day = history[0][0] if history else None
-        last_day = forecast[-1][0] if forecast else None
+        first_day = history[0][0] if history else 0
+        last_day = forecast[-1][0] if forecast else 0
 
         # Stats: cumulative activity and streaks
 
-        streak_max = streak_cur = streak_last = 0
-        current = total = 0
+        streak_max: int = 0
+        streak_cur: int = 0
+        streak_last: int = 0
+        current: int = 0
+        total: int = 0
+        idx: int = 0
+        next_timestamp: Optional[int]
 
         for idx, item in enumerate(history):
             current += 1
@@ -141,7 +173,7 @@ class ActivityReporter:
 
             total += activity
 
-        days_learned = idx + 1
+        days_learned: int = idx + 1
 
         # Stats: current streak
         if history[-1][0] in (self.today, self.today - 86400):
@@ -158,41 +190,34 @@ class ActivityReporter:
         # history limits the user might have set. This value seems more
         # desirable and motivating than the raw percentage of days learned
         # in the date inclusion period.
+
         days_total = (self.today - first_day) / 86400 + 1
+
         if days_total == 1:
             pdays = 100  # review history only extends to yesterday
         else:
             pdays = int(round((days_learned / days_total) * 100))
 
         # Compose activity data
-        activity = dict(history + forecast)
+        activity_dict: Dict[int, int] = dict(history + forecast)  # type: ignore
         if history[-1][0] == self.today:  # history takes precedence for today
-            activity[self.today] = history[-1][1]
+            activity_dict[self.today] = history[-1][1]
 
-        return {
-            "activity": activity,
-            # individual cal-heatmap dates need to be in ms:
-            "start": first_day * 1000 if first_day else None,
-            "stop": last_day * 1000 if last_day else None,
-            "today": self.today * 1000,
-            "offset": self.offset,
-            "stats": {
-                "streak_max": {"type": "streak", "value": streak_max},
-                "streak_cur": {"type": "streak", "value": streak_cur},
-                "pct_days_active": {"type": "percentage", "value": pdays},
-                "activity_daily_avg": {"type": "cards", "value": avg_cur},
-            },
-        }
+        # individual cal-heatmap dates need to be in ms:
 
-    # Mode-specific
-
-    def _reviews_data(
-        self, time_limits: Tuple[Optional[int], Optional[int]]
-    ) -> Dict[str, List[List[int]]]:
-        return {
-            "history": self._cards_done(start=time_limits[0]),
-            "forecast": self._cards_due(start=self.today, stop=time_limits[1]),
-        }
+        return ActivityReport(
+            activity=activity_dict,
+            start=first_day * 1000 if first_day else None,
+            stop=last_day * 1000 if last_day else None,
+            today=self.today * 1000,
+            offset=self.offset,
+            stats=StatsReport(
+                streak_max=StatsEntryStreak(value=streak_max),
+                streak_cur=StatsEntryStreak(value=streak_cur),
+                pct_days_active=StatsEntryPercentage(value=pdays),
+                activity_daily_avg=StatsEntryCards(value=avg_cur),
+            ),
+        )
 
     # Collection properties
     #########################################################################
@@ -335,7 +360,7 @@ SELECT CAST(STRFTIME('%s', '{timestr}', {unixepoch} {offset}
 
     def _cards_due(
         self, start: Optional[int] = None, stop: Optional[int] = None
-    ) -> List[List[int]]:
+    ) -> List[Sequence[int]]:
         """[summary]
 
         Args:
@@ -365,7 +390,7 @@ GROUP BY day ORDER BY day""".format(
             self.offset, self._did_limit(), lim
         )
 
-        res = self.col.db.all(cmd, self.col.sched.today)
+        res: List[Sequence[int]] = self.col.db.all(cmd, self.col.sched.today)
 
         if isDebuggingOn():
             if mw.col.schedVer() == 2:
@@ -399,7 +424,7 @@ GROUP BY day ORDER BY day""".format(
 
         return [i[:-1] for i in res]
 
-    def _cards_done(self, start: Optional[int] = None) -> List[List[int]]:
+    def _cards_done(self, start: Optional[int] = None) -> List[Sequence[int]]:
         """
         start: timestamp in seconds to start reporting from
 
@@ -440,7 +465,7 @@ GROUP BY day ORDER BY day""".format(
             offset, lim
         )
 
-        res = self.col.db.all(cmd)  # type: ignore
+        res = self.col.db.all(cmd)
 
         if isDebuggingOn():
             logger.debug(res)
