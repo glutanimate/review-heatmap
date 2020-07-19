@@ -97,14 +97,16 @@ class ActivityReport(NamedTuple):
 
 class ActivityReporter:
     def __init__(self, col: Collection, config: MutableMapping, whole: bool = False):
+        # NOTE: Binding the collection is dangerous if we ever persist ActivityReporter
+        # across profile reloads
         self.col: Collection = col
         self.config: MutableMapping = config
         # NOTE: Refactor the following instance variables if we
         # ever decide to persist ActivityReporter objects across
         # multiple invocations (e.g. to cache results)
-        self.whole: bool = whole
-        self.offset: int = self._get_col_offset()
-        self.today: int = self._get_today(self.offset)
+        self._whole: bool = whole
+        self._offset: int = self._get_col_offset()
+        self._today: int = self._get_today(self._offset)
 
     # Public API
     #########################################################################
@@ -120,7 +122,7 @@ class ActivityReporter:
 
         if activity_type == ActivityType.reviews:
             history = self._cards_done(start=history_start)
-            forecast = self._cards_due(start=self.today, stop=forecast_stop)
+            forecast = self._cards_due(start=self._today, stop=forecast_stop)
 
             if not history:
                 return None
@@ -177,7 +179,7 @@ class ActivityReporter:
         days_learned: int = idx + 1
 
         # Stats: current streak
-        if history[-1][0] in (self.today, self.today - 86400):
+        if history[-1][0] in (self._today, self._today - 86400):
             # last recorded date today or yesterday?
             streak_cur = streak_last
 
@@ -192,7 +194,7 @@ class ActivityReporter:
         # desirable and motivating than the raw percentage of days learned
         # in the date inclusion period.
 
-        days_total = (self.today - first_day) / 86400 + 1
+        days_total = (self._today - first_day) / 86400 + 1
 
         if days_total == 1:
             pdays = 100  # review history only extends to yesterday
@@ -201,8 +203,8 @@ class ActivityReporter:
 
         # Compose activity data
         activity_dict: Dict[int, int] = dict(history + forecast)  # type: ignore
-        if history[-1][0] == self.today:  # history takes precedence for today
-            activity_dict[self.today] = history[-1][1]
+        if history[-1][0] == self._today:  # history takes precedence for today
+            activity_dict[self._today] = history[-1][1]
 
         # individual cal-heatmap dates need to be in ms:
 
@@ -210,8 +212,8 @@ class ActivityReporter:
             activity=activity_dict,
             start=first_day * 1000 if first_day else None,
             stop=last_day * 1000 if last_day else None,
-            today=self.today * 1000,
-            offset=self.offset,
+            today=self._today * 1000,
+            offset=self._offset,
             stats=StatsReport(
                 streak_max=StatsEntryStreak(value=streak_max),
                 streak_cur=StatsEntryStreak(value=streak_cur),
@@ -294,7 +296,7 @@ class ActivityReporter:
         return self._days_from_today(limit_days)
 
     def _days_from_today(self, days: int) -> int:
-        return self.today + 86400 * days
+        return self._today + 86400 * days
 
     # Deck limits
     #########################################################################
@@ -312,7 +314,7 @@ class ActivityReporter:
 
     def _did_limit(self) -> str:
         excluded_dids = self.config["synced"]["limdecks"]
-        if self.whole:
+        if self._whole:
             if excluded_dids:
                 dids = self._valid_decks(excluded_dids)
             else:
@@ -324,7 +326,7 @@ class ActivityReporter:
     def _revlog_limit(self) -> str:
         excluded_dids = self.config["synced"]["limdecks"]
         ignore_deleted = self.config["synced"]["limcdel"]
-        if self.whole:
+        if self._whole:
             if excluded_dids:
                 dids = self._valid_decks(excluded_dids)
             elif ignore_deleted:
@@ -370,7 +372,7 @@ FROM cards
 WHERE did IN {} AND queue IN (2,3)
 {}
 GROUP BY day ORDER BY day""".format(
-            self.offset, self._did_limit(), lim
+            self._offset, self._did_limit(), lim
         )
 
         res: List[Sequence[int]] = self.col.db.all(cmd, self.col.sched.today)
@@ -400,7 +402,7 @@ GROUP BY day ORDER BY day""".format(
         Returns:
             [[int, int]**]
         """
-        offset = self.offset * 3600
+        offset = self._offset * 3600
 
         lims = []
         if start is not None:
