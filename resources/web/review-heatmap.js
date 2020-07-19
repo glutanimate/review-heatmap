@@ -34,7 +34,7 @@ function onHmNavigate(event, button, direction) {
 
 function onHmHome(event, button) {
     if (event.shiftKey) {
-        pybridge("revhm_modeswitch");
+        pycmd("revhm_modeswitch");
     } else {
         cal.rewind();
     }
@@ -42,17 +42,17 @@ function onHmHome(event, button) {
 
 function onHmOpts(event, button) {
     if (event.shiftKey) {
-        pybridge("revhm_themeswitch");
+        pycmd("revhm_themeswitch");
     } else {
-        pybridge("revhm_opts");
+        pycmd("revhm_opts");
     }
 }
 
 function onHmContrib(event, button) {
     if (event.shiftKey) {
-        pybridge("revhm_snanki");
+        pycmd("revhm_snanki");
     } else {
-        pybridge("revhm_contrib");
+        pycmd("revhm_contrib");
     }
 }
 
@@ -186,7 +186,7 @@ function initHeatmap(options, data) {
             }
             
             // Invoke browser
-            pybridge("revhm_browse:" + cmd);
+            pycmd("revhm_browse:" + cmd);
             
             // Update date highlight to include clicked on date AND today
             cal.highlight([calTodayDate, date]);

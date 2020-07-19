@@ -33,7 +33,7 @@
 Static web components and templates
 """
 
-from .libaddon.platform import JSPY_BRIDGE, PLATFORM
+from .libaddon.platform import PLATFORM
 
 CSS_DISABLE_HEATMAP = "rh-disable-heatmap"
 CSS_DISABLE_STATS = "rh-disable-stats"
@@ -42,7 +42,7 @@ CSS_MODE_PREFIX = "rh-mode"
 CSS_THEME_PREFIX = "rh-theme"
 CSS_VIEW_PREFIX = "rh-view"
 
-HTML_MAIN_ELEMENT: str = """
+HTML_MAIN_ELEMENT: str = f"""
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
 <script type="text/javascript" src="qrc:/review_heatmap/web/cal-heatmap.js"></script>
 <link rel="stylesheet" href="qrc:/review_heatmap/web/cal-heatmap.css">
@@ -50,18 +50,13 @@ HTML_MAIN_ELEMENT: str = """
 <link rel="stylesheet" href="qrc:/review_heatmap/web/review-heatmap.css">
 
 <script>
-var pybridge = function(arg){{{{
-    {bridge}(arg);
-}}}};
-var rhPlatform = "{platform}";
+var rhPlatform = "{PLATFORM}";
 </script>
 
 <div class="rh-container {{classes}}">
 {{content}}
 </div>
-""".format(
-    bridge=JSPY_BRIDGE, platform=PLATFORM
-)
+"""
 
 HTML_HEATMAP: str = """
 <div class="heatmap">
@@ -115,5 +110,5 @@ HTML_STREAK: str = """
 """
 
 HTML_INFO_NODATA: str = """
-No activity data to show (<span class="linkspan" onclick='pybridge("revhm_opts");'>options</span>).
+No activity data to show (<span class="linkspan" onclick='pycmd("revhm_opts");'>options</span>).
 """
