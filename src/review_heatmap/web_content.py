@@ -35,9 +35,14 @@ Static web components and templates
 
 from .libaddon.platform import JSPY_BRIDGE, PLATFORM
 
-__all__ = ["html_main_element", "html_heatmap", "html_streak", "html_info_nodata"]
+CSS_DISABLE_HEATMAP = "rh-disable-heatmap"
+CSS_DISABLE_STATS = "rh-disable-stats"
+CSS_PLATFORM_PREFIX = "rh-platform"
+CSS_MODE_PREFIX = "rh-mode"
+CSS_THEME_PREFIX = "rh-theme"
+CSS_VIEW_PREFIX = "rh-view"
 
-html_main_element: str = """
+HTML_MAIN_ELEMENT: str = """
 <script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
 <script type="text/javascript" src="qrc:/review_heatmap/web/cal-heatmap.js"></script>
 <link rel="stylesheet" href="qrc:/review_heatmap/web/cal-heatmap.css">
@@ -58,7 +63,7 @@ var rhPlatform = "{platform}";
     bridge=JSPY_BRIDGE, platform=PLATFORM
 )
 
-html_heatmap: str = """
+HTML_HEATMAP: str = """
 <div class="heatmap">
     <div class="heatmap-controls">
         <div class="alignleft">
@@ -92,7 +97,7 @@ html_heatmap: str = """
 </script>
 """
 
-html_streak: str = """
+HTML_STREAK: str = """
 <div class="streak">
     <span class="streak-info">Daily average:</span>
     <span title="Average reviews on active days"
@@ -109,6 +114,6 @@ html_streak: str = """
 </div>
 """
 
-html_info_nodata: str = """
+HTML_INFO_NODATA: str = """
 No activity data to show (<span class="linkspan" onclick='pybridge("revhm_opts");'>options</span>).
 """

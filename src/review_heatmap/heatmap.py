@@ -33,16 +33,23 @@
 Heatmap and stats elements generation
 """
 
-from typing import Dict, List, Optional, Tuple, NamedTuple
+from typing import Dict, List, NamedTuple, Optional, Tuple
 
 from anki.utils import json
 from aqt import mw
 
-from .activity import ActivityReporter, ActivityReport, StatsEntry, StatsType
+from .activity import ActivityReport, ActivityReporter, StatsEntry, StatsType
 from .config import heatmap_modes
 from .libaddon.platform import PLATFORM
-from .web import *
-
+from .web_content import HTML_MAIN_ELEMENT, HTML_HEATMAP, HTML_STREAK, HTML_INFO_NODATA
+from .web_content import (
+    CSS_DISABLE_HEATMAP,
+    CSS_DISABLE_STATS,
+    CSS_PLATFORM_PREFIX,
+    CSS_MODE_PREFIX,
+    CSS_THEME_PREFIX,
+    CSS_VIEW_PREFIX,
+)
 
 # workaround for list comprehensions not working in class-scope
 def _compress_levels(colors, indices):
@@ -116,7 +123,7 @@ class HeatmapCreator:
             limhist=limhist, limfcst=limfcst, current_deck_only=current_deck_only
         )
         if report is None:
-            return html_main_element.format(content=html_info_nodata, classes="")
+            return HTML_MAIN_ELEMENT.format(content=HTML_INFO_NODATA, classes="")
 
         dynamic_legend = self._dynamic_legend(report.stats.activity_daily_avg.value)
         stats_legend = self._stats_legend(dynamic_legend)
@@ -130,28 +137,28 @@ class HeatmapCreator:
             )
         else:
             heatmap = ""
-            classes.append("rh-disable-heatmap")
+            classes.append(CSS_DISABLE_HEATMAP)
 
         if prefs["display"][view] or prefs["statsvis"]:
             stats = self._generate_stats_elm(report, stats_legend)
         else:
             stats = ""
-            classes.append("rh-disable-stats")
+            classes.append(CSS_DISABLE_STATS)
 
         if not current_deck_only:
             self._save_current_perf(report)
 
-        return html_main_element.format(
+        return HTML_MAIN_ELEMENT.format(
             content=heatmap + stats, classes=" ".join(classes)
         )
 
     def _get_css_classes(self, view: str) -> List[str]:
         conf = self.config["synced"]
         classes = [
-            "rh-platform-{}".format(PLATFORM),
-            "rh-theme-{}".format(conf["colors"]),
-            "rh-mode-{}".format(conf["mode"]),
-            "rh-view-{}".format(view),
+            f"{CSS_PLATFORM_PREFIX}-{PLATFORM}",
+            f"{CSS_THEME_PREFIX}-{conf['colors']}",
+            f"{CSS_MODE_PREFIX}-{conf['mode']}",
+            f"{CSS_VIEW_PREFIX}-{view}",
         ]
         return classes
 
@@ -174,7 +181,7 @@ class HeatmapCreator:
             "whole": not current_deck_only,
         }
 
-        return html_heatmap.format(
+        return HTML_HEATMAP.format(
             options=json.dumps(options), data=json.dumps(report.activity)
         )
 
@@ -205,7 +212,7 @@ class HeatmapCreator:
             format_dict["class_" + name] = css_class
             format_dict["text_" + name] = label
 
-        return html_streak.format(**format_dict)
+        return HTML_STREAK.format(**format_dict)
 
     def _get_dynamic_levels(self, dynamic_legend) -> List[Tuple[int, str]]:
         return list(zip(dynamic_legend, self._css_colors))
