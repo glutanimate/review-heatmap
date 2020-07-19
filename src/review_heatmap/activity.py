@@ -82,9 +82,11 @@ class StatsType(Enum):
     percentage = 1
     cards = 2
 
+
 class StatsEntry(NamedTuple):
     value: int
     type: StatsType = StatsType.streak
+
 
 class StatsEntryStreak(StatsEntry):
     value: int
