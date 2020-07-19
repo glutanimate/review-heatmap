@@ -35,12 +35,14 @@ Integration with Anki views
 
 from typing import TYPE_CHECKING
 
+from PyQt5.QtWidgets import QAction
+from PyQt5.QtGui import QKeySequence
+
 from anki.hooks import addHook, remHook, wrap
 from anki.stats import CollectionStats
 from aqt import mw
 from aqt.deckbrowser import DeckBrowser
 from aqt.overview import Overview
-from aqt.qt import *
 from aqt.stats import DeckStats
 
 from .config import config
