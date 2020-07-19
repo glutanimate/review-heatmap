@@ -35,20 +35,39 @@ Components related to gathering and analyzing user activity
 
 import datetime
 import time
-from typing import Dict, List, Optional, Sequence, Tuple, MutableMapping, NamedTuple
+from typing import (
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Tuple,
+    MutableMapping,
+    NamedTuple,
+    TYPE_CHECKING,
+)
 from enum import Enum
 
 from anki.utils import ids2str
-from aqt import mw
 
 from .libaddon.debug import isDebuggingOn, logger
 
-try:
+if TYPE_CHECKING:
     from anki.collection import Collection
-except ImportError:
-    from anki.collection import _Collection as Collection
+    from anki.dbproxy import DBProxy
+else:
+    try:
+        from anki.collection import Collection
+    except ImportError:
+        from anki.collection import _Collection as Collection
+
+    try:
+        from anki.dbproxy import DBProxy
+    except (ImportError, ModuleNotFoundError):
+        from anki.db import DB as DBProxy
+
 
 from .times import daystart_epoch
+from .errors import CollectionError
 
 # limit max forecast to 200 years to protect against invalid due dates
 MAX_FORECAST_DAYS = 73000
@@ -97,15 +116,13 @@ class ActivityReport(NamedTuple):
 
 class ActivityReporter:
     def __init__(self, col: Collection, config: MutableMapping):
-        # NOTE: Binding the collection is dangerous if we ever persist ActivityReporter
-        # across profile reloads
-        self.col: Collection = col
-        self.config: MutableMapping = config
-        # NOTE: Refactor the following instance variables if we
-        # ever decide to persist ActivityReporter objects across
-        # multiple invocations (e.g. to cache results)
-        self._offset: int = self._get_col_offset()
-        self._today: int = self._get_today(self._offset)
+        self._col: Collection
+        self._db: DBProxy
+        self._offset: int
+        self._today: int
+
+        self._config: MutableMapping = config
+        self.set_collection(col)
 
     # Public API
     #########################################################################
@@ -140,6 +157,19 @@ class ActivityReporter:
             )
 
         return activity_report
+
+    def set_collection(self, col: Collection):
+        # NOTE: Binding the collection is dangerous if we ever persist ActivityReporter
+        # across profile reloads, so allow outside callers to update the collection
+        # if necessary
+
+        if not col or not col.db:
+            raise CollectionError("Anki collection and/or database is not ready")
+
+        self._col = col
+        self._db = col.db
+        self._offset = self._get_col_offset()
+        self._today = self._get_today(self._offset)
 
     # Activity calculations
     #########################################################################
@@ -235,16 +265,16 @@ class ActivityReporter:
         """
         Return daily scheduling cutoff time in hours
         """
-        if self.col.schedVer() == 2:
-            return self.col.conf.get("rollover", 4)
-        start_date = datetime.datetime.fromtimestamp(self.col.crt)
+        if self._col.schedVer() == 2:
+            return self._col.conf.get("rollover", 4)
+        start_date = datetime.datetime.fromtimestamp(self._col.crt)
         return start_date.hour
 
     def _get_today(self, offset: int) -> int:
         """
         Return unix epoch timestamp in seconds for today (00:00 UTC)
         """
-        return daystart_epoch(self.col.db, "now", is_timestamp=False, offset=offset)
+        return daystart_epoch(self._db, "now", is_timestamp=False, offset=offset)
 
     # Time limits
     #########################################################################
@@ -253,7 +283,7 @@ class ActivityReporter:
         self, limhist: Optional[int] = None, limfcst: Optional[int] = None
     ) -> Tuple[Optional[int], Optional[int]]:
 
-        conf = self.config["synced"]
+        conf = self._config["synced"]
 
         history_start: Optional[int]
         forecast_stop: Optional[int]
@@ -284,11 +314,9 @@ class ActivityReporter:
         else:
             limit_days_date = 0
 
-        limit_date = (
-            daystart_epoch(self.col.db, str(limit_date)) if limit_date else None
-        )
+        limit_date = daystart_epoch(self._db, str(limit_date)) if limit_date else None
 
-        if not limit_date or limit_date == daystart_epoch(self.col.db, self.col.crt):
+        if not limit_date or limit_date == daystart_epoch(self._db, self._col.crt):
             # ignore zero value or default value
             limit_date = 0
         else:
@@ -311,27 +339,27 @@ class ActivityReporter:
         all_excluded = []
 
         for did in excluded:
-            children = [d[1] for d in self.col.decks.children(did)]
+            children = [d[1] for d in self._col.decks.children(did)]
             all_excluded.extend(children)
 
         all_excluded.extend(excluded)
 
-        return [d["id"] for d in self.col.decks.all() if d["id"] not in all_excluded]
+        return [d["id"] for d in self._col.decks.all() if d["id"] not in all_excluded]
 
     def _did_limit(self, current_deck_only: bool) -> str:
-        excluded_dids = self.config["synced"]["limdecks"]
+        excluded_dids = self._config["synced"]["limdecks"]
         if current_deck_only:
             if excluded_dids:
                 dids = self._valid_decks(excluded_dids)
             else:
-                dids = [d["id"] for d in self.col.decks.all()]
+                dids = [d["id"] for d in self._col.decks.all()]
         else:
-            dids = self.col.decks.active()
+            dids = self._col.decks.active()
         return ids2str(dids)
 
     def _revlog_limit(self, current_deck_only: bool) -> str:
-        excluded_dids = self.config["synced"]["limdecks"]
-        ignore_deleted = self.config["synced"]["limcdel"]
+        excluded_dids = self._config["synced"]["limdecks"]
+        ignore_deleted = self._config["synced"]["limcdel"]
         if current_deck_only:
             if excluded_dids:
                 dids = self._valid_decks(excluded_dids)
@@ -343,7 +371,7 @@ class ActivityReporter:
             else:
                 return ""
         else:
-            dids = self.col.decks.active()
+            dids = self._col.decks.active()
         return "cid IN (SELECT id FROM cards WHERE did IN %s)" % ids2str(dids)
 
     # Database queries for user activity
@@ -384,7 +412,7 @@ GROUP BY day ORDER BY day""".format(
             self._offset, self._did_limit(current_deck_only), lim
         )
 
-        res: List[Sequence[int]] = self.col.db.all(cmd, self.col.sched.today)
+        res: List[Sequence[int]] = self._db.all(cmd, self._col.sched.today)
 
         if isDebuggingOn():
             self.__debug_cards_due(cmd, res)
@@ -434,7 +462,7 @@ GROUP BY day ORDER BY day""".format(
             offset, lim
         )
 
-        res = self.col.db.all(cmd)
+        res = self._db.all(cmd)
 
         if isDebuggingOn():
             self.__debug_cards_done(cmd, res)
@@ -442,33 +470,35 @@ GROUP BY day ORDER BY day""".format(
         return res
 
     def __debug_cards_due(self, cmd: str, res: List[Sequence[int]]):
-        if self.col.schedVer() == 2:
-            offset = self.col.conf.get("rollover", 4)
+        if self._col.schedVer() == 2:
+            offset = self._col.conf.get("rollover", 4)
             schedver = 2
         else:
-            startDate = datetime.datetime.fromtimestamp(mw.col.crt)
+            startDate = datetime.datetime.fromtimestamp(self._col.crt)
             offset = startDate.hour
             schedver = 1
 
         logger.debug(cmd)
-        logger.debug(self.col.sched.today)
+        logger.debug(self._col.sched.today)
         logger.debug("Scheduler version %s", schedver)
         logger.debug("Day starts at setting: %s hours", offset)
         logger.debug(
             time.strftime(
-                "dayCutoff: %Y-%m-%d %H:%M", time.localtime(self.col.sched.dayCutoff),
+                "dayCutoff: %Y-%m-%d %H:%M", time.localtime(self._col.sched.dayCutoff),
             )
         )
         logger.debug(
             time.strftime("local now: %Y-%m-%d %H:%M", time.localtime(time.time()))
         )
-        logger.debug(
-            time.strftime(
-                "Col today: %Y-%m-%d",
-                time.localtime(self.col.crt + 86400 * mw.col.sched.today),
+        col_days = self._col.sched.today
+        logger.debug("Col days: %s", col_days)
+        if col_days is not None:
+            logger.debug(
+                time.strftime(
+                    "Col today: %Y-%m-%d",
+                    time.localtime(self._col.crt + 86400 * col_days),
+                )
             )
-        )
-        logger.debug("Col days: %s", self.col.sched.today)
         logger.debug(res)
 
     def __debug_cards_done(self, cmd: str, res: List[Sequence[int]]):
