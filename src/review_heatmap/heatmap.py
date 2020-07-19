@@ -36,7 +36,7 @@ Heatmap and stats elements generation
 from typing import Dict, List, NamedTuple, Optional, Tuple
 
 from anki.utils import json
-from aqt import mw
+from aqt.main import AnkiQt
 
 from .activity import ActivityReport, ActivityReporter, StatsEntry, StatsType
 from .config import heatmap_modes
@@ -106,9 +106,10 @@ class HeatmapCreator:
         4.0,
     )
 
-    def __init__(self, config: Dict):
+    def __init__(self, mw: AnkiQt, config: Dict):
+        self._mw = mw
         self.config = config
-        self.activity = ActivityReporter(mw.col, self.config)
+        self.activity = ActivityReporter(self._mw.col, self.config)
 
     def generate(
         self,
@@ -244,6 +245,6 @@ class HeatmapCreator:
         Just a quick hack that allows us to assess user performance from
         other distant parts of the code / other add-ons
         """
-        mw._hmStreakMax = activity_report.stats.streak_max.value
-        mw._hmStreakCur = activity_report.stats.streak_cur.value
-        mw._hmActivityDailyAvg = activity_report.stats.activity_daily_avg.value
+        self._mw._hmStreakMax = activity_report.stats.streak_max.value
+        self._mw._hmStreakCur = activity_report.stats.streak_cur.value
+        self._mw._hmActivityDailyAvg = activity_report.stats.activity_daily_avg.value
