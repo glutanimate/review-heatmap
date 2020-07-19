@@ -67,7 +67,7 @@ class _StatsVisual(NamedTuple):
 
 class HeatmapCreator:
 
-    _css_colors: Tuple[str, ...] = (
+    _css_colors: Tuple[str, str, str, str, str, str, str, str, str, str, str] = (
         "rh-col0",
         "rh-col11",
         "rh-col12",
@@ -110,10 +110,10 @@ class HeatmapCreator:
         4.0,
     )
 
-    def __init__(self, mw: AnkiQt, config: MutableMapping):
-        self._mw = mw
-        self.config = config
-        self.activity = ActivityReporter(self._mw.col, self.config)
+    def __init__(self, mw: AnkiQt, reporter: ActivityReporter, config: MutableMapping):
+        self._mw: AnkiQt = mw
+        self._config: MutableMapping = config
+        self._reporter: ActivityReporter = reporter
 
     def generate(
         self,
@@ -122,9 +122,9 @@ class HeatmapCreator:
         limfcst: Optional[int] = None,
         current_deck_only: bool = False,
     ) -> str:
-        prefs = self.config["profile"]
+        prefs = self._config["profile"]
 
-        report = self.activity.get_report(
+        report = self._reporter.get_report(
             limhist=limhist, limfcst=limfcst, current_deck_only=current_deck_only
         )
         if report is None:
@@ -158,7 +158,7 @@ class HeatmapCreator:
         )
 
     def _get_css_classes(self, view: str) -> List[str]:
-        conf = self.config["synced"]
+        conf = self._config["synced"]
         classes = [
             f"{CSS_PLATFORM_PREFIX}-{PLATFORM}",
             f"{CSS_THEME_PREFIX}-{conf['colors']}",
@@ -170,7 +170,7 @@ class HeatmapCreator:
     def _generate_heatmap_elm(
         self, report: ActivityReport, dynamic_legend, current_deck_only: bool
     ) -> str:
-        mode = heatmap_modes[self.config["synced"]["mode"]]
+        mode = heatmap_modes[self._config["synced"]["mode"]]
 
         # TODO: pass on "whole" to govern browser link "deck:current" addition
         options = {
