@@ -33,22 +33,30 @@
 Heatmap and stats elements generation
 """
 
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, NamedTuple
 
 from anki.utils import json
 from aqt import mw
 
-from .activity import ActivityReporter
+from .activity import ActivityReporter, ActivityReport, StatsEntry, StatsType
 from .config import heatmap_modes
 from .libaddon.platform import PLATFORM
 from .web import *
 
-__all__ = ["HeatmapCreator"]
+
+# workaround for list comprehensions not working in class-scope
+def _compress_levels(colors, indices):
+    return [colors[i] for i in indices]  # type: ignore
+
+
+class _StatsVisual(NamedTuple):
+    levels: Optional[List[Tuple[int, str]]]
+    unit: Optional[str]
 
 
 class HeatmapCreator:
 
-    css_colors: Tuple[str, ...] = (
+    _css_colors: Tuple[str, ...] = (
         "rh-col0",
         "rh-col11",
         "rh-col12",
@@ -62,66 +70,76 @@ class HeatmapCreator:
         "rh-col20",
     )
 
-    # workaround for list comprehensions not working in class-scope
-    def compress_levels(colors, indices):
-        return [colors[i] for i in indices]  # type: ignore
-
-    stat_levels: Dict[str, List[Tuple[int, str]]] = {
-        # tuples of threshold value, css_colors index
-        "streak": list(
-            zip(
-                (0, 14, 30, 90, 180, 365),
-                compress_levels(css_colors, (0, 2, 4, 6, 9, 10)),
-            )
+    _stats_formatting: Dict[StatsType, _StatsVisual] = {
+        StatsType.streak: _StatsVisual(
+            levels=list(
+                zip(
+                    (0, 14, 30, 90, 180, 365),
+                    _compress_levels(_css_colors, (0, 2, 4, 6, 9, 10)),
+                )
+            ),
+            unit="day",
         ),
-        "percentage": list(zip((0, 25, 50, 60, 70, 80, 85, 90, 95, 99), css_colors)),
+        StatsType.percentage: _StatsVisual(
+            levels=list(zip((0, 25, 50, 60, 70, 80, 85, 90, 95, 99), _css_colors)),
+            unit=None,
+        ),
+        StatsType.cards: _StatsVisual(levels=None, unit="card"),
     }
 
-    legend_factors: Tuple[float, ...] = (0.125, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 4)
+    _dynamic_legend_factors: Tuple[float, ...] = (
+        0.125,
+        0.25,
+        0.5,
+        0.75,
+        1.0,
+        1.25,
+        1.5,
+        2.0,
+        4.0,
+    )
 
-    stat_units: Dict[str, Optional[str]] = {
-        "streak": "day",
-        "percentage": None,
-        "cards": "card",
-    }
-
-    def __init__(self, config: Dict, whole: bool = False):
-        # TODO: rethink "whole" support
+    def __init__(self, config: Dict):
         self.config = config
-        self.whole = whole
-        self.activity = ActivityReporter(mw.col, self.config, whole=whole)
+        self.activity = ActivityReporter(mw.col, self.config)
 
     def generate(
         self,
         view: str = "deckbrowser",
         limhist: Optional[int] = None,
         limfcst: Optional[int] = None,
+        current_deck_only: bool = False,
     ) -> str:
         prefs = self.config["profile"]
-        data = self.activity.get_data(limhist=limhist, limfcst=limfcst)
 
-        if not data:
+        report = self.activity.get_report(
+            limhist=limhist, limfcst=limfcst, current_deck_only=current_deck_only
+        )
+        if report is None:
             return html_main_element.format(content=html_info_nodata, classes="")
 
-        stats_legend, heatmap_legend = self._get_dynamic_legends(
-            data["stats"]["activity_daily_avg"]["value"]
-        )
+        dynamic_legend = self._dynamic_legend(report.stats.activity_daily_avg.value)
+        stats_legend = self._stats_legend(dynamic_legend)
+        heatmap_legend = self._heatmap_legend(dynamic_legend)
 
         classes = self._get_css_classes(view)
 
-        heatmap = stats = ""
         if prefs["display"][view]:
-            heatmap = self._generate_heatmap_elm(data, heatmap_legend)
+            heatmap = self._generate_heatmap_elm(
+                report, heatmap_legend, current_deck_only
+            )
         else:
+            heatmap = ""
             classes.append("rh-disable-heatmap")
 
         if prefs["display"][view] or prefs["statsvis"]:
-            stats = self._generate_stats_elm(data, stats_legend)
+            stats = self._generate_stats_elm(report, stats_legend)
         else:
+            stats = ""
             classes.append("rh-disable-stats")
 
-        if self.whole:
-            self._save_current_perf(data)
+        if not current_deck_only:
+            self._save_current_perf(report)
 
         return html_main_element.format(
             content=heatmap + stats, classes=" ".join(classes)
@@ -137,7 +155,9 @@ class HeatmapCreator:
         ]
         return classes
 
-    def _generate_heatmap_elm(self, data: dict, dynamic_legend) -> str:
+    def _generate_heatmap_elm(
+        self, report: ActivityReport, dynamic_legend, current_deck_only: bool
+    ) -> str:
         mode = heatmap_modes[self.config["synced"]["mode"]]
 
         # TODO: pass on "whole" to govern browser link "deck:current" addition
@@ -146,65 +166,69 @@ class HeatmapCreator:
             "subdomain": mode["subDomain"],
             "range": mode["range"],
             "domLabForm": mode["domLabForm"],
-            "start": data["start"],
-            "stop": data["stop"],
-            "today": data["today"],
-            "offset": data["offset"],
+            "start": report.start,
+            "stop": report.stop,
+            "today": report.today,
+            "offset": report.offset,
             "legend": dynamic_legend,
-            "whole": self.whole,
+            "whole": not current_deck_only,
         }
 
         return html_heatmap.format(
-            options=json.dumps(options), data=json.dumps(data["activity"])
+            options=json.dumps(options), data=json.dumps(report.activity)
         )
 
-    def _generate_stats_elm(self, data: dict, dynamic_legend) -> str:
-        stat_levels = {"cards": list(zip(dynamic_legend, self.css_colors))}
-        stat_levels.update(self.stat_levels)
+    def _generate_stats_elm(self, data: ActivityReport, dynamic_legend) -> str:
+        dynamic_levels = self._get_dynamic_levels(dynamic_legend)
+        stats_formatting = self._stats_formatting
 
-        format_dict = {}
+        format_dict: Dict[str, str] = {}
+        stats_entry: StatsEntry
 
-        for name, stat_dict in data["stats"].items():
-            stype = stat_dict["type"]
-            value = stat_dict["value"]
-            levels = stat_levels[stype]
+        for name, stats_entry in data.stats._asdict().items():
+            stat_format = stats_formatting[stats_entry.type]
 
-            css_class = self.css_colors[0]
+            value = stats_entry.value
+            levels = stat_format.levels
+
+            if levels is None:
+                levels = dynamic_levels
+
+            css_class = self._css_colors[0]
             for threshold, css_class in levels:
                 if value <= threshold:
                     break
 
-            label = self._maybe_pluralize(value, self.stat_units[stype])
+            unit = stat_format.unit
+            label = self._maybe_pluralize(value, unit) if unit else str(value)
 
             format_dict["class_" + name] = css_class
             format_dict["text_" + name] = label
 
         return html_streak.format(**format_dict)
 
-    def _get_dynamic_legends(self, average: int) -> Tuple[List[float], List[float]]:
-        legend = self._dynamic_legend(average)
-        stats_legend: List[float] = [0] + legend  # type: ignore
-        heatmap_legend = self._heatmap_legend(legend)
-        return stats_legend, heatmap_legend
+    def _get_dynamic_levels(self, dynamic_legend) -> List[Tuple[int, str]]:
+        return list(zip(dynamic_legend, self._css_colors))
 
     def _heatmap_legend(self, legend: List[float]) -> List[float]:
         # Inverted negative legend for future dates. Allows us to
         # implement different color schemes for past and future without
         # having to modify cal-heatmap:
-        return [-i for i in legend[::-1]] + [0] + legend  # type: ignore
+        return [-i for i in legend[::-1]] + [0.0] + legend
+
+    def _stats_legend(self, legend: List[float]) -> List[float]:
+        return [0.0] + legend
 
     def _dynamic_legend(self, average: int) -> List[float]:
         # set default average if average too low for informational levels
         avg = max(20, average)
-        return [fct * avg for fct in self.legend_factors]
+        return [fct * avg for fct in self._dynamic_legend_factors]
 
     @staticmethod
-    def _maybe_pluralize(count: float, term: str) -> Union[str, float]:
-        if not term:
-            return count
+    def _maybe_pluralize(count: float, term: str) -> str:
         return "{} {}{}".format(str(count), term, "s" if abs(count) > 1 else "")
 
-    def _save_current_perf(self, data: dict):
+    def _save_current_perf(self, activity_report: ActivityReport):
         """
         Store current performance in mw object
 
@@ -213,6 +237,6 @@ class HeatmapCreator:
         Just a quick hack that allows us to assess user performance from
         other distant parts of the code / other add-ons
         """
-        mw._hmStreakMax = data["stats"]["streak_max"]["value"]
-        mw._hmStreakCur = data["stats"]["streak_cur"]["value"]
-        mw._hmActivityDailyAvg = data["stats"]["activity_daily_avg"]["value"]
+        mw._hmStreakMax = activity_report.stats.streak_max.value
+        mw._hmStreakCur = activity_report.stats.streak_cur.value
+        mw._hmActivityDailyAvg = activity_report.stats.activity_daily_avg.value

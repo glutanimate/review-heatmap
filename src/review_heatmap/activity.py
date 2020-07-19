@@ -82,18 +82,21 @@ class StatsType(Enum):
     percentage = 1
     cards = 2
 
+class StatsEntry(NamedTuple):
+    value: int
+    type: StatsType = StatsType.streak
 
-class StatsEntryStreak(NamedTuple):
+class StatsEntryStreak(StatsEntry):
     value: int
     type: StatsType = StatsType.streak
 
 
-class StatsEntryPercentage(NamedTuple):
+class StatsEntryPercentage(StatsEntry):
     value: int
     type: StatsType = StatsType.percentage
 
 
-class StatsEntryCards(NamedTuple):
+class StatsEntryCards(StatsEntry):
     value: int
     type: StatsType = StatsType.cards
 
@@ -127,7 +130,7 @@ class ActivityReporter:
     # Public API
     #########################################################################
 
-    def get_data(
+    def get_report(
         self,
         limhist: Optional[int] = None,
         limfcst: Optional[int] = None,
