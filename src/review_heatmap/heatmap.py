@@ -33,7 +33,7 @@
 Heatmap and stats elements generation
 """
 
-from typing import Dict, List, NamedTuple, Optional, Tuple
+from typing import Dict, List, MutableMapping, NamedTuple, Optional, Tuple
 
 from anki.utils import json
 from aqt.main import AnkiQt
@@ -41,15 +41,19 @@ from aqt.main import AnkiQt
 from .activity import ActivityReport, ActivityReporter, StatsEntry, StatsType
 from .config import heatmap_modes
 from .libaddon.platform import PLATFORM
-from .web_content import HTML_MAIN_ELEMENT, HTML_HEATMAP, HTML_STREAK, HTML_INFO_NODATA
 from .web_content import (
     CSS_DISABLE_HEATMAP,
     CSS_DISABLE_STATS,
-    CSS_PLATFORM_PREFIX,
     CSS_MODE_PREFIX,
+    CSS_PLATFORM_PREFIX,
     CSS_THEME_PREFIX,
     CSS_VIEW_PREFIX,
+    HTML_HEATMAP,
+    HTML_INFO_NODATA,
+    HTML_MAIN_ELEMENT,
+    HTML_STREAK,
 )
+
 
 # workaround for list comprehensions not working in class-scope
 def _compress_levels(colors, indices):
@@ -106,7 +110,7 @@ class HeatmapCreator:
         4.0,
     )
 
-    def __init__(self, mw: AnkiQt, config: Dict):
+    def __init__(self, mw: AnkiQt, config: MutableMapping):
         self._mw = mw
         self.config = config
         self.activity = ActivityReporter(self._mw.col, self.config)
