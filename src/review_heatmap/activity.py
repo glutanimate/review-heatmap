@@ -96,7 +96,7 @@ class ActivityReport(NamedTuple):
 
 
 class ActivityReporter:
-    def __init__(self, col: Collection, config: MutableMapping, whole: bool = False):
+    def __init__(self, col: Collection, config: MutableMapping):
         # NOTE: Binding the collection is dangerous if we ever persist ActivityReporter
         # across profile reloads
         self.col: Collection = col
@@ -104,7 +104,6 @@ class ActivityReporter:
         # NOTE: Refactor the following instance variables if we
         # ever decide to persist ActivityReporter objects across
         # multiple invocations (e.g. to cache results)
-        self._whole: bool = whole
         self._offset: int = self._get_col_offset()
         self._today: int = self._get_today(self._offset)
 
@@ -116,13 +115,20 @@ class ActivityReporter:
         limhist: Optional[int] = None,
         limfcst: Optional[int] = None,
         activity_type: ActivityType = ActivityType.reviews,
+        current_deck_only: bool = False,
     ) -> Optional[ActivityReport]:
 
         history_start, forecast_stop = self._get_time_limits(limhist, limfcst)
 
         if activity_type == ActivityType.reviews:
-            history = self._cards_done(start=history_start)
-            forecast = self._cards_due(start=self._today, stop=forecast_stop)
+            history = self._cards_done(
+                start=history_start, current_deck_only=current_deck_only
+            )
+            forecast = self._cards_due(
+                start=self._today,
+                stop=forecast_stop,
+                current_deck_only=current_deck_only,
+            )
 
             if not history:
                 return None
@@ -312,9 +318,9 @@ class ActivityReporter:
 
         return [d["id"] for d in self.col.decks.all() if d["id"] not in all_excluded]
 
-    def _did_limit(self) -> str:
+    def _did_limit(self, current_deck_only: bool) -> str:
         excluded_dids = self.config["synced"]["limdecks"]
-        if self._whole:
+        if current_deck_only:
             if excluded_dids:
                 dids = self._valid_decks(excluded_dids)
             else:
@@ -323,10 +329,10 @@ class ActivityReporter:
             dids = self.col.decks.active()
         return ids2str(dids)
 
-    def _revlog_limit(self) -> str:
+    def _revlog_limit(self, current_deck_only: bool) -> str:
         excluded_dids = self.config["synced"]["limdecks"]
         ignore_deleted = self.config["synced"]["limcdel"]
-        if self._whole:
+        if current_deck_only:
             if excluded_dids:
                 dids = self._valid_decks(excluded_dids)
             elif ignore_deleted:
@@ -344,7 +350,10 @@ class ActivityReporter:
     #########################################################################
 
     def _cards_due(
-        self, start: Optional[int] = None, stop: Optional[int] = None
+        self,
+        start: Optional[int] = None,
+        stop: Optional[int] = None,
+        current_deck_only: bool = False,
     ) -> List[Sequence[int]]:
         """[summary]
 
@@ -372,7 +381,7 @@ FROM cards
 WHERE did IN {} AND queue IN (2,3)
 {}
 GROUP BY day ORDER BY day""".format(
-            self._offset, self._did_limit(), lim
+            self._offset, self._did_limit(current_deck_only), lim
         )
 
         res: List[Sequence[int]] = self.col.db.all(cmd, self.col.sched.today)
@@ -382,7 +391,9 @@ GROUP BY day ORDER BY day""".format(
 
         return [i[:-1] for i in res]
 
-    def _cards_done(self, start: Optional[int] = None) -> List[Sequence[int]]:
+    def _cards_done(
+        self, start: Optional[int] = None, current_deck_only: bool = False
+    ) -> List[Sequence[int]]:
         """
         start: timestamp in seconds to start reporting from
 
@@ -408,7 +419,7 @@ GROUP BY day ORDER BY day""".format(
         if start is not None:
             lims.append("day >= {}".format(start))
 
-        deck_limit = self._revlog_limit()
+        deck_limit = self._revlog_limit(current_deck_only)
         if deck_limit:
             lims.append(deck_limit)
 
