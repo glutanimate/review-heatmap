@@ -33,7 +33,8 @@
 Heatmap and stats elements generation
 """
 
-from typing import Dict, List, MutableMapping, NamedTuple, Optional, Tuple
+from enum import Enum
+from typing import TYPE_CHECKING, Dict, List, NamedTuple, Optional, Tuple
 
 from anki.utils import json
 from aqt.main import AnkiQt
@@ -54,10 +55,19 @@ from .web_content import (
     HTML_STREAK,
 )
 
+if TYPE_CHECKING:
+    from .libaddon.anki.configmanager import ConfigManager
+
 
 # workaround for list comprehensions not working in class-scope
 def _compress_levels(colors, indices):
     return [colors[i] for i in indices]  # type: ignore
+
+
+class HeatmapView(Enum):
+    deckbrowser = 0
+    overview = 1
+    stats = 2
 
 
 class _StatsVisual(NamedTuple):
@@ -65,7 +75,7 @@ class _StatsVisual(NamedTuple):
     unit: Optional[str]
 
 
-class HeatmapCreator:
+class HeatmapRenderer:
 
     _css_colors: Tuple[str, str, str, str, str, str, str, str, str, str, str] = (
         "rh-col0",
@@ -110,14 +120,14 @@ class HeatmapCreator:
         4.0,
     )
 
-    def __init__(self, mw: AnkiQt, reporter: ActivityReporter, config: MutableMapping):
+    def __init__(self, mw: AnkiQt, reporter: ActivityReporter, config: "ConfigManager"):
         self._mw: AnkiQt = mw
-        self._config: MutableMapping = config
+        self._config: "ConfigManager" = config
         self._reporter: ActivityReporter = reporter
 
-    def generate(
+    def render(
         self,
-        view: str = "deckbrowser",
+        view: HeatmapView,
         limhist: Optional[int] = None,
         limfcst: Optional[int] = None,
         current_deck_only: bool = False,
@@ -136,7 +146,7 @@ class HeatmapCreator:
 
         classes = self._get_css_classes(view)
 
-        if prefs["display"][view]:
+        if prefs["display"][view.name]:
             heatmap = self._generate_heatmap_elm(
                 report, heatmap_legend, current_deck_only
             )
@@ -144,7 +154,7 @@ class HeatmapCreator:
             heatmap = ""
             classes.append(CSS_DISABLE_HEATMAP)
 
-        if prefs["display"][view] or prefs["statsvis"]:
+        if prefs["display"][view.name] or prefs["statsvis"]:
             stats = self._generate_stats_elm(report, stats_legend)
         else:
             stats = ""
@@ -157,13 +167,13 @@ class HeatmapCreator:
             content=heatmap + stats, classes=" ".join(classes)
         )
 
-    def _get_css_classes(self, view: str) -> List[str]:
+    def _get_css_classes(self, view: HeatmapView) -> List[str]:
         conf = self._config["synced"]
         classes = [
             f"{CSS_PLATFORM_PREFIX}-{PLATFORM}",
             f"{CSS_THEME_PREFIX}-{conf['colors']}",
             f"{CSS_MODE_PREFIX}-{conf['mode']}",
-            f"{CSS_VIEW_PREFIX}-{view}",
+            f"{CSS_VIEW_PREFIX}-{view.name}",
         ]
         return classes
 

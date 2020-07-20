@@ -41,7 +41,6 @@ from typing import (
     Optional,
     Sequence,
     Tuple,
-    MutableMapping,
     NamedTuple,
     TYPE_CHECKING,
 )
@@ -50,21 +49,11 @@ from enum import Enum
 from anki.utils import ids2str
 
 from .libaddon.debug import isDebuggingOn, logger
+from .libaddon.anki.configmanager import ConfigManager
 
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import DBProxy
-else:
-    try:
-        from anki.collection import Collection
-    except ImportError:
-        from anki.collection import _Collection as Collection
-
-    try:
-        from anki.dbproxy import DBProxy
-    except (ImportError, ModuleNotFoundError):
-        from anki.db import DB as DBProxy
-
 
 from .times import daystart_epoch
 from .errors import CollectionError
@@ -120,14 +109,14 @@ class ActivityReport(NamedTuple):
 
 
 class ActivityReporter:
-    def __init__(self, col: Collection, config: MutableMapping):
-        self._col: Collection
-        self._db: DBProxy
+    def __init__(self, col: "Collection", config: ConfigManager):
+        self._col: "Collection"
+        self._db: "DBProxy"
         self._offset: int
         self._today: int
         self._cached_reports: Dict[ActivityType, ActivityReport] = {}
 
-        self._config: MutableMapping = config
+        self._config: ConfigManager = config
         self.set_collection(col)
 
     # Public API
@@ -167,7 +156,7 @@ class ActivityReporter:
     def get_cached_report(self, activity_type: ActivityType):
         raise NotImplementedError
 
-    def set_collection(self, col: Collection):
+    def set_collection(self, col: "Collection"):
         # NOTE: Binding the collection is dangerous if we ever persist ActivityReporter
         # across profile reloads, so allow outside callers to update the collection
         # if necessary
@@ -179,6 +168,10 @@ class ActivityReporter:
         self._db = col.db
         self._offset = self._get_col_offset()
         self._today = self._get_today(self._offset)
+
+    def unload_collection(self):
+        self._col = None
+        self._db = None
 
     # Activity calculations
     #########################################################################
