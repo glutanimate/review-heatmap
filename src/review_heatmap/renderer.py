@@ -125,6 +125,8 @@ class HeatmapRenderer:
         self._config: "ConfigManager" = config
         self._reporter: ActivityReporter = reporter
 
+    # TODO: Consider caching on the render-level
+
     def render(
         self,
         view: HeatmapView,

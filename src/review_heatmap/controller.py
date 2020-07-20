@@ -40,10 +40,9 @@ from aqt.main import AnkiQt
 from .activity import ActivityReporter
 from .renderer import HeatmapRenderer, HeatmapView
 from .web_bridge import HeatmapBridge
-from .errors import CollectionError, ReviewHeatmapError
+from .errors import CollectionError
 
 if TYPE_CHECKING:
-    from anki.collection import Collection
     from .libaddon.anki.configmanager import ConfigManager
 
 
@@ -54,30 +53,6 @@ class HeatmapController:
 
         self._bridge: Optional[HeatmapBridge] = HeatmapBridge(self._mw, self._config)
         self._bridge.register()
-        self._reporter: Optional[ActivityReporter] = None
-        self._renderer: Optional[HeatmapRenderer] = None
-
-    def register(self):
-        try:
-            from aqt.gui_hooks import collection_did_load, profile_will_close
-
-            # FIXME: gui_hooks.collection_did_load instead doesn't have equivalent
-            # for unloading collection unfortunately (to account for unloading during
-            # sync, etc.)
-            collection_did_load.append(self._on_collection_did_load)
-            profile_will_close.append(self._on_profile_will_close)
-        except (ImportError, ModuleNotFoundError):
-            from anki.hooks import addHook
-
-            addHook("colLoading", self._on_collection_did_load)
-            addHook("unloadProfile", self._on_profile_will_close)
-
-        # FIXME: Submit hook PR for current Anki, only use this on legacy
-        from anki.hooks import wrap
-
-        AnkiQt.unloadCollection = wrap(
-            AnkiQt.unloadCollection, self._on_collection_will_unload, "before"
-        )
 
     def render_for_view(
         self,
@@ -86,31 +61,17 @@ class HeatmapController:
         limfcst: Optional[int] = None,
         current_deck_only: bool = False,
     ) -> str:
-        if not self._renderer:
-            # colLoading is not reliable on legacy Anki, so attempt to
-            # initialize on demand
-            self._on_collection_did_load(self._mw.col)
-            if not self._renderer:
-                raise ReviewHeatmapError("Could not initalize heatmap renderer.")
-        return self._renderer.render(view, limhist, limfcst, current_deck_only)
-
-    def _on_collection_did_load(self, col: "Optional[Collection]"):
+        col = self._mw.col
         if not col:
-            raise CollectionError("Collection not properly initialized.")
+            raise CollectionError("Anki collection and/or database is not ready")
 
-        self._reporter = ActivityReporter(col, self._config)
-        self._renderer = HeatmapRenderer(self._mw, self._reporter, self._config)
+        reporter = ActivityReporter(col, self._config)
+        renderer = HeatmapRenderer(self._mw, reporter, self._config)
 
-    def _on_collection_will_unload(self, *args):
-        self._reporter.unload_collection()
-
-    def _on_profile_will_close(self):
-        self._reporter.unload_collection()
-        # TODO: more unloading needed?
+        return renderer.render(view, limhist, limfcst, current_deck_only)
 
 
 def initialize_controller(mw: "AnkiQt", config: "ConfigManager") -> HeatmapController:
     controller = HeatmapController(mw, config)
-    controller.register()
     mw._review_heatmap = controller
     return controller

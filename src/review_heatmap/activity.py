@@ -114,7 +114,6 @@ class ActivityReporter:
         self._db: "DBProxy"
         self._offset: int
         self._today: int
-        self._cached_reports: Dict[ActivityType, ActivityReport] = {}
 
         self._config: ConfigManager = config
         self.set_collection(col)
@@ -152,9 +151,6 @@ class ActivityReporter:
             )
 
         return activity_report
-
-    def get_cached_report(self, activity_type: ActivityType):
-        raise NotImplementedError
 
     def set_collection(self, col: "Collection"):
         # NOTE: Binding the collection is dangerous if we ever persist ActivityReporter
