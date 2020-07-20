@@ -65,6 +65,8 @@ def add_finders(self, col):
 # CURRENT
 ######################################################################
 
+# FIXME: No longer works in combination with other search specifiers
+# e.g. deck:current, which we actually add in the overview view
 
 def _find_cards_reviewed_between(start_date: int, end_date: int) -> List[int]:
     # select from cards instead of just selecting uniques from revlog
