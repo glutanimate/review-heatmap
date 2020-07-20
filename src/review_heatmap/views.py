@@ -127,7 +127,9 @@ class OverviewInjector(HeatmapInjector):
             overview_will_render_content.append(self.overview_will_render_content)
         except (ImportError, ModuleNotFoundError):
             Overview._body = self._overview_body
-            Overview._renderPage = self.on_legacy_overview_render_page
+            Overview._renderPage = wrap(
+                Overview._renderPage, self.on_legacy_overview_render_page, "around"
+            )
 
     def overview_will_render_content(
         self, overview: Overview, content: "OverviewContent"
@@ -137,7 +139,7 @@ class OverviewInjector(HeatmapInjector):
         )
         content.table += heatmap_html
 
-    def on_legacy_overview_render_page(self, overview: Overview):
+    def on_legacy_overview_render_page(self, overview: Overview, _old: Callable):
         """Replace original _renderPage()
         We use this instead of _table() in order to stay compatible
         with other add-ons
@@ -177,10 +179,11 @@ class OverviewInjector(HeatmapInjector):
 
 # TODO: NewDeckStats
 
+
 class DeckStatsInjector(HeatmapInjector):
-    
+
     _view = HeatmapView.stats
-    
+
     def register(self):
         CollectionStats.dueGraph = wrap(
             CollectionStats.dueGraph, self.on_collection_stats_due_graph, "around"
@@ -226,13 +229,12 @@ class DeckStatsInjector(HeatmapInjector):
         return new_html
 
 
-
 def initialize_views(controller: HeatmapController):
     deck_browser_injector = DeckBrowserInjector(controller)
     deck_browser_injector.register()
-    
+
     overview_injector = OverviewInjector(controller)
     overview_injector.register()
-    
+
     deck_stats_injector = DeckStatsInjector(controller)
     deck_stats_injector.register()
