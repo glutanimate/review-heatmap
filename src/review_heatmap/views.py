@@ -56,7 +56,7 @@ if TYPE_CHECKING:
 ######################################################################
 
 
-def toggleHeatmap():
+def toggle_heatmap():
     """Toggle heatmap display on demand"""
     state = mw.state.lower()
     hm_active = config["profile"]["display"].get(state, None)
@@ -67,7 +67,7 @@ def toggleHeatmap():
     mw.reset()
 
 
-def initializeHotkey():
+def initialize_hotkey():
     """
     Create toggle action if it does not exist, yet, and assign it the
     hotkey defined in the user config
@@ -75,7 +75,7 @@ def initializeHotkey():
     toggle_action = getattr(mw, "_hmToggleAction", None)
 
     if toggle_action is None:
-        toggle_action = QAction(mw, triggered=toggleHeatmap)
+        toggle_action = QAction(mw, triggered=toggle_heatmap)
         mw.addAction(toggle_action)
         mw._hmToggleAction = toggle_action
 
@@ -92,7 +92,7 @@ def initializeHotkey():
 ######################################################################
 
 
-def deckbrowserRenderStats(self, _old) -> str:
+def on_deckbrowser_render_stats(self, _old) -> str:
     """Add heatmap to _renderStats() return"""
     # self is deckbrowser
     ret = _old(self)
@@ -116,7 +116,7 @@ ov_body: str = """
 """
 
 
-def overviewRenderPage(self):
+def on_overview_render_page(self):
     """Replace original _renderPage()
     We use this instead of _table() in order to stay compatible
     with other add-ons
@@ -152,7 +152,7 @@ def overviewRenderPage(self):
 ######################################################################
 
 
-def collectionStatsDueGraph(self, _old) -> str:
+def on_collection_stats_due_graph(self, _old) -> str:
     """Wraps dueGraph and adds our heatmap to the stats screen"""
     # self is anki.stats.CollectionStats
     ret = _old(self)
@@ -167,13 +167,13 @@ def collectionStatsDueGraph(self, _old) -> str:
     return report + ret
 
 
-def deckStatsInit21(self, mw):
+def on_deck_stats_init(self, mw):
     self.form.web.onBridgeCmd = self._linkHandler
     # refresh heatmap on options change:
     addHook("reset", self.refresh)
 
 
-def deckStatsReject(self):
+def on_deck_stats_reject(self):
     # clean up after ourselves:
     remHook("reset", self.refresh)
 
@@ -206,26 +206,26 @@ def initialize_views():
         overview_will_render_content.append(on_overview_will_render_content)
     except (ImportError, ModuleNotFoundError):
         Overview._body = ov_body
-        Overview._renderPage = overviewRenderPage
+        Overview._renderPage = on_overview_render_page
         DeckBrowser._renderStats = wrap(
-            DeckBrowser._renderStats, deckbrowserRenderStats, "around"
+            DeckBrowser._renderStats, on_deckbrowser_render_stats, "around"
         )
 
     # TODO: Submit Anki PR to add hook to CollectionStats.report
     CollectionStats.dueGraph = wrap(
-        CollectionStats.dueGraph, collectionStatsDueGraph, "around"
+        CollectionStats.dueGraph, on_collection_stats_due_graph, "around"
     )
-    DeckStats.__init__ = wrap(DeckStats.__init__, deckStatsInit21, "after")
-    DeckStats.reject = wrap(DeckStats.reject, deckStatsReject)
+    DeckStats.__init__ = wrap(DeckStats.__init__, on_deck_stats_init, "after")
+    DeckStats.reject = wrap(DeckStats.reject, on_deck_stats_reject)
 
     # Initially set up hotkey:
     # TODO: Migrate to config.json storage, so that profile hook is not required
     try:
         from aqt.gui_hooks import profile_did_open
 
-        profile_did_open.append(initializeHotkey)
+        profile_did_open.append(initialize_hotkey)
     except (ImportError, ModuleNotFoundError):
-        addHook("profileLoaded", initializeHotkey)
+        addHook("profileLoaded", initialize_hotkey)
 
     # Update hotkey on config save:
-    addHook("config_saved_heatmap", initializeHotkey)
+    addHook("config_saved_heatmap", initialize_hotkey)
