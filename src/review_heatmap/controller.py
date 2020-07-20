@@ -72,6 +72,13 @@ class HeatmapController:
             addHook("colLoading", self._on_collection_did_load)
             addHook("unloadProfile", self._on_profile_will_close)
 
+        # FIXME: Submit hook PR for current Anki, only use this on legacy
+        from anki.hooks import wrap
+
+        AnkiQt.unloadCollection = wrap(
+            AnkiQt.unloadCollection, self._on_collection_will_unload, "before"
+        )
+
     def render_for_view(
         self,
         view: HeatmapView,
@@ -87,12 +94,15 @@ class HeatmapController:
                 raise ReviewHeatmapError("Could not initalize heatmap renderer.")
         return self._renderer.render(view, limhist, limfcst, current_deck_only)
 
-    def _on_collection_did_load(self, col: Optional["Collection"]):
+    def _on_collection_did_load(self, col: "Optional[Collection]"):
         if not col:
             raise CollectionError("Collection not properly initialized.")
 
         self._reporter = ActivityReporter(col, self._config)
         self._renderer = HeatmapRenderer(self._mw, self._reporter, self._config)
+
+    def _on_collection_will_unload(self, *args):
+        self._reporter.unload_collection()
 
     def _on_profile_will_close(self):
         self._reporter.unload_collection()
