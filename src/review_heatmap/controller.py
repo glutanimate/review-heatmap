@@ -98,6 +98,7 @@ class HeatmapController:
         return self._renderer.render(view, limhist, limfcst, current_deck_only)
 
 
-def initialize_controller(mw: "AnkiQt", config: "ConfigManager"):
+def initialize_controller(mw: "AnkiQt", config: "ConfigManager") -> HeatmapController:
     controller = HeatmapController(mw, config)
     mw._review_heatmap = controller
+    return controller

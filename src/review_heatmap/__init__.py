@@ -61,15 +61,22 @@ def initialize_addon():
 
     maybeStartDebugging()
 
+    from aqt import mw
+
+    from .config import config as config_manager
     from .gui import initialize_qt_resources
     from .gui.options import initialize_options
+    from .controller import initialize_controller
     from .views import initialize_views
-    from .links import initialize_links
+
+    if not mw:
+        return
 
     initialize_qt_resources()
     initialize_options()
-    initialize_views()
-    initialize_links()
+    
+    controller = initialize_controller(mw, config_manager)
+    initialize_views(controller)
 
 
 initialize_addon()
