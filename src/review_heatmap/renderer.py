@@ -75,6 +75,13 @@ class _StatsVisual(NamedTuple):
     unit: Optional[str]
 
 
+class _RenderCache(NamedTuple):
+    html: str
+    arguments: Tuple[HeatmapView, Optional[int], Optional[int], bool]
+    deck: int
+    col_mod: int
+
+
 class HeatmapRenderer:
 
     _css_colors: Tuple[str, str, str, str, str, str, str, str, str, str, str] = (
@@ -124,6 +131,7 @@ class HeatmapRenderer:
         self._mw: AnkiQt = mw
         self._config: "ConfigManager" = config
         self._reporter: ActivityReporter = reporter
+        self._render_cache: Optional[_RenderCache] = None
 
     # TODO: Consider caching on the render-level
 
@@ -134,6 +142,11 @@ class HeatmapRenderer:
         limfcst: Optional[int] = None,
         current_deck_only: bool = False,
     ) -> str:
+        if self._render_cache and self._cache_still_valid(
+            view, limhist, limfcst, current_deck_only
+        ):
+            return self._render_cache.html
+
         prefs = self._config["profile"]
 
         report = self._reporter.get_report(
@@ -165,8 +178,30 @@ class HeatmapRenderer:
         if not current_deck_only:
             self._save_current_perf(report)
 
-        return HTML_MAIN_ELEMENT.format(
+        render = HTML_MAIN_ELEMENT.format(
             content=heatmap + stats, classes=" ".join(classes)
+        )
+
+        self._render_cache = _RenderCache(
+            html=render, arguments=(view, limhist, limfcst, current_deck_only),
+            deck=self._mw.col.decks.current(), col_mod=self._mw.col.mod
+        )
+
+        return render
+
+    def set_activity_reporter(self, reporter: ActivityReporter):
+        self._reporter = reporter
+
+    def invalidate_cache(self):
+        self._render_cache = None
+
+    def _cache_still_valid(self, view, limhist, limfcst, current_deck_only) -> bool:
+        cache = self._render_cache
+        return (
+            not self._mw.col.db.mod  # type: ignore
+            and self._mw.col.mod == cache.col_mod  # type: ignore
+            and (view, limhist, limfcst, current_deck_only) == cache.arguments  # type: ignore
+            and (not current_deck_only or cache.deck == self._mw.col.decks.current())
         )
 
     def _get_css_classes(self, view: HeatmapView) -> List[str]:
