@@ -342,7 +342,7 @@ class ActivityReporter:
 
     def _did_limit(self, current_deck_only: bool) -> str:
         excluded_dids = self._config["synced"]["limdecks"]
-        if current_deck_only:
+        if not current_deck_only:
             if excluded_dids:
                 dids = self._valid_decks(excluded_dids)
             else:
@@ -354,7 +354,7 @@ class ActivityReporter:
     def _revlog_limit(self, current_deck_only: bool) -> str:
         excluded_dids = self._config["synced"]["limdecks"]
         ignore_deleted = self._config["synced"]["limcdel"]
-        if current_deck_only:
+        if not current_deck_only:
             if excluded_dids:
                 dids = self._valid_decks(excluded_dids)
             elif ignore_deleted:
