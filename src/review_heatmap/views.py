@@ -91,11 +91,11 @@ class DeckBrowserInjector(HeatmapInjector):
         content.stats += heatmap_html
 
     def on_legacy_deckbrowser_render_stats(
-        self, deck_browser: DeckBrowser, _old_render_stats
+        self, deck_browser: DeckBrowser, _old
     ) -> str:
         """Add heatmap to _renderStats() return"""
         # self is deckbrowser
-        original_html = _old_render_stats(deck_browser)
+        original_html = _old(deck_browser)
         heatmap_html = self._controller.render_for_view(self._view)
         new_html = original_html + heatmap_html
         return new_html

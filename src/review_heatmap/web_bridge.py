@@ -100,10 +100,10 @@ class HeatmapBridge:
         return (True, ret)
 
     def bridge_legacy(
-        self, context: SUPPORTED_CONTEXT_TYPES, url: str, _old_handler=None
+        self, context: SUPPORTED_CONTEXT_TYPES, url: str, _old=None
     ) -> Any:
         if not url.startswith(self._identifier):
-            return None if not _old_handler else _old_handler(self, url)
+            return None if not _old else _old(self, url)
 
         return self._handle_message(url, context)
 
