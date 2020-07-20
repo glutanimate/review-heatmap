@@ -128,10 +128,12 @@ COMMAND_HANDLER_TYPE = Callable[
     ["_CommandHandler", Any, SUPPORTED_CONTEXT_TYPES], Optional[Any]
 ]
 
+_command_handler_registry: Dict[str, COMMAND_HANDLER_TYPE] = {}
+
 
 def _register_command_handler(cmd: str):
     def decorator(method: COMMAND_HANDLER_TYPE):
-        _CommandHandler._handler_registry[cmd] = method
+        _command_handler_registry[cmd] = method
 
     return decorator
 
@@ -150,7 +152,7 @@ class _CommandHandler:
         payload: Any,
         context: Union[DeckBrowser, Overview, DeckStats],
     ) -> Any:
-        handler = self._handler_registry.get(command)
+        handler = _command_handler_registry.get(command)
 
         # TODO: handle no handler more expressively
         if not handler:
