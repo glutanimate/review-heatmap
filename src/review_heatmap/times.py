@@ -33,18 +33,14 @@
 Shared datetime/timezone handling
 """
 
-from typing import Union
+from typing import Union, TYPE_CHECKING
 
-
-try:
+if TYPE_CHECKING:
     from anki.dbproxy import DBProxy
-except (ImportError, ModuleNotFoundError):
-    # legacy
-    from anki.db import DB as DBProxy  # type: ignore
 
 
 def daystart_epoch(
-    db: DBProxy,
+    db: "DBProxy",
     time_specifier: Union[str, int],
     is_timestamp: bool = True,
     offset: int = 0,
