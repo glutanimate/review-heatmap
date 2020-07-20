@@ -33,46 +33,83 @@
 Integration with Anki views
 """
 
-from typing import TYPE_CHECKING
-
-from PyQt5.QtWidgets import QAction
-from PyQt5.QtGui import QKeySequence
+from abc import ABC
+from typing import TYPE_CHECKING, Callable, Optional
 
 from anki.hooks import addHook, remHook, wrap
 from anki.stats import CollectionStats
-from aqt import mw
 from aqt.deckbrowser import DeckBrowser
+from aqt.main import AnkiQt
 from aqt.overview import Overview
 from aqt.stats import DeckStats
 
-from .config import config
+from .controller import HeatmapController
+from .renderer import HeatmapView
 
 if TYPE_CHECKING:
     from aqt.deckbrowser import DeckBrowserContent
     from aqt.overview import OverviewContent
 
-######################################################################
-# LEGACY
-######################################################################
+
+class HeatmapInjector(ABC):
+
+    _view: HeatmapView
+
+    def __init__(self, controller: HeatmapController):
+        self._controller = controller
+
+    def register(self):
+        ...
 
 
 # Deck Browser (Main view)
 ######################################################################
 
 
-def on_deckbrowser_render_stats(self, _old) -> str:
-    """Add heatmap to _renderStats() return"""
-    # self is deckbrowser
-    ret = _old(self)
-    hmap = HeatmapCreator(config, whole=True)
-    html = ret + hmap.generate(view="deckbrowser")
-    return html
+class DeckBrowserInjector(HeatmapInjector):
+
+    _view = HeatmapView.deckbrowser
+
+    def register(self):
+        try:
+            from aqt.gui_hooks import deck_browser_will_render_content
+
+            deck_browser_will_render_content.append(
+                self.on_deckbrowser_will_render_content
+            )
+        except (ImportError, ModuleNotFoundError):
+            DeckBrowser._renderStats = wrap(
+                DeckBrowser._renderStats,
+                self.on_legacy_deckbrowser_render_stats,
+                "around",
+            )
+
+    def on_deckbrowser_will_render_content(
+        self, deck_browser: DeckBrowser, content: "DeckBrowserContent"
+    ):
+        heatmap_html = self._controller.render_for_view(self._view)
+        content.stats += heatmap_html
+
+    def on_legacy_deckbrowser_render_stats(
+        self, deck_browser: DeckBrowser, _old_render_stats
+    ) -> str:
+        """Add heatmap to _renderStats() return"""
+        # self is deckbrowser
+        original_html = _old_render_stats(deck_browser)
+        heatmap_html = self._controller.render_for_view(self._view)
+        new_html = original_html + heatmap_html
+        return new_html
 
 
 # Overview (Deck view)
 ######################################################################
 
-ov_body: str = """
+
+class OverviewInjector(HeatmapInjector):
+
+    _view = HeatmapView.overview
+
+    _overview_body: str = """
 <center>
 <h3>%(deck)s</h3>
 %(shareLink)s
@@ -83,105 +120,119 @@ ov_body: str = """
 <script>$(function () { $("#study").focus(); });</script>
 """
 
+    def register(self):
+        try:
+            from aqt.gui_hooks import overview_will_render_content
 
-def on_overview_render_page(self):
-    """Replace original _renderPage()
-    We use this instead of _table() in order to stay compatible
-    with other add-ons
-    (add-ons like more overview stats overwrite _table())
-    TODO: consider using onProfileLoaded instead
-    """
-    # self is overview
-    deck = self.mw.col.decks.current()
-    self.sid = deck.get("sharedFrom")
-    if self.sid:
-        self.sidVer = deck.get("ver", None)
-        shareLink = '<a class=smallLink href="review">Reviews and Updates</a>'
-    else:
-        shareLink = ""
+            overview_will_render_content.append(self.overview_will_render_content)
+        except (ImportError, ModuleNotFoundError):
+            Overview._body = self._overview_body
+            Overview._renderPage = self.on_legacy_overview_render_page
 
-    hmap = HeatmapCreator(config, whole=False)
+    def overview_will_render_content(
+        self, overview: Overview, content: "OverviewContent"
+    ):
+        heatmap_html = self._controller.render_for_view(
+            self._view, current_deck_only=True
+        )
+        content.table += heatmap_html
 
-    self.web.stdHtml(
-        self._body
-        % dict(
-            deck=deck["name"],
-            shareLink=shareLink,
-            desc=self._desc(deck),
-            table=self._table(),
-            stats=hmap.generate(view="overview"),
-        ),
-        css=["overview.css"],
-        js=["jquery.js", "overview.js"],
-    )
+    def on_legacy_overview_render_page(self, overview: Overview):
+        """Replace original _renderPage()
+        We use this instead of _table() in order to stay compatible
+        with other add-ons
+        (add-ons like more overview stats overwrite _table())
+        TODO: consider using onProfileLoaded instead
+        """
+        # self is overview
 
+        deck = overview.mw.col.decks.current()
+        overview.sid = deck.get("sharedFrom")
+        if overview.sid:
+            overview.sidVer = deck.get("ver", None)
+            shareLink = '<a class=smallLink href="review">Reviews and Updates</a>'
+        else:
+            shareLink = ""
 
-# CollectionStats (Stats window)
-######################################################################
-
-
-def on_collection_stats_due_graph(self, _old) -> str:
-    """Wraps dueGraph and adds our heatmap to the stats screen"""
-    # self is anki.stats.CollectionStats
-    ret = _old(self)
-    if self.type == 0:
-        limhist, limfcst = 31, 31
-    elif self.type == 1:
-        limhist, limfcst = 365, 365
-    elif self.type == 2:
-        limhist, limfcst = None, None
-    hmap = HeatmapCreator(config, whole=self.wholeCollection)
-    report = hmap.generate(view="stats", limhist=limhist, limfcst=limfcst)
-    return report + ret
-
-
-def on_deck_stats_init(self, mw):
-    self.form.web.onBridgeCmd = self._linkHandler
-    # refresh heatmap on options change:
-    addHook("reset", self.refresh)
-
-
-def on_deck_stats_reject(self):
-    # clean up after ourselves:
-    remHook("reset", self.refresh)
-
-
-######################################################################
-# NEW HOOKS
-######################################################################
-
-
-def on_deckbrowser_will_render_content(
-    deck_browser: DeckBrowser, content: "DeckBrowserContent"
-):
-    heatmap = HeatmapCreator(config, whole=True)
-    content.stats += heatmap.generate(view="deckbrowser")
-
-
-def on_overview_will_render_content(overview: Overview, content: "OverviewContent"):
-    heatmap = HeatmapCreator(config, whole=False)
-    content.table += heatmap.generate(view="overview")
-
-
-def initialize_views():
-    try:
-        from aqt.gui_hooks import (
-            deck_browser_will_render_content,
-            overview_will_render_content,
+        heatmap_html = self._controller.render_for_view(
+            self._view, current_deck_only=True
         )
 
-        deck_browser_will_render_content.append(on_deckbrowser_will_render_content)
-        overview_will_render_content.append(on_overview_will_render_content)
-    except (ImportError, ModuleNotFoundError):
-        Overview._body = ov_body
-        Overview._renderPage = on_overview_render_page
-        DeckBrowser._renderStats = wrap(
-            DeckBrowser._renderStats, on_deckbrowser_render_stats, "around"
+        overview.web.stdHtml(
+            overview._body
+            % dict(
+                deck=deck["name"],
+                shareLink=shareLink,
+                desc=overview._desc(deck),
+                table=overview._table(),
+                stats=heatmap_html,
+            ),
+            css=["overview.css"],
+            js=["jquery.js", "overview.js"],
         )
 
-    # TODO: Submit Anki PR to add hook to CollectionStats.report
-    CollectionStats.dueGraph = wrap(
-        CollectionStats.dueGraph, on_collection_stats_due_graph, "around"
-    )
-    DeckStats.__init__ = wrap(DeckStats.__init__, on_deck_stats_init, "after")
-    DeckStats.reject = wrap(DeckStats.reject, on_deck_stats_reject)
+
+# Legacy stats window
+######################################################################
+
+# TODO: NewDeckStats
+
+class DeckStatsInjector(HeatmapInjector):
+    
+    _view = HeatmapView.stats
+    
+    def register(self):
+        CollectionStats.dueGraph = wrap(
+            CollectionStats.dueGraph, self.on_collection_stats_due_graph, "around"
+        )
+        DeckStats.__init__ = wrap(DeckStats.__init__, self.on_deck_stats_init, "after")
+        DeckStats.reject = wrap(DeckStats.reject, self.on_deck_stats_reject, "after")
+
+    def on_deck_stats_init(self, deck_stats: DeckStats, mw: AnkiQt):
+        deck_stats.form.web.onBridgeCmd = deck_stats._linkHandler
+        # refresh heatmap on options change:
+        addHook("reset", deck_stats.refresh)
+
+    def on_deck_stats_reject(self, deck_stats):
+        # clean up after ourselves:
+        remHook("reset", deck_stats.refresh)
+
+    def on_collection_stats_due_graph(
+        self, collection_stats: CollectionStats, _old_due_graph: Callable
+    ) -> str:
+        """Wraps dueGraph and adds our heatmap to the stats screen"""
+        # self is anki.stats.CollectionStats
+        original_html = _old_due_graph(collection_stats)
+
+        limhist: Optional[int] = None
+        limfcst: Optional[int] = None
+
+        if collection_stats.type == 0:
+            limhist, limfcst = 31, 31
+        elif collection_stats.type == 1:
+            limhist, limfcst = 365, 365
+        elif collection_stats.type == 2:
+            limhist, limfcst = None, None
+
+        heatmap_html = self._controller.render_for_view(
+            self._view,
+            limhist=limhist,
+            limfcst=limfcst,
+            current_deck_only=collection_stats.wholeCollection,
+        )
+
+        new_html = original_html + heatmap_html
+
+        return new_html
+
+
+
+def initialize_views(controller: HeatmapController):
+    deck_browser_injector = DeckBrowserInjector(controller)
+    deck_browser_injector.register()
+    
+    overview_injector = OverviewInjector(controller)
+    overview_injector.register()
+    
+    deck_stats_injector = DeckStatsInjector(controller)
+    deck_stats_injector.register()
