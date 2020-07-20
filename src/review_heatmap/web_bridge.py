@@ -103,7 +103,7 @@ class HeatmapBridge:
         self, context: SUPPORTED_CONTEXT_TYPES, url: str, _old=None
     ) -> Any:
         if not url.startswith(self._identifier):
-            return None if not _old else _old(self, url)
+            return None if not _old else _old(context, url)
 
         return self._handle_message(url, context)
 
