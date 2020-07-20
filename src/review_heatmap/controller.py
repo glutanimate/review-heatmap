@@ -43,6 +43,7 @@ from .web_bridge import HeatmapBridge
 from .errors import CollectionError
 
 if TYPE_CHECKING:
+    from anki.collection import Collection
     from .libaddon.anki.configmanager import ConfigManager
 
 
@@ -51,35 +52,32 @@ class HeatmapController:
         self._mw = mw
         self._config: ConfigManager = config
 
-        self._bridge: Optional[HeatmapBridge] = None
+        self._bridge: Optional[HeatmapBridge] = HeatmapBridge(self._mw, self._config)
+        self._bridge.register()
         self._reporter: Optional[ActivityReporter] = None
         self._renderer: Optional[HeatmapRenderer] = None
 
     def register(self):
-        self._bridge.register()
         try:
-            from aqt.gui_hooks import profile_did_open, profile_will_close
+            from aqt.gui_hooks import collection_did_load, profile_will_close
 
-            # TODO: Use gui_hooks.collection_did_load instead? Doesn't have equivalent
-            # for unloading collection, unfortunately (to account for unloading during
+            # FIXME: gui_hooks.collection_did_load instead doesn't have equivalent
+            # for unloading collection unfortunately (to account for unloading during
             # sync, etc.)
-            profile_did_open.append(self.on_profile_did_open)
+            collection_did_load.append(self.on_collection_did_load)
             profile_will_close.append(self.on_profile_will_close)
         except (ImportError, ModuleNotFoundError):
             from anki.hooks import addHook
 
-            addHook("profileLoaded", self.on_profile_did_open)
+            addHook("colLoading", self.on_collection_did_load)
             addHook("unloadProfile", self.on_profile_will_close)
 
-    def on_profile_did_open(self):
+    def on_collection_did_load(self, col: "Collection"):
         if not self._mw.col:
             raise CollectionError()
-        
-        self._bridge: Optional[HeatmapBridge] = HeatmapBridge(self._mw, self._config)
+
         self._reporter = ActivityReporter(self._mw.col, self._config)
-        self._renderer: Optional[HeatmapRenderer] = HeatmapRenderer(
-            self._mw, self._reporter, self._config
-        )
+        self._renderer = HeatmapRenderer(self._mw, self._reporter, self._config)
 
     def on_profile_will_close(self):
         self._reporter.unload_collection()
@@ -94,11 +92,12 @@ class HeatmapController:
     ) -> str:
         if not self._renderer:
             # TODO: better handling
-            raise Exception
+            raise Exception("Heatmap renderer not ready")
         return self._renderer.render(view, limhist, limfcst, current_deck_only)
 
 
 def initialize_controller(mw: "AnkiQt", config: "ConfigManager") -> HeatmapController:
     controller = HeatmapController(mw, config)
+    controller.register()
     mw._review_heatmap = controller
     return controller
