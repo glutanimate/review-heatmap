@@ -158,7 +158,7 @@ class _CommandHandler:
         if not handler:
             return None
 
-        return handler(payload, context)  # type: ignore
+        return handler(self, payload, context)  # type: ignore
 
     @_register_command_handler("browse")
     def browse(self, search: str, context: SUPPORTED_CONTEXT_TYPES) -> None:
