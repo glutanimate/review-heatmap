@@ -87,7 +87,8 @@ class HeatmapBridge:
             DeckBrowser._linkHandler = wrap(
                 DeckBrowser._linkHandler, self.bridge_legacy, "around"
             )
-            DeckStats._linkHandler = self.bridge_legacy
+
+        DeckStats._linkHandler = lambda context, url: self.bridge_legacy(context, url)
 
     def bridge(self, handled: HANDLED_TYPE, message: str, context: Any) -> HANDLED_TYPE:
         if not message.startswith(self._identifier):
