@@ -86,7 +86,6 @@ class RevHmOptions(OptionsDialog):
             ),
         ),
         ("form.cbLimDel", (("value", {"dataPath": "synced/limcdel"}),)),
-        ("form.keyGrabToggle", (("value", {"dataPath": "profile/hotkeys/toggle"}),)),
         (
             "form.listDecks",
             (

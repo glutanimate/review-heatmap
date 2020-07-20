@@ -181,7 +181,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -612,43 +612,6 @@ with a coffee</string>
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Minimum</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <layout class="QGridLayout" name="layoutHotkey">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Heatmap toggle hotkey:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QKeyGrabButton" name="keyGrabToggle">
-           <property name="focusPolicy">
-            <enum>Qt::TabFocus</enum>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
         <spacer name="verticalSpacer_6">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -659,7 +622,7 @@ with a coffee</string>
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>10</height>
+           <height>20</height>
           </size>
          </property>
         </spacer>
@@ -788,13 +751,6 @@ with a coffee</string>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QKeyGrabButton</class>
-   <extends>QPushButton</extends>
-   <header>....libaddon.gui.basic.widgets.qkeygrabber</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>btnPatreon</tabstop>
@@ -810,7 +766,6 @@ with a coffee</string>
   <tabstop>spinLimHist</tabstop>
   <tabstop>spinLimFcst</tabstop>
   <tabstop>cbLimDel</tabstop>
-  <tabstop>keyGrabToggle</tabstop>
   <tabstop>listDecks</tabstop>
   <tabstop>btnDeckAdd</tabstop>
   <tabstop>btnDeckDel</tabstop>

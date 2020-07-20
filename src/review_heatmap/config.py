@@ -86,7 +86,7 @@ config_defaults: Dict[str, Dict] = {
     "profile": {
         "display": {"deckbrowser": True, "overview": True, "stats": True},
         "statsvis": True,
-        "hotkeys": {"toggle": "Ctrl+R"},
+        "hotkeys": {},
         "version": ADDON.VERSION,
     },
 }

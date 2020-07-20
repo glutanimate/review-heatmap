@@ -46,42 +46,10 @@ from aqt.overview import Overview
 from aqt.stats import DeckStats
 
 from .config import config
-from .heatmap import HeatmapCreator
 
 if TYPE_CHECKING:
     from aqt.deckbrowser import DeckBrowserContent
     from aqt.overview import OverviewContent
-
-# Common
-######################################################################
-
-
-def toggle_heatmap():
-    """Toggle heatmap display on demand"""
-    state = mw.state.lower()
-    hm_active = config["profile"]["display"].get(state, None)
-    if hm_active is None:
-        # unrecognized mw state
-        return False
-    config["profile"]["display"][state] = not hm_active
-    mw.reset()
-
-
-def initialize_hotkey():
-    """
-    Create toggle action if it does not exist, yet, and assign it the
-    hotkey defined in the user config
-    """
-    toggle_action = getattr(mw, "_hmToggleAction", None)
-
-    if toggle_action is None:
-        toggle_action = QAction(mw, triggered=toggle_heatmap)
-        mw.addAction(toggle_action)
-        mw._hmToggleAction = toggle_action
-
-    hotkey = config["profile"]["hotkeys"]["toggle"]
-    toggle_action.setShortcut(QKeySequence(hotkey))
-
 
 ######################################################################
 # LEGACY
@@ -217,15 +185,3 @@ def initialize_views():
     )
     DeckStats.__init__ = wrap(DeckStats.__init__, on_deck_stats_init, "after")
     DeckStats.reject = wrap(DeckStats.reject, on_deck_stats_reject)
-
-    # Initially set up hotkey:
-    # TODO: Migrate to config.json storage, so that profile hook is not required
-    try:
-        from aqt.gui_hooks import profile_did_open
-
-        profile_did_open.append(initialize_hotkey)
-    except (ImportError, ModuleNotFoundError):
-        addHook("profileLoaded", initialize_hotkey)
-
-    # Update hotkey on config save:
-    addHook("config_saved_heatmap", initialize_hotkey)
