@@ -68,8 +68,10 @@ def initialize_addon():
     from .gui.options import initialize_options
     from .controller import initialize_controller
     from .views import initialize_views
+    from .finder import initialize_finder
 
     if not mw:
+        # TODO: better handling
         return
 
     initialize_qt_resources()
@@ -77,6 +79,7 @@ def initialize_addon():
     
     controller = initialize_controller(mw, config_manager)
     initialize_views(controller)
+    initialize_finder()
 
 
 initialize_addon()
