@@ -165,10 +165,6 @@ class ActivityReporter:
         self._offset = self._get_col_offset()
         self._today = self._get_today(self._offset)
 
-    def unload_collection(self):
-        self._col = None
-        self._db = None
-
     # Activity calculations
     #########################################################################
 
