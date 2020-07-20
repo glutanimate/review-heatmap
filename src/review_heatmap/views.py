@@ -201,11 +201,11 @@ class DeckStatsInjector(HeatmapInjector):
         remHook("reset", deck_stats.refresh)
 
     def on_collection_stats_due_graph(
-        self, collection_stats: CollectionStats, _old_due_graph: Callable
+        self, collection_stats: CollectionStats, _old: Callable
     ) -> str:
         """Wraps dueGraph and adds our heatmap to the stats screen"""
         # self is anki.stats.CollectionStats
-        original_html = _old_due_graph(collection_stats)
+        original_html = _old(collection_stats)
 
         limhist: Optional[int] = None
         limfcst: Optional[int] = None
