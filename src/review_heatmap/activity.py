@@ -99,6 +99,7 @@ class StatsReport(NamedTuple):
     streak_cur: StatsEntryStreak
     pct_days_active: StatsEntryPercentage
     activity_daily_avg: StatsEntryCards
+    habit: StatsEntryPercentage
 
 
 class ActivityReport(NamedTuple):
@@ -187,10 +188,23 @@ class ActivityReporter:
         total: int = 0
         idx: int = 0
         next_timestamp: Optional[int]
+        MULTIPLIER = 0.5 ** (1/13)
+        habit_ema: float = 0
+        previous_habit_ema: float = 0
+        avg_cur_ema: float = 0
+        previous_avg_cur_ema: float = 0
+        habit: int = 0
+        avg_cur: int = 0
 
         for idx, item in enumerate(history):
             current += 1
             timestamp, activity = item
+
+            previous_habit_ema = habit_ema
+            habit_ema = MULTIPLIER * previous_habit_ema + (1 - MULTIPLIER)
+
+            previous_avg_cur_ema = avg_cur_ema
+            avg_cur_ema = MULTIPLIER * previous_avg_cur_ema + (1 - MULTIPLIER) * activity
 
             try:
                 next_timestamp = history[idx + 1][0]
@@ -203,6 +217,14 @@ class ActivityReporter:
                     streak_max = current
                 current = 0
 
+                if next_timestamp is not None:
+                    for i in range(1, (next_timestamp - timestamp) // 86400):
+                        previous_habit_ema = habit_ema
+                        habit_ema = MULTIPLIER * previous_habit_ema
+
+                        previous_avg_cur_ema = avg_cur_ema
+                        avg_cur_ema = MULTIPLIER * previous_avg_cur_ema
+
             total += activity
 
         days_learned: int = idx + 1
@@ -212,9 +234,20 @@ class ActivityReporter:
         if history[-1][0] in (today, today - 86400):
             # last recorded date today or yesterday?
             streak_cur = streak_last
+        else:
+            for _ in range(0, (today - timestamp) // 86400):
+                previous_habit_ema = habit_ema
+                habit_ema = MULTIPLIER * previous_habit_ema
+
+                previous_avg_cur_ema = avg_cur_ema
+                avg_cur_ema = MULTIPLIER * previous_avg_cur_ema
+
+        habit = round(ema)
+        avg_cur = round(avg_cur_ema)
+
 
         # Stats: average count on days with activity
-        avg_cur = int(round(total / max(days_learned, 1)))
+        # avg_cur = int(round(total / max(days_learned, 1)))
 
         # Stats: percentage of days with activity
         #
@@ -249,6 +282,7 @@ class ActivityReporter:
                 streak_cur=StatsEntryStreak(value=streak_cur),
                 pct_days_active=StatsEntryPercentage(value=pdays),
                 activity_daily_avg=StatsEntryCards(value=avg_cur),
+                habit=StatsEntryPercentage(value=habit),
             ),
         )
 
