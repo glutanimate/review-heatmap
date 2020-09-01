@@ -253,6 +253,8 @@ class ConfigManager(object):
         for name in storages:
             self._checkStorage(name)
             saver = getattr(self, "_save" + name.capitalize())
+            if name not in self._config:
+                self.load(storage_name=name)
             saver(self._config[name])
             self._storages[name]["dirty"] = False
         
