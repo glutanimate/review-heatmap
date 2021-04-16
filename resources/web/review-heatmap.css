@@ -20,6 +20,7 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 "rh-disable-stats": Set when streak stats disabled
 "rh-disable-heatmap": Set when heatmap disabled
 "night_mode": Set when night mode active (provided by Night Mode add-on)
+TODO: "rh-invert-colors": Set to make colors go from dark to light 
 */
 
 /* General layout */
@@ -262,27 +263,27 @@ select.hm-sel:active, select.hm-sel:focus {
 .rh-theme-olive .rh-col19{color: #4f6e30}
 .rh-theme-olive .rh-col20{color: #3b6427}
 
-.night_mode .rh-theme-olive .cal-heatmap-container .q11{fill: #3b6427}
-.night_mode .rh-theme-olive .cal-heatmap-container .q12{fill: #4f6e30}
-.night_mode .rh-theme-olive .cal-heatmap-container .q13{fill: #637939}
-.night_mode .rh-theme-olive .cal-heatmap-container .q14{fill: #648b3f}
-.night_mode .rh-theme-olive .cal-heatmap-container .q15{fill: #669d45}
-.night_mode .rh-theme-olive .cal-heatmap-container .q16{fill: #78a851}
-.night_mode .rh-theme-olive .cal-heatmap-container .q17{fill: #8ab45d}
-.night_mode .rh-theme-olive .cal-heatmap-container .q18{fill: #9cc069}
-.night_mode .rh-theme-olive .cal-heatmap-container .q19{fill: #bbd179}
-.night_mode .rh-theme-olive .cal-heatmap-container .q20{fill: #dae289}
+.rh-invert-colors .rh-theme-olive .cal-heatmap-container .q11{fill: #3b6427}
+.rh-invert-colors .rh-theme-olive .cal-heatmap-container .q12{fill: #4f6e30}
+.rh-invert-colors .rh-theme-olive .cal-heatmap-container .q13{fill: #637939}
+.rh-invert-colors .rh-theme-olive .cal-heatmap-container .q14{fill: #648b3f}
+.rh-invert-colors .rh-theme-olive .cal-heatmap-container .q15{fill: #669d45}
+.rh-invert-colors .rh-theme-olive .cal-heatmap-container .q16{fill: #78a851}
+.rh-invert-colors .rh-theme-olive .cal-heatmap-container .q17{fill: #8ab45d}
+.rh-invert-colors .rh-theme-olive .cal-heatmap-container .q18{fill: #9cc069}
+.rh-invert-colors .rh-theme-olive .cal-heatmap-container .q19{fill: #bbd179}
+.rh-invert-colors .rh-theme-olive .cal-heatmap-container .q20{fill: #dae289}
 
-.night_mode .rh-theme-olive .rh-col11{color: #3b6427}
-.night_mode .rh-theme-olive .rh-col12{color: #4f6e30}
-.night_mode .rh-theme-olive .rh-col13{color: #637939}
-.night_mode .rh-theme-olive .rh-col14{color: #648b3f}
-.night_mode .rh-theme-olive .rh-col15{color: #669d45}
-.night_mode .rh-theme-olive .rh-col16{color: #78a851}
-.night_mode .rh-theme-olive .rh-col17{color: #8ab45d}
-.night_mode .rh-theme-olive .rh-col18{color: #9cc069}
-.night_mode .rh-theme-olive .rh-col19{color: #bbd179}
-.night_mode .rh-theme-olive .rh-col20{color: #dae289}
+.rh-invert-colors .rh-theme-olive .rh-col11{color: #3b6427}
+.rh-invert-colors .rh-theme-olive .rh-col12{color: #4f6e30}
+.rh-invert-colors .rh-theme-olive .rh-col13{color: #637939}
+.rh-invert-colors .rh-theme-olive .rh-col14{color: #648b3f}
+.rh-invert-colors .rh-theme-olive .rh-col15{color: #669d45}
+.rh-invert-colors .rh-theme-olive .rh-col16{color: #78a851}
+.rh-invert-colors .rh-theme-olive .rh-col17{color: #8ab45d}
+.rh-invert-colors .rh-theme-olive .rh-col18{color: #9cc069}
+.rh-invert-colors .rh-theme-olive .rh-col19{color: #bbd179}
+.rh-invert-colors .rh-theme-olive .rh-col20{color: #dae289}
 
 /* lime */
 .rh-theme-lime .cal-heatmap-container .q11{fill: #d6e685}
@@ -307,27 +308,27 @@ select.hm-sel:active, select.hm-sel:focus {
 .rh-theme-lime .rh-col19{color: #2a7b2c}
 .rh-theme-lime .rh-col20{color: #1e6823}
 
-.night_mode .rh-theme-lime .cal-heatmap-container .q11{fill: #1e6823}
-.night_mode .rh-theme-lime .cal-heatmap-container .q12{fill: #2a7b2c}
-.night_mode .rh-theme-lime .cal-heatmap-container .q13{fill: #378f36}
-.night_mode .rh-theme-lime .cal-heatmap-container .q14{fill: #44a340}
-.night_mode .rh-theme-lime .cal-heatmap-container .q15{fill: #5cae4c}
-.night_mode .rh-theme-lime .cal-heatmap-container .q16{fill: #74ba58}
-.night_mode .rh-theme-lime .cal-heatmap-container .q17{fill: #8cc665}
-.night_mode .rh-theme-lime .cal-heatmap-container .q18{fill: #a4d06f}
-.night_mode .rh-theme-lime .cal-heatmap-container .q19{fill: #bddb7a}
-.night_mode .rh-theme-lime .cal-heatmap-container .q20{fill: #d6e685}
+.rh-invert-colors .rh-theme-lime .cal-heatmap-container .q11{fill: #1e6823}
+.rh-invert-colors .rh-theme-lime .cal-heatmap-container .q12{fill: #2a7b2c}
+.rh-invert-colors .rh-theme-lime .cal-heatmap-container .q13{fill: #378f36}
+.rh-invert-colors .rh-theme-lime .cal-heatmap-container .q14{fill: #44a340}
+.rh-invert-colors .rh-theme-lime .cal-heatmap-container .q15{fill: #5cae4c}
+.rh-invert-colors .rh-theme-lime .cal-heatmap-container .q16{fill: #74ba58}
+.rh-invert-colors .rh-theme-lime .cal-heatmap-container .q17{fill: #8cc665}
+.rh-invert-colors .rh-theme-lime .cal-heatmap-container .q18{fill: #a4d06f}
+.rh-invert-colors .rh-theme-lime .cal-heatmap-container .q19{fill: #bddb7a}
+.rh-invert-colors .rh-theme-lime .cal-heatmap-container .q20{fill: #d6e685}
 
-.night_mode .rh-theme-lime .rh-col11{color: #1e6823}
-.night_mode .rh-theme-lime .rh-col12{color: #2a7b2c}
-.night_mode .rh-theme-lime .rh-col13{color: #378f36}
-.night_mode .rh-theme-lime .rh-col14{color: #44a340}
-.night_mode .rh-theme-lime .rh-col15{color: #5cae4c}
-.night_mode .rh-theme-lime .rh-col16{color: #74ba58}
-.night_mode .rh-theme-lime .rh-col17{color: #8cc665}
-.night_mode .rh-theme-lime .rh-col18{color: #a4d06f}
-.night_mode .rh-theme-lime .rh-col19{color: #bddb7a}
-.night_mode .rh-theme-lime .rh-col20{color: #d6e685}
+.rh-invert-colors .rh-theme-lime .rh-col11{color: #1e6823}
+.rh-invert-colors .rh-theme-lime .rh-col12{color: #2a7b2c}
+.rh-invert-colors .rh-theme-lime .rh-col13{color: #378f36}
+.rh-invert-colors .rh-theme-lime .rh-col14{color: #44a340}
+.rh-invert-colors .rh-theme-lime .rh-col15{color: #5cae4c}
+.rh-invert-colors .rh-theme-lime .rh-col16{color: #74ba58}
+.rh-invert-colors .rh-theme-lime .rh-col17{color: #8cc665}
+.rh-invert-colors .rh-theme-lime .rh-col18{color: #a4d06f}
+.rh-invert-colors .rh-theme-lime .rh-col19{color: #bddb7a}
+.rh-invert-colors .rh-theme-lime .rh-col20{color: #d6e685}
 
 /* ice */
 .rh-theme-ice .cal-heatmap-container .q11{fill: #a8d5f6}
@@ -352,27 +353,27 @@ select.hm-sel:active, select.hm-sel:focus {
 .rh-theme-ice .rh-col19{color: #126fe0}
 .rh-theme-ice .rh-col20{color: #0063de}
 
-.night_mode .rh-theme-ice .cal-heatmap-container .q11{fill: #0063de}
-.night_mode .rh-theme-ice .cal-heatmap-container .q12{fill: #126fe0}
-.night_mode .rh-theme-ice .cal-heatmap-container .q13{fill: #257ce3}
-.night_mode .rh-theme-ice .cal-heatmap-container .q14{fill: #3889e6}
-.night_mode .rh-theme-ice .cal-heatmap-container .q15{fill: #4a95e8}
-.night_mode .rh-theme-ice .cal-heatmap-container .q16{fill: #5da2eb}
-.night_mode .rh-theme-ice .cal-heatmap-container .q17{fill: #70afee}
-.night_mode .rh-theme-ice .cal-heatmap-container .q18{fill: #82bbf0}
-.night_mode .rh-theme-ice .cal-heatmap-container .q19{fill: #95c8f3}
-.night_mode .rh-theme-ice .cal-heatmap-container .q20{fill: #a8d5f6}
+.rh-invert-colors .rh-theme-ice .cal-heatmap-container .q11{fill: #0063de}
+.rh-invert-colors .rh-theme-ice .cal-heatmap-container .q12{fill: #126fe0}
+.rh-invert-colors .rh-theme-ice .cal-heatmap-container .q13{fill: #257ce3}
+.rh-invert-colors .rh-theme-ice .cal-heatmap-container .q14{fill: #3889e6}
+.rh-invert-colors .rh-theme-ice .cal-heatmap-container .q15{fill: #4a95e8}
+.rh-invert-colors .rh-theme-ice .cal-heatmap-container .q16{fill: #5da2eb}
+.rh-invert-colors .rh-theme-ice .cal-heatmap-container .q17{fill: #70afee}
+.rh-invert-colors .rh-theme-ice .cal-heatmap-container .q18{fill: #82bbf0}
+.rh-invert-colors .rh-theme-ice .cal-heatmap-container .q19{fill: #95c8f3}
+.rh-invert-colors .rh-theme-ice .cal-heatmap-container .q20{fill: #a8d5f6}
 
-.night_mode .rh-theme-ice .rh-col11{color: #0063de}
-.night_mode .rh-theme-ice .rh-col12{color: #126fe0}
-.night_mode .rh-theme-ice .rh-col13{color: #257ce3}
-.night_mode .rh-theme-ice .rh-col14{color: #3889e6}
-.night_mode .rh-theme-ice .rh-col15{color: #4a95e8}
-.night_mode .rh-theme-ice .rh-col16{color: #5da2eb}
-.night_mode .rh-theme-ice .rh-col17{color: #70afee}
-.night_mode .rh-theme-ice .rh-col18{color: #82bbf0}
-.night_mode .rh-theme-ice .rh-col19{color: #95c8f3}
-.night_mode .rh-theme-ice .rh-col20{color: #a8d5f6}
+.rh-invert-colors .rh-theme-ice .rh-col11{color: #0063de}
+.rh-invert-colors .rh-theme-ice .rh-col12{color: #126fe0}
+.rh-invert-colors .rh-theme-ice .rh-col13{color: #257ce3}
+.rh-invert-colors .rh-theme-ice .rh-col14{color: #3889e6}
+.rh-invert-colors .rh-theme-ice .rh-col15{color: #4a95e8}
+.rh-invert-colors .rh-theme-ice .rh-col16{color: #5da2eb}
+.rh-invert-colors .rh-theme-ice .rh-col17{color: #70afee}
+.rh-invert-colors .rh-theme-ice .rh-col18{color: #82bbf0}
+.rh-invert-colors .rh-theme-ice .rh-col19{color: #95c8f3}
+.rh-invert-colors .rh-theme-ice .rh-col20{color: #a8d5f6}
 
 /* magenta */
 .rh-theme-magenta .cal-heatmap-container .q11{fill: #fde0dd}
@@ -397,27 +398,27 @@ select.hm-sel:active, select.hm-sel:focus {
 .rh-theme-magenta .rh-col19{color: #610070}
 .rh-theme-magenta .rh-col20{color: #49006a}
 
-.night_mode .rh-theme-magenta .cal-heatmap-container .q11{fill: #49006a}
-.night_mode .rh-theme-magenta .cal-heatmap-container .q12{fill: #610070}
-.night_mode .rh-theme-magenta .cal-heatmap-container .q13{fill: #7a0177}
-.night_mode .rh-theme-magenta .cal-heatmap-container .q14{fill: #ae017e}
-.night_mode .rh-theme-magenta .cal-heatmap-container .q15{fill: #dd3497}
-.night_mode .rh-theme-magenta .cal-heatmap-container .q16{fill: #ea4e9c}
-.night_mode .rh-theme-magenta .cal-heatmap-container .q17{fill: #f768a1}
-.night_mode .rh-theme-magenta .cal-heatmap-container .q18{fill: #fa9fb5}
-.night_mode .rh-theme-magenta .cal-heatmap-container .q19{fill: #fcc5c0}
-.night_mode .rh-theme-magenta .cal-heatmap-container .q20{fill: #fde0dd}
+.rh-invert-colors .rh-theme-magenta .cal-heatmap-container .q11{fill: #49006a}
+.rh-invert-colors .rh-theme-magenta .cal-heatmap-container .q12{fill: #610070}
+.rh-invert-colors .rh-theme-magenta .cal-heatmap-container .q13{fill: #7a0177}
+.rh-invert-colors .rh-theme-magenta .cal-heatmap-container .q14{fill: #ae017e}
+.rh-invert-colors .rh-theme-magenta .cal-heatmap-container .q15{fill: #dd3497}
+.rh-invert-colors .rh-theme-magenta .cal-heatmap-container .q16{fill: #ea4e9c}
+.rh-invert-colors .rh-theme-magenta .cal-heatmap-container .q17{fill: #f768a1}
+.rh-invert-colors .rh-theme-magenta .cal-heatmap-container .q18{fill: #fa9fb5}
+.rh-invert-colors .rh-theme-magenta .cal-heatmap-container .q19{fill: #fcc5c0}
+.rh-invert-colors .rh-theme-magenta .cal-heatmap-container .q20{fill: #fde0dd}
 
-.night_mode .rh-theme-magenta .rh-col11{color: #49006a}
-.night_mode .rh-theme-magenta .rh-col12{color: #610070}
-.night_mode .rh-theme-magenta .rh-col13{color: #7a0177}
-.night_mode .rh-theme-magenta .rh-col14{color: #ae017e}
-.night_mode .rh-theme-magenta .rh-col15{color: #dd3497}
-.night_mode .rh-theme-magenta .rh-col16{color: #ea4e9c}
-.night_mode .rh-theme-magenta .rh-col17{color: #f768a1}
-.night_mode .rh-theme-magenta .rh-col18{color: #fa9fb5}
-.night_mode .rh-theme-magenta .rh-col19{color: #fcc5c0}
-.night_mode .rh-theme-magenta .rh-col20{color: #fde0dd}
+.rh-invert-colors .rh-theme-magenta .rh-col11{color: #49006a}
+.rh-invert-colors .rh-theme-magenta .rh-col12{color: #610070}
+.rh-invert-colors .rh-theme-magenta .rh-col13{color: #7a0177}
+.rh-invert-colors .rh-theme-magenta .rh-col14{color: #ae017e}
+.rh-invert-colors .rh-theme-magenta .rh-col15{color: #dd3497}
+.rh-invert-colors .rh-theme-magenta .rh-col16{color: #ea4e9c}
+.rh-invert-colors .rh-theme-magenta .rh-col17{color: #f768a1}
+.rh-invert-colors .rh-theme-magenta .rh-col18{color: #fa9fb5}
+.rh-invert-colors .rh-theme-magenta .rh-col19{color: #fcc5c0}
+.rh-invert-colors .rh-theme-magenta .rh-col20{color: #fde0dd}
 
 
 /* flame */
@@ -443,27 +444,27 @@ select.hm-sel:active, select.hm-sel:focus {
 .rh-theme-flame .rh-col19{color: #bd0026}
 .rh-theme-flame .rh-col20{color: #800026}
 
-.night_mode .rh-theme-flame .cal-heatmap-container .q11{fill: #800026}
-.night_mode .rh-theme-flame .cal-heatmap-container .q12{fill: #bd0026}
-.night_mode .rh-theme-flame .cal-heatmap-container .q13{fill: #d00d21}
-.night_mode .rh-theme-flame .cal-heatmap-container .q14{fill: #e31a1c}
-.night_mode .rh-theme-flame .cal-heatmap-container .q15{fill: #fc4e2a}
-.night_mode .rh-theme-flame .cal-heatmap-container .q16{fill: #fc6d33}
-.night_mode .rh-theme-flame .cal-heatmap-container .q17{fill: #fd8d3c}
-.night_mode .rh-theme-flame .cal-heatmap-container .q18{fill: #feb24c}
-.night_mode .rh-theme-flame .cal-heatmap-container .q19{fill: #fed976}
-.night_mode .rh-theme-flame .cal-heatmap-container .q20{fill: #ffeda0}
+.rh-invert-colors .rh-theme-flame .cal-heatmap-container .q11{fill: #800026}
+.rh-invert-colors .rh-theme-flame .cal-heatmap-container .q12{fill: #bd0026}
+.rh-invert-colors .rh-theme-flame .cal-heatmap-container .q13{fill: #d00d21}
+.rh-invert-colors .rh-theme-flame .cal-heatmap-container .q14{fill: #e31a1c}
+.rh-invert-colors .rh-theme-flame .cal-heatmap-container .q15{fill: #fc4e2a}
+.rh-invert-colors .rh-theme-flame .cal-heatmap-container .q16{fill: #fc6d33}
+.rh-invert-colors .rh-theme-flame .cal-heatmap-container .q17{fill: #fd8d3c}
+.rh-invert-colors .rh-theme-flame .cal-heatmap-container .q18{fill: #feb24c}
+.rh-invert-colors .rh-theme-flame .cal-heatmap-container .q19{fill: #fed976}
+.rh-invert-colors .rh-theme-flame .cal-heatmap-container .q20{fill: #ffeda0}
 
-.night_mode .rh-theme-flame .rh-col11{color: #800026}
-.night_mode .rh-theme-flame .rh-col12{color: #bd0026}
-.night_mode .rh-theme-flame .rh-col13{color: #d00d21}
-.night_mode .rh-theme-flame .rh-col14{color: #e31a1c}
-.night_mode .rh-theme-flame .rh-col15{color: #fc4e2a}
-.night_mode .rh-theme-flame .rh-col16{color: #fc6d33}
-.night_mode .rh-theme-flame .rh-col17{color: #fd8d3c}
-.night_mode .rh-theme-flame .rh-col18{color: #feb24c}
-.night_mode .rh-theme-flame .rh-col19{color: #fed976}
-.night_mode .rh-theme-flame .rh-col20{color: #ffeda0}
+.rh-invert-colors .rh-theme-flame .rh-col11{color: #800026}
+.rh-invert-colors .rh-theme-flame .rh-col12{color: #bd0026}
+.rh-invert-colors .rh-theme-flame .rh-col13{color: #d00d21}
+.rh-invert-colors .rh-theme-flame .rh-col14{color: #e31a1c}
+.rh-invert-colors .rh-theme-flame .rh-col15{color: #fc4e2a}
+.rh-invert-colors .rh-theme-flame .rh-col16{color: #fc6d33}
+.rh-invert-colors .rh-theme-flame .rh-col17{color: #fd8d3c}
+.rh-invert-colors .rh-theme-flame .rh-col18{color: #feb24c}
+.rh-invert-colors .rh-theme-flame .rh-col19{color: #fed976}
+.rh-invert-colors .rh-theme-flame .rh-col20{color: #ffeda0}
 
 
 /* Platform-specific adjustments / workarounds */
