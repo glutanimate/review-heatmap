@@ -100,8 +100,7 @@ class ActivityReporter(object):
                 next_timestamp = None
 
             if timestamp + 86400 != next_timestamp:  # >1 day gap. streak over.
-                if current > streak_max:
-                    streak_max = current
+                streak_max = max(current, streak_max)
                 current = 0
 
             total += activity
