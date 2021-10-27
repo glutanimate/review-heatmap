@@ -81,6 +81,8 @@ class ActivityReporter(object):
         if not history:
             return None
 
+        accountForEmptyDays = self.config["synced"]["inclnondues"]
+
         first_day = history[0][0] if history else None
         last_day = forecast[-1][0] if forecast else None
 
@@ -96,22 +98,31 @@ class ActivityReporter(object):
             try:
                 next_timestamp = history[idx + 1][0]
             except IndexError:  # last item
-                streak_last = current
                 next_timestamp = None
 
             if timestamp + 86400 != next_timestamp:  # >1 day gap. streak over.
-                if current > streak_max:
-                    streak_max = current
-                current = 0
+                
+                localCurrent, dueAhead = self._checkDues(timestamp + 86400, next_timestamp, dues)  
+                if not accountForEmptyDays:
+                    localCurrent = 0
 
-            total += activity
+                streak_cur = current = current + localCurrent
+                streak_max = max(streak_max, current) 
+                
+                if not accountForEmptyDays:
+                    if next_timestamp != None:
+                        current = streak_cur = 0
+                    elif not timestamp in (self.today, self.today - 86400):
+                        streak_cur = streak_cur = 0
+
+                elif dueAhead:
+                    streak_cur = current = 0
+            
+
+            total += activity # total cards done
+        
 
         days_learned = idx + 1
-
-        # Stats: current streak
-        if history[-1][0] in (self.today, self.today - 86400):
-            # last recorded date today or yesterday?
-            streak_cur = streak_last
 
         # Stats: average count on days with activity
         avg_cur = int(round(total / max(days_learned, 1)))
@@ -155,6 +166,7 @@ class ActivityReporter(object):
         return {
             "history": self._cardsDone(start=time_limits[0]),
             "forecast": self._cardsDue(start=self.today, stop=time_limits[1]),
+            "dues": self._getDues()
         }
 
     # Collection properties
@@ -384,3 +396,14 @@ GROUP BY day ORDER BY day""".format(
             logger.debug(res)
 
         return res
+
+    def _getDues(self):
+
+        text = mw.col.db.all("""
+        select (CAST(STRFTIME('%s', id / 1000 - {}, 'unixepoch','localtime', 'start of day') AS int)) + (ivl*86400)  as dueDate
+        from revlog
+        where ivl > 0 and dueDate < {} 
+        group by dueDate
+        """.format(self.offset * 3600, self.today)) #3600 = number of secs in hour
+
+        return text  
