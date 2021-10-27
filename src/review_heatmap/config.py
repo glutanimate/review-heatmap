@@ -88,6 +88,7 @@ config_defaults = {
         "limhist": 0,
         "limfcst": 0,
         "limcdel": False,
+        "inclnondues": False,
         "limdecks": [],
         "version": ADDON.VERSION,
     },
