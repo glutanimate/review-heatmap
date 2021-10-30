@@ -60,16 +60,12 @@ class HeatmapCreator(object):
         "rh-col20",
     )
 
-    # workaround for list comprehensions not working in class-scope
-    def compress_levels(colors, indices):
-        return [colors[i] for i in indices]
-
     stat_levels = {
         # tuples of threshold value, css_colors index
         "streak": list(
             zip(
                 (0, 14, 30, 90, 180, 365),
-                compress_levels(css_colors, (0, 2, 4, 6, 9, 10)),
+                map(lambda i: css_colors[i], (0, 2, 4, 6, 9, 10))
             )
         ),
         "percentage": list(zip((0, 25, 50, 60, 70, 80, 85, 90, 95, 99), css_colors)),
