@@ -33,7 +33,7 @@
 Heatmap and stats elements generation
 """
 
-from anki.utils import json
+import json
 from aqt import mw
 
 from .activity import ActivityReporter
