@@ -39,7 +39,7 @@ from __future__ import (absolute_import, division,
 import os
 import io
 
-from anki.utils import json
+import json
 from anki.hooks import addHook, runHook
 
 from .._vendor.packaging import version
