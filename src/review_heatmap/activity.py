@@ -164,7 +164,7 @@ class ActivityReporter(object):
         """
         Return daily scheduling cutoff time in hours
         """
-        if self.col.schedVer() == 2:
+        if self.col.sched_ver() == 2:
             return self.col.conf.get("rollover", 4)
         start_date = datetime.datetime.fromtimestamp(self.col.crt)
         return start_date.hour
