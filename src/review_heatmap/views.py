@@ -137,6 +137,7 @@ def overviewRenderPage(self):
         ),
         css=["overview.css"],
         js=["jquery.js", "overview.js"],
+        context=self,
     )
 
 
