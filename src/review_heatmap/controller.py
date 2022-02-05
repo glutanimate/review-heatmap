@@ -80,5 +80,5 @@ class HeatmapController:
 
 def initialize_controller(mw: "AnkiQt", config: "ConfigManager") -> HeatmapController:
     controller = HeatmapController(mw, config)
-    mw._review_heatmap = controller
+    mw._review_heatmap = controller  # type: ignore
     return controller

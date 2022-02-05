@@ -33,10 +33,10 @@
 Heatmap and stats elements generation
 """
 
+import json
 from enum import Enum
 from typing import TYPE_CHECKING, Dict, List, NamedTuple, Optional, Tuple
 
-from anki.utils import json
 from aqt.main import AnkiQt
 
 from .activity import ActivityReport, ActivityReporter, StatsEntry, StatsType
@@ -183,8 +183,10 @@ class HeatmapRenderer:
         )
 
         self._render_cache = _RenderCache(
-            html=render, arguments=(view, limhist, limfcst, current_deck_only),
-            deck=self._mw.col.decks.current(), col_mod=self._mw.col.mod
+            html=render,
+            arguments=(view, limhist, limfcst, current_deck_only),
+            deck=self._mw.col.decks.current(),
+            col_mod=self._mw.col.mod,
         )
 
         return render
@@ -298,6 +300,6 @@ class HeatmapRenderer:
         Just a quick hack that allows us to assess user performance from
         other distant parts of the code / other add-ons
         """
-        self._mw._hmStreakMax = activity_report.stats.streak_max.value
-        self._mw._hmStreakCur = activity_report.stats.streak_cur.value
-        self._mw._hmActivityDailyAvg = activity_report.stats.activity_daily_avg.value
+        self._mw._hmStreakMax = activity_report.stats.streak_max.value  # type: ignore
+        self._mw._hmStreakCur = activity_report.stats.streak_cur.value  # type: ignore
+        self._mw._hmActivityDailyAvg = activity_report.stats.activity_daily_avg.value  # type: ignore
