@@ -80,6 +80,7 @@ config_defaults: Dict[str, Dict] = {
         "limhist": 0,
         "limfcst": 0,
         "limcdel": False,
+        "limresched": True,
         "limdecks": [],
         "version": ADDON.VERSION,
     },

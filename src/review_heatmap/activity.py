@@ -133,7 +133,8 @@ class ActivityReporter:
 
         if activity_type == ActivityType.reviews:
             history = self._cards_done(
-                start=history_start, current_deck_only=current_deck_only
+                start=history_start,
+                current_deck_only=current_deck_only,
             )
             forecast = self._cards_due(
                 start=self._today,
@@ -368,6 +369,13 @@ class ActivityReporter:
             dids = self._col.decks.active()
         return "cid IN (SELECT id FROM cards WHERE did IN %s)" % ids2str(dids)
 
+    # Other settings affecting included revlog entries
+    #########################################################################
+
+    @property
+    def _ignore_rescheduled_entries(self) -> bool:
+        return self._config["synced"]["limresched"]
+
     # Database queries for user activity
     #########################################################################
 
@@ -414,7 +422,9 @@ GROUP BY day ORDER BY day""".format(
         return [i[:-1] for i in res]
 
     def _cards_done(
-        self, start: Optional[int] = None, current_deck_only: bool = False
+        self,
+        start: Optional[int] = None,
+        current_deck_only: bool = False,
     ) -> List[Sequence[int]]:
         """
         start: timestamp in seconds to start reporting from
@@ -431,7 +441,7 @@ GROUP BY day ORDER BY day""".format(
         timestamps to the correct day. For that reason we include the
         'localtime' strftime modifier, even though it does come at a
         performance penalty
-        
+
         Returns:
             [[int, int]**]
         """
@@ -441,13 +451,16 @@ GROUP BY day ORDER BY day""".format(
         if start is not None:
             lims.append("day >= {}".format(start))
 
+        if self._ignore_rescheduled_entries:
+            lims.append("ease >= 1")
+
         deck_limit = self._revlog_limit(current_deck_only)
         if deck_limit:
             lims.append(deck_limit)
 
         lim = "WHERE " + " AND ".join(lims) if lims else ""
 
-        cmd = """
+        cmd = """\
 SELECT CAST(STRFTIME('%s', id / 1000 - {}, 'unixepoch',
                      'localtime', 'start of day') AS int)
 AS day, COUNT()
@@ -478,7 +491,8 @@ GROUP BY day ORDER BY day""".format(
         logger.debug("Day starts at setting: %s hours", offset)
         logger.debug(
             time.strftime(
-                "dayCutoff: %Y-%m-%d %H:%M", time.localtime(self._col.sched.dayCutoff),
+                "dayCutoff: %Y-%m-%d %H:%M",
+                time.localtime(self._col.sched.dayCutoff),
             )
         )
         logger.debug(

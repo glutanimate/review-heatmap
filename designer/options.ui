@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>436</width>
+    <width>437</width>
     <height>589</height>
    </rect>
   </property>
@@ -502,48 +502,6 @@ with a coffee</string>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <layout class="QGridLayout" name="gridLayout_2" columnstretch="10,0">
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>&amp;History limit</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinLimHist</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Fore&amp;cast limit</string>
-           </property>
-           <property name="buddy">
-            <cstring>spinLimFcst</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QSpinBox" name="spinLimHist">
-           <property name="toolTip">
-            <string>&lt;html&gt;Limits the number of days in the past that the heatmap displays. Only applies to main screen and deck overview.&lt;/html&gt;</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="specialValueText">
-            <string>No limit</string>
-           </property>
-           <property name="suffix">
-            <string> days</string>
-           </property>
-           <property name="minimum">
-            <number>0</number>
-           </property>
-           <property name="maximum">
-            <number>1000000</number>
-           </property>
-          </widget>
-         </item>
          <item row="3" column="1">
           <widget class="QSpinBox" name="spinLimFcst">
            <property name="toolTip">
@@ -563,6 +521,26 @@ with a coffee</string>
            </property>
            <property name="maximum">
             <number>1000000</number>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>&amp;History limit</string>
+           </property>
+           <property name="buddy">
+            <cstring>spinLimHist</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Fore&amp;cast limit</string>
+           </property>
+           <property name="buddy">
+            <cstring>spinLimFcst</cstring>
            </property>
           </widget>
          </item>
@@ -599,13 +577,42 @@ with a coffee</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
+         <item row="2" column="1">
+          <widget class="QSpinBox" name="spinLimHist">
+           <property name="toolTip">
+            <string>&lt;html&gt;Limits the number of days in the past that the heatmap displays. Only applies to main screen and deck overview.&lt;/html&gt;</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="specialValueText">
+            <string>No limit</string>
+           </property>
+           <property name="suffix">
+            <string> days</string>
+           </property>
+           <property name="minimum">
+            <number>0</number>
+           </property>
+           <property name="maximum">
+            <number>1000000</number>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0" colspan="2">
           <widget class="QCheckBox" name="cbLimDel">
            <property name="toolTip">
             <string>&lt;html&gt;Ignores any reviews performed of cards that have been deleted since&lt;/html&gt;</string>
            </property>
            <property name="text">
             <string>&amp;Exclude deleted cards from history</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0" colspan="2">
+          <widget class="QCheckBox" name="cbLimResched">
+           <property name="text">
+            <string>Exclude manual reschedules from history</string>
            </property>
           </widget>
          </item>

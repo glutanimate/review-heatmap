@@ -86,6 +86,7 @@ class RevHmOptions(OptionsDialog):
             ),
         ),
         ("form.cbLimDel", (("value", {"dataPath": "synced/limcdel"}),)),
+        ("form.cbLimResched", (("value", {"dataPath": "synced/limresched"}),)),
         (
             "form.listDecks",
             (
