@@ -200,10 +200,11 @@ class HeatmapRenderer:
     def _cache_still_valid(self, view, limhist, limfcst, current_deck_only) -> bool:
         # FIXME: for 2.1.28+
         cache = self._render_cache
+        if not cache:
+            return False
+        col_unchanged = self._mw.col.mod == cache.col_mod  # type: ignore
         return (
-            # FIXME: col.db.mod dropped in 2.1.43+
-            not self._mw.col.db.mod  # type: ignore
-            and self._mw.col.mod == cache.col_mod  # type: ignore
+            col_unchanged
             and (view, limhist, limfcst, current_deck_only) == cache.arguments  # type: ignore
             and (not current_deck_only or cache.deck == self._mw.col.decks.current())
         )
