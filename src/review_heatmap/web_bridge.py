@@ -38,7 +38,6 @@ from typing import Any, Callable, Dict, Optional, Tuple, Type, Union, TYPE_CHECK
 from PyQt5.QtWidgets import QWidget
 
 import aqt
-from anki.hooks import wrap
 from aqt.deckbrowser import DeckBrowser
 from aqt.overview import Overview
 from aqt.stats import DeckStats
@@ -75,20 +74,11 @@ class HeatmapBridge:
         self._command_handler: _CommandHandler = _CommandHandler(mw, config)
 
     def register(self):
-        try:
-            from aqt.gui_hooks import webview_did_receive_js_message
+        from aqt.gui_hooks import webview_did_receive_js_message
 
-            webview_did_receive_js_message.append(self.bridge)
-            # TODO: NewDeckStats
-        except (ImportError, ModuleNotFoundError):
-            Overview._linkHandler = wrap(
-                Overview._linkHandler, self.bridge_legacy, "around"
-            )
-            DeckBrowser._linkHandler = wrap(
-                DeckBrowser._linkHandler, self.bridge_legacy, "around"
-            )
-
-        DeckStats._linkHandler = lambda context, url: self.bridge_legacy(context, url)
+        webview_did_receive_js_message.append(self.bridge)
+        # TODO: NewDeckStats
+        DeckStats._linkHandler = lambda context, url: self.bridge_legacy(context, url)  # type: ignore
 
     def bridge(self, handled: HANDLED_TYPE, message: str, context: Any) -> HANDLED_TYPE:
         if not message.startswith(self._identifier):
