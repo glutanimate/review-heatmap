@@ -35,23 +35,16 @@ Initializes add-on components.
 
 from ._version import __version__  # noqa: F401
 
-from .libaddon import maybeVendorTyping
-
-maybeVendorTyping()
 
 def initialize_addon():
     """Initializes add-on after performing a few checks
-    
+
     Allows more fine-grained control over add-on execution, which can
     be helpful when implementing workarounds for Anki bugs (e.g. the module
     import bug present in all Anki 2.1 versions up to 2.1.14)
     """
-    
-    from .libaddon import checkFor2114ImportError
-    from .consts import ADDON
 
-    if not checkFor2114ImportError(ADDON.NAME):
-        return False
+    from .consts import ADDON
 
     from .libaddon.consts import setAddonProperties
 
@@ -76,7 +69,7 @@ def initialize_addon():
 
     initialize_qt_resources()
     initialize_options()
-    
+
     controller = initialize_controller(mw, config_manager)
     initialize_views(controller)
     initialize_finder()
