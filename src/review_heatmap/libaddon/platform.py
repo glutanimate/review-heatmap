@@ -103,7 +103,7 @@ def checkAnkiVersion(lower, upper=None):
     Returns:
         bool -- Whether anki version is in specified range
     """
-    checkVersion(anki_version, lower, upper=upper)
+    return checkVersion(anki_version, lower, upper=upper)
 
 
 def checkQtVersion(lower, upper=None):
