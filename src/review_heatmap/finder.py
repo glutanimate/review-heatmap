@@ -36,37 +36,15 @@ Finder extensions
 import re
 from typing import TYPE_CHECKING, List, Optional
 
-from anki.hooks import wrap
 from aqt import mw
 
 if TYPE_CHECKING:
-    from aqt.browser import SearchContext
+    from aqt.browser.table import SearchContext
 
-
-# LEGACY
-######################################################################
-
-# Used when clicking on heatmap date
-def find_revlog_entries(self, val: tuple):
-    """Find cards by revlog timestamp range"""
-    args = val[0]
-    cutoff1, cutoff2 = [int(i) for i in args.split(":")]
-    return "c.id in (select cid from revlog where id between %d and %d)" % (
-        cutoff1,
-        cutoff2,
-    )
-
-
-def add_finders(self, col):
-    """Add custom finder to search dictionary"""
-    self.search["rid"] = self.findRevlogEntries
-
-
-# CURRENT
-######################################################################
 
 # FIXME: No longer works in combination with other search specifiers
 # e.g. deck:current, which we actually add in the overview view
+
 
 def _find_cards_reviewed_between(start_date: int, end_date: int) -> List[int]:
     # select from cards instead of just selecting uniques from revlog
@@ -104,7 +82,10 @@ def on_browser_will_search(search_context: "SearchContext"):
     if found_ids is None:
         return
 
-    search_context.card_ids = found_ids
+    if hasattr(search_context, "card_ids"):
+        search_context.card_ids = found_ids  # type: ignore[attr-defined]
+    else:
+        search_context.ids = found_ids  # type: ignore[assignment]
 
 
 # HOOKS
@@ -112,12 +93,6 @@ def on_browser_will_search(search_context: "SearchContext"):
 
 
 def initialize_finder():
-    try:
-        from aqt.gui_hooks import browser_will_search
+    from aqt.gui_hooks import browser_will_search
 
-        browser_will_search.append(on_browser_will_search)
-    except (ImportError, ModuleNotFoundError):
-        from anki.find import Finder
-
-        Finder.findRevlogEntries = find_revlog_entries
-        Finder.__init__ = wrap(Finder.__init__, add_finders, "after")
+    browser_will_search.append(on_browser_will_search)
