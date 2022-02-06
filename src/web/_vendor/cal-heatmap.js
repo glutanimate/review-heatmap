@@ -1,16 +1,16 @@
-/*! cal-heatmap v3.6.3.2-anki (Thu Oct 25 2018 11:50:24)
+/*! cal-heatmap v3.6.3.2-anki2150 (2022)
  *  ---------------------------------------------
  *  Fork of Cal-HeatMap for use in the Anki add-on Review Heatmap
  *  https://github.com/glutanimate/cal-heatmap
  *  Licensed under the MIT license
  *  Copyright 2014 Wan Qi Chen
- *  Copyright 2018 Glutanimate
+ *  Copyright 2018-2022 Glutanimate
  *  Contributors: gakada, Srdjan Prpa
   */
 
 var d3 = typeof require === "function" ? require("d3") : window.d3;
 
-var CalHeatMap = function() {
+export var CalHeatMap = function() {
 	"use strict";
 
 	var self = this;

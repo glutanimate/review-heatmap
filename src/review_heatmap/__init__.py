@@ -56,16 +56,18 @@ def initialize_addon():
 
     from aqt import mw
 
+    if not mw:
+        # TODO: better handling
+        return
+
+    mw.addonManager.setWebExports(__name__, r"web.*")
+
     from .config import config as config_manager
     from .gui import initialize_qt_resources
     from .gui.options import initialize_options
     from .controller import initialize_controller
     from .views import initialize_views
     from .finder import initialize_finder
-
-    if not mw:
-        # TODO: better handling
-        return
 
     initialize_qt_resources()
     initialize_options()

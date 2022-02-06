@@ -34,7 +34,8 @@ Static web components and templates
 """
 
 import json
-from .libaddon.platform import PLATFORM, checkAnkiVersion
+
+from .libaddon.platform import MODULE_ADDON, PLATFORM, checkAnkiVersion
 
 CSS_DISABLE_HEATMAP = "rh-disable-heatmap"
 CSS_DISABLE_STATS = "rh-disable-stats"
@@ -44,11 +45,8 @@ CSS_THEME_PREFIX = "rh-theme"
 CSS_VIEW_PREFIX = "rh-view"
 
 HTML_MAIN_ELEMENT: str = f"""
-<script type="text/javascript" src="qrc:/review_heatmap/web/d3.min.js"></script>
-<script type="text/javascript" src="qrc:/review_heatmap/web/cal-heatmap.js"></script>
-<link rel="stylesheet" href="qrc:/review_heatmap/web/cal-heatmap.css">
-<script type="text/javascript" src="qrc:/review_heatmap/web/review-heatmap.js"></script>
-<link rel="stylesheet" href="qrc:/review_heatmap/web/review-heatmap.css">
+<script type="text/javascript" src="/_addons/{MODULE_ADDON}/web/d3.min.js"></script>
+<script type="text/javascript" src="/_addons/{MODULE_ADDON}/web/anki-review-heatmap.js"></script>
 
 <script>
 var rhPlatform = "{PLATFORM}";
