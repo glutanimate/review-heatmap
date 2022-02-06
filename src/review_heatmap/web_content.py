@@ -65,18 +65,18 @@ HTML_HEATMAP: str = """
             <span>&nbsp;</span>
         </div>
         <div class="aligncenter">
-            <div title="Go back\n(Shift-click for first year)" onclick="onHmNavigate(event, this, 'prev');" class="hm-btn">
+            <div title="Go back\n(Shift-click for first year)" onclick="reviewHeatmap.onHmNavigate(event, this, 'prev');" class="hm-btn">
                 <img height="10px" src="qrc:/review_heatmap/icons/left.svg" />
             </div>
-            <div title="Today" onclick="onHmHome(event, this);" class="hm-btn">
+            <div title="Today" onclick="reviewHeatmap.onHmHome(event, this);" class="hm-btn">
                 <img height="10px" src="qrc:/review_heatmap/icons/circle.svg" />
             </div>
-            <div title="Go forward\n(Shift-click for last year)" onclick="onHmNavigate(event, this, 'next');" class="hm-btn">
+            <div title="Go forward\n(Shift-click for last year)" onclick="reviewHeatmap.onHmNavigate(event, this, 'next');" class="hm-btn">
                 <img height="10px" src="qrc:/review_heatmap/icons/right.svg" />
             </div>
         </div>
         <div class="alignright">
-            <div class="hm-btn opts-btn" title="Options" onclick="onHmOpts(event, this);">
+            <div class="hm-btn opts-btn" title="Options" onclick="reviewHeatmap.onHmOpts(event, this);">
                 <img src="qrc:/review_heatmap/icons/options.svg" />
             </div>
             <div class="hm-btn opts-btn" title="Support this add-on" onclick="onHmContrib(event, this);">
@@ -88,7 +88,8 @@ HTML_HEATMAP: str = """
     <div id="cal-heatmap"></div>
 </div>
 <script type="text/javascript">
-    cal = initHeatmap({options}, {data});
+    window.reviewHeatmap = new ReviewHeatmap({options});
+    reviewHeatmap.create({data});
 </script>
 """
 
