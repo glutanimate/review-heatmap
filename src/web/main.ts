@@ -171,7 +171,6 @@ class ReviewHeatmap {
             let cutoff2 = cutoff1 + 86400 * 1000;
             cmd += "rid:" + cutoff1 + ":" + cutoff2;
           } else {
-            console.log("new finder");
             cmd += "prop:rated=" + (diffDays ? -diffDays : 0);
           }
         } else {
