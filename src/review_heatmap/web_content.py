@@ -44,9 +44,11 @@ CSS_MODE_PREFIX = "rh-mode"
 CSS_THEME_PREFIX = "rh-theme"
 CSS_VIEW_PREFIX = "rh-view"
 
+WEB_BASE = f"/_addons/{MODULE_ADDON}/web"
+
 HTML_MAIN_ELEMENT: str = f"""
-<script type="text/javascript" src="/_addons/{MODULE_ADDON}/web/d3.min.js"></script>
-<script type="text/javascript" src="/_addons/{MODULE_ADDON}/web/anki-review-heatmap.js"></script>
+<script type="text/javascript" src="{WEB_BASE}/d3.min.js"></script>
+<script type="text/javascript" src="{WEB_BASE}/anki-review-heatmap.js"></script>
 
 <script>
 var rhPlatform = "{PLATFORM}";
@@ -58,7 +60,7 @@ var rhNewFinderAPI = {json.dumps(checkAnkiVersion("2.1.41"))};
 </div>
 """
 
-HTML_HEATMAP: str = """
+HTML_HEATMAP: str = f"""
 <div class="heatmap">
     <div class="heatmap-controls">
         <div class="alignleft">
@@ -66,21 +68,21 @@ HTML_HEATMAP: str = """
         </div>
         <div class="aligncenter">
             <div title="Go back\n(Shift-click for first year)" onclick="reviewHeatmap.onHmNavigate(event, this, 'prev');" class="hm-btn">
-                <img height="10px" src="qrc:/review_heatmap/icons/left.svg" />
+                <img height="10px" src="{WEB_BASE}/assets/left.svg" />
             </div>
             <div title="Today" onclick="reviewHeatmap.onHmHome(event, this);" class="hm-btn">
-                <img height="10px" src="qrc:/review_heatmap/icons/circle.svg" />
+                <img height="10px" src="{WEB_BASE}/assets/circle.svg" />
             </div>
             <div title="Go forward\n(Shift-click for last year)" onclick="reviewHeatmap.onHmNavigate(event, this, 'next');" class="hm-btn">
-                <img height="10px" src="qrc:/review_heatmap/icons/right.svg" />
+                <img height="10px" src="{WEB_BASE}/assets/right.svg" />
             </div>
         </div>
         <div class="alignright">
             <div class="hm-btn opts-btn" title="Options" onclick="reviewHeatmap.onHmOpts(event, this);">
-                <img src="qrc:/review_heatmap/icons/options.svg" />
+                <img src="{WEB_BASE}/assets/options.svg" />
             </div>
             <div class="hm-btn opts-btn" title="Support this add-on" onclick="onHmContrib(event, this);">
-                <img src="qrc:/review_heatmap/icons/heart_bw.svg" />
+                <img src="{WEB_BASE}/assets/heart_bw.svg" />
             </div>
         </div>
         <div style="clear: both;">&nbsp;</div>
@@ -88,8 +90,8 @@ HTML_HEATMAP: str = """
     <div id="cal-heatmap"></div>
 </div>
 <script type="text/javascript">
-    window.reviewHeatmap = new ReviewHeatmap({options});
-    reviewHeatmap.create({data});
+    window.reviewHeatmap = new ReviewHeatmap({{options}});
+    reviewHeatmap.create({{data}});
 </script>
 """
 
