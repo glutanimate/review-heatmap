@@ -10,14 +10,14 @@ License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl.html>
 import "./_vendor/cal-heatmap.css";
 import "./css/review-heatmap.css";
 
-import { CalHeatMap } from "./_vendor/cal-heatmap.js"
+import { CalHeatMap } from "./_vendor/cal-heatmap.js";
 
 // Button click handlers
 // ##########################################################################
 
 export function onHmSelChange(selector) {
   selector.blur();
-  var val = selector.value;
+  let val = selector.value;
   // console.log(val);
 }
 
@@ -66,13 +66,13 @@ export function onHmContrib(event, button) {
 
 // return "zero"-ed local datetime (workaround for lack of UTC time support
 // in cal-heatmap)
-export function applyDateOffset(date) {
+function applyDateOffset(date) {
   return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
 }
 
 // return local timezone offset in seconds at given unix timestamp
-export function tzOffsetByTimestamp(timestamp) {
-  date = new Date(timestamp * 1000);
+function tzOffsetByTimestamp(timestamp) {
+  let date = new Date(timestamp * 1000);
   return date.getTimezoneOffset() * 60;
 }
 
@@ -80,17 +80,17 @@ export function tzOffsetByTimestamp(timestamp) {
 // ##########################################################################
 
 export function initHeatmap(options, data) {
-  var calStartDate = applyDateOffset(new Date());
-  var calMinDate = applyDateOffset(new Date(options.start));
-  var calMaxDate = applyDateOffset(new Date(options.stop));
-  var calTodayDate = applyDateOffset(new Date(options.today));
+  let calStartDate = applyDateOffset(new Date());
+  let calMinDate = applyDateOffset(new Date(options.start));
+  let calMaxDate = applyDateOffset(new Date(options.stop));
+  let calTodayDate = applyDateOffset(new Date(options.today));
 
   // Running overview of 6-month activity in month view:
   if (options.domain === "month") {
-    padding = options.range / 2;
+    let padding = options.range / 2;
     // TODO: fix
-    paddingLower = Math.round(padding - 1);
-    paddingUpper = Math.round(padding + 1);
+    let paddingLower = Math.round(padding - 1);
+    let paddingUpper = Math.round(padding + 1);
 
     calStartDate.setMonth(calStartDate.getMonth() - paddingLower);
     calStartDate.setDate(1);
@@ -100,7 +100,7 @@ export function initHeatmap(options, data) {
       calStartDate = calMinDate;
     }
 
-    tempDate = new Date(calTodayDate);
+    let tempDate = new Date(calTodayDate);
     tempDate.setMonth(tempDate.getMonth() + paddingUpper);
     tempDate.setDate(1);
 
@@ -110,7 +110,8 @@ export function initHeatmap(options, data) {
     }
   }
 
-  var cal = new CalHeatMap();
+  let cal = new CalHeatMap();
+  window.cal = cal;
 
   // console.log("Date: options.today " + new Date(options.today))
   // console.log("Date: calTodayDate "+ calTodayDate)
@@ -135,9 +136,11 @@ export function initHeatmap(options, data) {
     domainLabelFormat: options.domLabForm,
     tooltip: true,
     subDomainTitleFormat: function (isEmpty, fmt, rawData) {
+      let timeNow, label, tip, count, action;
       // format tooltips
-      var timeNow = Date.now();
+      timeNow = Date.now();
       if (isEmpty) {
+        let label;
         if (timeNow < rawData.t) {
           label = "cards due";
         } else {
@@ -181,24 +184,24 @@ export function initHeatmap(options, data) {
       // console.log(date)
 
       // Determine if review history or forecasts
-      isHistory = nb >= 0;
+      let isHistory = nb >= 0;
 
       // Apply deck limits
-      cmd = options.whole ? "" : "deck:current ";
+      let cmd = options.whole ? "" : "deck:current ";
 
-      today = new Date(calTodayDate);
+      let today = new Date(calTodayDate);
       today.setHours(0, 0, 0); // just a precaution against
       // calTodayDate not being zeroed
-      diffSecs = Math.abs(today.getTime() - date.getTime()) / 1000;
-      diffDays = Math.round(diffSecs / 86400);
+      let diffSecs = Math.abs(today.getTime() - date.getTime()) / 1000;
+      let diffDays = Math.round(diffSecs / 86400);
 
       // Construct search command
       if (nb >= 0) {
         // Review log
         if (!window.rhNewFinderAPI) {
           // Use custom finder based on revlog ID range
-          cutoff1 = date.getTime() + options.offset * 3600 * 1000;
-          cutoff2 = cutoff1 + 86400 * 1000;
+          let cutoff1 = date.getTime() + options.offset * 3600 * 1000;
+          let cutoff2 = cutoff1 + 86400 * 1000;
           cmd += "rid:" + cutoff1 + ":" + cutoff2;
         } else {
           console.log("new finder");
@@ -232,9 +235,9 @@ export function initHeatmap(options, data) {
       //
       // cf.: https://github.com/wa0x6e/cal-heatmap/issues/122
       //      https://github.com/wa0x6e/cal-heatmap/issues/126
-      var results = {};
-      for (var timestamp in timestamps) {
-        var value = timestamps[timestamp];
+      let results = {};
+      for (let timestamp in timestamps) {
+        let value = timestamps[timestamp];
         timestamp = parseInt(timestamp, 10);
         results[timestamp + tzOffsetByTimestamp(timestamp)] = value;
       }
@@ -247,3 +250,7 @@ export function initHeatmap(options, data) {
 }
 
 window.initHeatmap = initHeatmap;
+window.onHmOpts = onHmOpts;
+window.onHmHome = onHmHome;
+window.onHmNavigate = onHmNavigate;
+window.onHmSelChange = onHmSelChange;
