@@ -132,7 +132,7 @@ class OptionsDialog(MappedDialog):
         Prevent accidentally closing dialog when editing complex widgets
         by ignoring Return and Escape
         """
-        if evt.key() == Qt.Key_Enter or evt.key() == Qt.Key_Return:
+        if evt.key() == Qt.Key.Key_Enter or evt.key() == Qt.Key.Key_Return:
             return evt.accept()
         super(OptionsDialog, self).keyPressEvent(evt)
 

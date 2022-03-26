@@ -182,7 +182,7 @@ class MappedDialog(BasicDialog):
         super(MappedDialog, self)._setupEvents()
         if getattr(self.form, "buttonBox", None):
             restore_btn = self.form.buttonBox.button(
-                QDialogButtonBox.RestoreDefaults)
+                QDialogButtonBox.StandardButton.RestoreDefaults)
             if restore_btn:
                 restore_btn.clicked.connect(self.restoreData)
 
