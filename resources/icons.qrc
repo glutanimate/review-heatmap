@@ -1,16 +1,10 @@
 <RCC>
   <qresource prefix="/review_heatmap">
-    <file>icons/options.svg</file>
     <file>icons/help.svg</file>
     <file>icons/heart.svg</file>
     <file>icons/heart_small.svg</file>
-    <file>icons/heart_bw.svg</file>
     <file>icons/rate.svg</file>
     <file>icons/email.svg</file>
-    <file>icons/down.svg</file>
-    <file>icons/left.svg</file>
-    <file>icons/right.svg</file>
-    <file>icons/circle.svg</file>
     <file>icons/plus.svg</file>
     <file>icons/minus.svg</file>
     <file alias="icons/coffee.svg">icons/optional/coffee.svg</file>

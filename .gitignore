@@ -49,3 +49,5 @@ src/*/manifest.json
 src/*/log.txt
 src/*/debug
 .pytest_cache/
+src/*/gui/forms
+src/*/gui/resources
