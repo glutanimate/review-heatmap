@@ -33,22 +33,27 @@
 Provides information on Anki version and platform
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-
 import sys
 import os
 
 from aqt import mw
 
-from anki import version as anki_version
-from anki.utils import isMac, isWin
+try:
+    from anki.buildinfo import version as anki_version
+except (ImportError, ModuleNotFoundError):
+    from anki import version as anki_version  # type: ignore[attr-defined, no-redef]
+
+try:
+    from anki.utils import is_mac, is_win
+except (ImportError, ModuleNotFoundError):
+    from anki.utils import isMac as is_mac  # type: ignore[attr-defined, no-redef]
+    from anki.utils import isWin as is_win  # type: ignore[attr-defined, no-redef]
 
 from .utils import ensureExists
 
-if isMac:
+if is_mac:
     PLATFORM = "mac"
-elif isWin:
+elif is_win:
     PLATFORM = "win"
 else:
     PLATFORM = "lin"
@@ -89,7 +94,7 @@ def pathMediaFiles():
     return mw.col.media.dir()
 
 
-def checkAnkiVersion(lower, upper=None):
+def is_anki_version_in_range(lower: str, upper=None):
     """Check whether anki version is in specified range
 
     By default the upper boundary is set to infinite
@@ -103,10 +108,10 @@ def checkAnkiVersion(lower, upper=None):
     Returns:
         bool -- Whether anki version is in specified range
     """
-    return checkVersion(anki_version, lower, upper=upper)
+    return is_version_in_range(anki_version, lower, upper=upper)
 
 
-def checkQtVersion(lower, upper=None):
+def is_qt_version_in_range(lower, upper=None):
     """Check whether Qt version is in specified range
 
     By default the upper boundary is set to infinite
@@ -121,10 +126,10 @@ def checkQtVersion(lower, upper=None):
         bool -- Whether Qt version is in specified range
     """
     from aqt.qt import QT_VERSION_STR
-    checkVersion(QT_VERSION_STR, lower, upper=upper)
+    return is_version_in_range(QT_VERSION_STR, lower, upper=upper)
 
 
-def checkVersion(current, lower, upper=None):
+def is_version_in_range(current, lower, upper=None):
     """Generic version checker
 
     Checks whether specified version is in specified range

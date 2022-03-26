@@ -33,10 +33,7 @@
 Basic QDialog, extended with some quality-of-life improvements
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-
-from .widgets.qt import *
+from aqt.qt import *
 from .interface import CommonWidgetInterface
 
 __all__ = ["BasicDialog"]

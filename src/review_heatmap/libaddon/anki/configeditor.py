@@ -56,7 +56,7 @@ class ConfigEditor(QDialog):
         self.setWindowTitle("{} Configuration".format(ADDON.NAME))
         self.setupWidgets()
         self.updateText(self.mgr["local"])
-        self.exec_()
+        self.exec()
     
     def setupWidgets(self):
         button_box = self.form.buttonBox

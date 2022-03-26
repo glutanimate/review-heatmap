@@ -2,7 +2,7 @@
 
 # Libaddon for Anki
 #
-# Copyright (C) 2018-2019  Aristotelis P. <https//glutanimate.com/>
+# Copyright (C) 2018-2021  Aristotelis P. <https//glutanimate.com/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -29,42 +29,29 @@
 #
 # Any modifications to this file must keep this entire header intact.
 
-"""
-Custom color-chooser
-"""
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
+import dataclasses
+from typing import Any, Type
 
-from aqt.qt import QPushButton, QColorDialog, QPixmap, QColor, QIcon, QSize
 
-class QColorButton(QPushButton):
-    def __init__(self, parent=None, color="#000000"):
-        super(QColorButton, self).__init__(parent=parent)
-        self._updateButtonColor(color)
-        self.clicked.connect(self._chooseColor)
+def dataclass_from_dataclass(
+    old_dataclass_object: Any, new_dataclass_factory: Type
+) -> Any:
+    return new_dataclass_factory(
+        **dataclass_as_dict_field_limited(
+            old_dataclass_object=old_dataclass_object,
+            new_dataclass_factory=new_dataclass_factory,
+        )
+    )
 
-    def _chooseColor(self):
-        qcolour = QColor(self.color)
-        dialog = QColorDialog(qcolour, parent=self)
-        color = dialog.getColor()
-        if not color.isValid():
-            return False
-        color = color.name()
-        self._updateButtonColor(color)
 
-    def _updateButtonColor(self, color):
-        """Generate color preview pixmap and place it on button"""
-        pixmap = QPixmap(128, 18)
-        qcolour = QColor(0, 0, 0)
-        qcolour.setNamedColor(color)
-        pixmap.fill(qcolour)
-        self.setIcon(QIcon(pixmap))
-        self.setIconSize(QSize(128, 18))
-        self.color = color
-    
-    def color(self):
-        return self.color
-    
-    def setColor(self, color):
-        self._updateButtonColor(color)
+def dataclass_as_dict_field_limited(
+    old_dataclass_object: Any, new_dataclass_factory: Type
+) -> dict:
+    old_dataclass_dict = dataclasses.asdict(old_dataclass_object)
+    return limit_dict_by_dataclass_fields(old_dataclass_dict, new_dataclass_factory)
+
+
+def limit_dict_by_dataclass_fields(dictionary: dict, dataclass_factory: Type) -> dict:
+    field_names = set(f.name for f in dataclasses.fields(dataclass_factory))
+    return {k: v for k, v in dictionary.items() if k in field_names}

@@ -94,7 +94,7 @@ class ContribDialog(BasicDialog):
     def _showCredits(self):
         viewer = HTMLViewer(getAboutString(title=True),
                             title=ADDON.NAME, parent=self)
-        viewer.exec_()
+        viewer.exec()
 
     def _linkHandler(self, url):
         """Support for binding custom actions to text links"""

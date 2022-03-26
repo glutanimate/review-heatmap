@@ -33,25 +33,20 @@
 Utilities to fill out predefined data in dialog text labels
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-
-from aqt.qt import *
+from aqt.qt import QLabel, QPushButton, QRegularExpression, Qt
 
 from ..consts import ADDON
-from ..platform import ANKI20
 
 format_dict = {
     "ADDON_NAME": ADDON.NAME,
     "ADDON_VERSION": ADDON.VERSION,
 }
 
-if not ANKI20:
-    fmt_find_params = ((QLabel, QPushButton), QRegExp(".*"),
-                       Qt.FindChildrenRecursively)
-else:
-    # Qt4: recursive by default. No third param.
-    fmt_find_params = ((QLabel, QPushButton), QRegExp(".*"))
+fmt_find_params = (
+    (QLabel, QPushButton),
+    QRegularExpression(".*"),
+    Qt.FindChildOption.FindChildrenRecursively,
+)
 
 
 def formatLabels(dialog, linkhandler=None):

@@ -36,7 +36,7 @@ Miscellaneous Qt utilities
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from .qt import QMessageBox
+from aqt.qt import QMessageBox
 
 def showInfo(message, parent=None, mode="info", title="Anki"):
     if mode == "info":

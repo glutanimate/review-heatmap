@@ -40,7 +40,7 @@ from __future__ import (absolute_import, division,
 
 from ....platform import PLATFORM
 
-from .qt import QDialog, QPushButton, QVBoxLayout, QLabel, Qt, QKeySequence
+from aqt.qt import QDialog, QPushButton, QVBoxLayout, QLabel, Qt, QKeySequence
 
 PLATFORM_MODKEY_NAMES = {
     "lin": {"meta": "Meta", "ctrl": "Ctrl",
@@ -69,7 +69,7 @@ class QKeyGrabButton(QPushButton):
     def grabKey(self):
         """Invoke key grabber"""
         grabber = QKeyGrab(self.parent())
-        ret = grabber.exec_()
+        ret = grabber.exec()
         if ret != 1:
             return
         key_string = grabber.key_string

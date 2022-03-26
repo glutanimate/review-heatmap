@@ -29,13 +29,53 @@
 #
 # Any modifications to this file must keep this entire header intact.
 
-from aqt.qt import pyqtSignal, QObject
+"""
+Simple dialog for viewing a web page
+"""
 
+from typing import Optional
 
-class ConfigSignals(QObject):
-    initialized = pyqtSignal()
-    saved = pyqtSignal()
-    loaded = pyqtSignal()
-    reset = pyqtSignal()
-    deleted = pyqtSignal()
-    unloaded = pyqtSignal()
+from aqt.qt import QUrl, QWebEngineView, QVBoxLayout, QWidget
+
+from aqt import mw
+
+from ..platform import PLATFORM
+from .basic.dialog_basic import BasicDialog
+
+# TODO: Refactor
+
+class WebViewer(BasicDialog):
+    def __init__(
+        self,
+        url: str,
+        title: Optional[str] = None,
+        parent: Optional[QWidget] = None,
+        width: Optional[int] = None,
+        height: Optional[int] = None,
+    ):
+        super().__init__(parent=parent)
+        self.setContentsMargins(0, 0, 0, 0)
+        if PLATFORM == "win":
+            self.setMinimumWidth(400)
+            self.setMinimumHeight(500)
+        else:
+            self.setMinimumWidth(500)
+            self.setMinimumHeight(600)
+        if title:
+            self.setWindowTitle(title)
+        if width and height:
+            self.resize(width, height)
+        self.setUrl(url)
+
+    def _setupUI(self):
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(layout)
+        self._browser = QWebEngineView(self)
+        layout.addWidget(self._browser)
+
+    def setUrl(self, url: str):
+        self._browser.load(QUrl(url))
+
+    def _onClose(self):
+        mw.gcWindow(self)

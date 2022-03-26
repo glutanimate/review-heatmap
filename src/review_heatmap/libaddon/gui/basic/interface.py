@@ -47,10 +47,11 @@ from __future__ import (absolute_import, division,
 
 from collections import MutableSequence, MutableSet, MutableMapping
 
+from aqt.qt import *
+
 from ...utils import getNestedAttribute
 from ...platform import PYTHON3
 
-from .widgets.qt import *
 from .widgets.qkeygrabber import QKeyGrabButton
 from .widgets.qcolorbutton import QColorButton
 # TODO: Switch to QKeySequenceEdit once Qt4 support dropped

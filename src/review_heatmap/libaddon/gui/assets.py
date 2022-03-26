@@ -2,8 +2,7 @@
 
 # Libaddon for Anki
 #
-# Copyright (C) 2018        Aristotelis P. <https//glutanimate.com/>
-# Copyright (C) 2013-2018   Damien Elmes <anki@ichi2.net>
+# Copyright (C) 2018-2022  Aristotelis P. <https//glutanimate.com/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -30,26 +29,18 @@
 #
 # Any modifications to this file must keep this entire header intact.
 
-"""
-Qt imports
-"""
+from aqt.qt import QDir, QIcon, QPixmap
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
 
-# extracted from aqt.qt:
-import sip
+class AssetProvider:
+    def __init__(self, prefix: str, asset_root_path: str):
+        self._prefix = prefix
+        QDir.addSearchPath(prefix, asset_root_path)
 
-try:
-    from PyQt5.Qt import *  # noqa: F401
-except ImportError:
-    sip.setapi('QString', 2)
-    sip.setapi('QVariant', 2)
-    sip.setapi('QUrl', 2)
-    try:
-        sip.setdestroyonexit(False)
-    except:  # noqa: E722
-        # missing in older versions
-        pass
-    from PyQt4.QtCore import *  # noqa: F401
-    from PyQt4.QtGui import *  # noqa: F401
+    def get_icon(self, relative_path: str):
+        icon = QIcon()
+        icon.addPixmap(self.get_pixmap(relative_path))
+        return icon
+
+    def get_pixmap(self, relative_path: str):
+        return QPixmap(f"{self._prefix}:{relative_path}")

@@ -50,6 +50,8 @@ def setAddonProperties(addon):
             continue
         setattr(ADDON, key, value)
 
+set_addon_properties = setAddonProperties
+
 class ADDON(object):
     """Class storing general add-on properties
     Property names need to be all-uppercase with no leading underscores.
