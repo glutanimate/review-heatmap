@@ -81,7 +81,7 @@ HTML_HEATMAP: str = f"""
             <div class="hm-btn opts-btn" title="Options" onclick="reviewHeatmap.onHmOpts(event, this);">
                 <img src="{WEB_BASE}/assets/options.svg" />
             </div>
-            <div class="hm-btn opts-btn" title="Support this add-on" onclick="onHmContrib(event, this);">
+            <div class="hm-btn opts-btn" title="Support this add-on" onclick="reviewHeatmap.onHmContrib(event, this);">
                 <img src="{WEB_BASE}/assets/heart_bw.svg" />
             </div>
         </div>
