@@ -45,7 +45,7 @@ UIs.
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from collections import MutableSequence, MutableSet, MutableMapping
+from collections.abc import MutableSequence, MutableSet, MutableMapping
 
 from aqt.qt import *
 
@@ -791,7 +791,7 @@ class CommonWidgetInterface(object):
         Create QDateTime object and set it to unix time in secs
         """
         qdatetime = QDateTime()
-        qdatetime.setTime_t(unixtime)
+        qdatetime.setSecsSinceEpoch(unixtime)
         return qdatetime
 
     def _setDateTime(self, qdatetimeedit, curtime):
@@ -859,7 +859,7 @@ class CommonWidgetInterface(object):
         Remove items by list of item_data
         """
         for idx in range(combo_widget.count()):
-            data = combo_widget.itemData(idx, Qt.UserRole)
+            data = combo_widget.itemData(idx, Qt.ItemDataRole.UserRole)
             if data in data_to_remove:
                 self._removeComboItemByIndex(idx)
 
@@ -894,7 +894,7 @@ class CommonWidgetInterface(object):
         result_list = []
         for idx in range(combo_widget.count()):
             text = combo_widget.itemText(idx)
-            data = combo_widget.itemData(idx, Qt.UserRole)
+            data = combo_widget.itemData(idx, Qt.ItemDataRole.UserRole)
             result_list.append((text, data))
         return result_list
 
@@ -916,7 +916,7 @@ class CommonWidgetInterface(object):
         """
         index = self._getComboCurrentIndex(combo_widget)
         text = combo_widget.currentText()
-        data = combo_widget.itemData(index, Qt.UserRole)
+        data = combo_widget.itemData(index, Qt.ItemDataRole.UserRole)
         return (text, data)
 
     def _getComboCurrentData(self, combo_widget):
@@ -940,7 +940,7 @@ class CommonWidgetInterface(object):
         for text, data in item_tuples:
             new_item = QListWidgetItem(text)
             if data:
-                new_item.setData(Qt.UserRole, data)
+                new_item.setData(Qt.ItemDataRole.UserRole, data)
             list_widget.addItem(new_item)
             if current_data is not None and data == current_data:
                 self._selectWidgetItem(list_widget, new_item)
@@ -957,7 +957,7 @@ class CommonWidgetInterface(object):
         """
         for idx in range(list_widget.count()):
             item = list_widget.item(idx)
-            data = item.data(Qt.UserRole)
+            data = item.data(Qt.ItemDataRole.UserRole)
             if data in data_to_remove:
                 self._removeListItem(list_widget, item)
 
@@ -974,7 +974,7 @@ class CommonWidgetInterface(object):
         Set current item by item_dta
         """
         for item in self._getWidgetItems(list_widget):
-            data = item.data(Qt.UserRole)
+            data = item.data(Qt.ItemDataRole.UserRole)
             if data == item_data:
                 self._selectWidgetItem(list_widget, item)
                 return True
@@ -988,7 +988,7 @@ class CommonWidgetInterface(object):
         """
         result_list = []
         for item in self._getWidgetItems(list_widget):
-            data = item.data(Qt.UserRole)
+            data = item.data(Qt.ItemDataRole.UserRole)
             text = item.text()
             result_list.append((text, data))
         return result_list
@@ -1017,14 +1017,14 @@ class CommonWidgetInterface(object):
         """
         item = self._getListCurrentItem(list_widget)
         text = item.text()
-        data = item.data(Qt.UserRole)
+        data = item.data(Qt.ItemDataRole.UserRole)
         return (text, data)
 
     def _getListCurrentData(self, list_widget):
         """
         Get item_data of current item
         """
-        return self._getListCurrentValue()[1]
+        return self._getListCurrentValue(list_widget)[1]
 
     # QFontComboBox
 
@@ -1045,16 +1045,16 @@ class CommonWidgetInterface(object):
         """
         family = font_dict.get("family", None)
         size = font_dict.get("size", None)
-        bold = font.setBold(font_dict["bold"])
+        bold = font_dict.setBold(font_dict["bold"])
         italic = font_dict.get("italic", None)
 
         assert family is not None and isinstance(family, STRINGTYPES), \
             "font family needs to be provided as a string type"
-        font = Qfont(font_dict["family"])
+        font = QFont(font_dict["family"])
 
         if size is not None:
             assert isinstance(size, (int, float))
-            font.setPointSize(size)
+            font.setPointSize(int(size))
         if bold is not None:
             assert isinstance(bold, bool)
             font.setBold(bold)
