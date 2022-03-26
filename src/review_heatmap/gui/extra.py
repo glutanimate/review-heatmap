@@ -47,7 +47,7 @@ from aqt.utils import openLink, tooltip
 
 from ..consts import ADDON
 from ..libaddon.anki.configmanager import ConfigManager
-from ..libaddon.platform import isMac
+from ..libaddon.platform import is_mac
 
 SNANKI_VERSION: str = "0.0.2"
 STARTING_LIVES: int = 3
@@ -207,7 +207,7 @@ class Snanki(QDialog):
             self.lives += 1
             self.highscore = self.score
             info = "\n\nNew high score! 1 life replenished."
-        font_size = 10 if not isMac else 12
+        font_size = 10 if not is_mac else 12
         painter.setPen(QColor(0, 34, 3))
         painter.setFont(QFont("Decorative", font_size))
         if self.lives > 0:

@@ -46,9 +46,9 @@ def initialize_addon():
 
     from .consts import ADDON
 
-    from .libaddon.consts import setAddonProperties
+    from .libaddon.consts import set_addon_properties
 
-    setAddonProperties(ADDON)
+    set_addon_properties(ADDON)
 
     from .libaddon.debug import maybeStartDebugging
 
