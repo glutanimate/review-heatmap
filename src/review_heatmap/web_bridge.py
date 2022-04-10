@@ -33,15 +33,14 @@
 JS <-> PY communication
 """
 
-from typing import Any, Callable, Dict, Optional, Tuple, Type, Union, TYPE_CHECKING
-
-from PyQt5.QtWidgets import QWidget
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Tuple, Type, Union
 
 import aqt
 from aqt.deckbrowser import DeckBrowser
-from aqt.overview import Overview
-from aqt.stats import DeckStats
 from aqt.main import AnkiQt
+from aqt.overview import Overview
+from aqt.qt import QWidget
+from aqt.stats import DeckStats
 
 from .config import heatmap_colors, heatmap_modes
 from .gui.contrib import invoke_contributions_dialog

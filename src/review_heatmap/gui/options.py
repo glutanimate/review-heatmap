@@ -36,7 +36,7 @@ Options dialog and associated components
 import time
 from typing import Optional
 
-from PyQt5.QtWidgets import QAction, QApplication, QWidget
+from aqt.qt import QAction, QApplication, QWidget
 
 from anki.lang import _
 from aqt import mw
@@ -209,7 +209,7 @@ class RevHmOptions(OptionsDialog):
 def invoke_options_dialog(parent: Optional[QWidget] = None) -> int:
     """Call settings dialog"""
     dialog = RevHmOptions(config, mw, parent=parent)
-    return dialog.exec_()
+    return dialog.exec()
 
 
 def initialize_options():
