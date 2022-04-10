@@ -38,11 +38,21 @@ import time
 from random import randrange
 from typing import Dict, Optional
 
-from PyQt5.QtCore import QBasicTimer, QTimerEvent, Qt
-from PyQt5.QtGui import QColor, QFont, QKeyEvent, QMouseEvent, QPaintEvent, QPainter
-from PyQt5.QtWidgets import QDialog, QFrame, QWidget
-
 from aqt import mw
+from aqt.qt import (
+    QBasicTimer,
+    QColor,
+    QDialog,
+    QFont,
+    QFrame,
+    QKeyEvent,
+    QMouseEvent,
+    QPainter,
+    QPaintEvent,
+    Qt,
+    QTimerEvent,
+    QWidget,
+)
 from aqt.utils import openLink, tooltip
 
 from ..consts import ADDON
@@ -96,40 +106,40 @@ class Snanki(QDialog):
         if not self.isPaused:
             # print("inflection point: ", self.snakeX, " ", self.snakeY)
             if (
-                e.key() == Qt.Key_Up
+                e.key() == Qt.Key.Key_Up
                 and self.lastKeyPress != "UP"
                 and self.lastKeyPress != "DOWN"
             ):
                 self.direction("UP")
                 self.lastKeyPress = "UP"
             elif (
-                e.key() == Qt.Key_Down
+                e.key() == Qt.Key.Key_Down
                 and self.lastKeyPress != "DOWN"
                 and self.lastKeyPress != "UP"
             ):
                 self.direction("DOWN")
                 self.lastKeyPress = "DOWN"
             elif (
-                e.key() == Qt.Key_Left
+                e.key() == Qt.Key.Key_Left
                 and self.lastKeyPress != "LEFT"
                 and self.lastKeyPress != "RIGHT"
             ):
                 self.direction("LEFT")
                 self.lastKeyPress = "LEFT"
             elif (
-                e.key() == Qt.Key_Right
+                e.key() == Qt.Key.Key_Right
                 and self.lastKeyPress != "RIGHT"
                 and self.lastKeyPress != "LEFT"
             ):
                 self.direction("RIGHT")
                 self.lastKeyPress = "RIGHT"
-            elif e.key() == Qt.Key_P:
+            elif e.key() == Qt.Key.Key_P:
                 self.pause()
-        elif e.key() == Qt.Key_P:
+        elif e.key() == Qt.Key.Key_P:
             self.start()
-        elif e.key() == Qt.Key_Space:
+        elif e.key() == Qt.Key.Key_Space:
             self.newGame()
-        elif e.key() == Qt.Key_Escape:
+        elif e.key() == Qt.Key.Key_Escape:
             self.close()
 
     def mousePressEvent(self, event: QMouseEvent):
@@ -190,7 +200,7 @@ class Snanki(QDialog):
             self.snakeArray.insert(0, [self.snakeX, self.snakeY])
 
     def scoreBoard(self, painter: QPainter):
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(QColor("#3e7a78"))
         painter.drawRect(0, 0, 300, 24)
 
@@ -213,7 +223,7 @@ class Snanki(QDialog):
         if self.lives > 0:
             msg = "GAME OVER{}\n\nPress space to play again".format(info)
         else:
-            self.setCursor(Qt.PointingHandCursor)
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
             msg = (
                 "GAME OVER\n\nYou're out of lives for today,\n"
                 "but tomorrow is another day :)\n\n"
@@ -224,7 +234,7 @@ class Snanki(QDialog):
                 "\n\nClick here to go to\n"
                 "patreon.com/glutanimate"
             )
-        painter.drawText(event.rect(), Qt.AlignCenter, msg)
+        painter.drawText(event.rect(), Qt.AlignmentFlag.AlignCenter, msg)
 
     def checkStatus(self, x: int, y: int):
         if y > 288 or x > 288 or x < 0 or y < 24:
@@ -262,7 +272,7 @@ class Snanki(QDialog):
 
     # draws each component of the snake
     def drawSnake(self, painter: QPainter):
-        painter.setPen(Qt.NoPen)
+        painter.setPen(Qt.PenStyle.NoPen)
         painter.setBrush(QColor("#ffffff"))
         for i in self.snakeArray:
             painter.drawRect(i[0], i[1], 12, 12)
@@ -329,9 +339,9 @@ def invoke_snanki(parent: Optional[QWidget] = None):
         # new day, reset
         livesleft = STARTING_LIVES
         if streak_max is not None:
-            livesleft += int(round(0.1 * streak_max ** 0.5))
+            livesleft += int(round(0.1 * streak_max**0.5))
         if streak_cur is not None:
-            livesleft += int(round(0.5 * streak_cur ** 0.5))
+            livesleft += int(round(0.5 * streak_cur**0.5))
     elif lastplayed != 0 and lastplayed < day_cutoff:
         # same day
         if not livesleft:
@@ -346,7 +356,7 @@ def invoke_snanki(parent: Optional[QWidget] = None):
     highscore = conf["highscore"]
 
     snanki = Snanki(highscore=highscore, lives=livesleft, parent=parent)
-    snanki.exec_()
+    snanki.exec()
 
     conf["highscore"] = snanki.highscore
     conf["livesleft"] = snanki.lives
