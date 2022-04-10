@@ -59,7 +59,7 @@ from ..consts import ADDON
 from ..libaddon.anki.configmanager import ConfigManager
 from ..libaddon.platform import is_mac
 
-SNANKI_VERSION: str = "0.0.2"
+SNANKI_VERSION: str = "0.1.0"
 STARTING_LIVES: int = 3
 
 
@@ -325,7 +325,10 @@ def invoke_snanki(parent: Optional[QWidget] = None):
         (day_cutoff - 86400) * 1000,
     )
 
-    goal = max(1, int(round(activity_daily_avg / 2)))
+    if activity_daily_avg is not None:
+        goal = max(1, int(round(activity_daily_avg / 2)))
+    else:
+        goal = 1
 
     if done_today < goal:
         tooltip(
