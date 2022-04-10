@@ -315,9 +315,14 @@ def invoke_snanki(parent: Optional[QWidget] = None):
     streak_cur = getattr(mw, "_hmStreakCur", None)
     activity_daily_avg = getattr(mw, "_hmActivityDailyAvg", None)
 
+    try:
+        day_cutoff = mw.col.sched.day_cutoff()
+    except AttributeError:
+        day_cutoff = mw.col.sched.dayCutoff()
+
     done_today = mw.col.db.scalar(
         """select count() from revlog where id > ?""",
-        (mw.col.sched.dayCutoff - 86400) * 1000,
+        (day_cutoff - 86400) * 1000,
     )
 
     goal = max(1, int(round(activity_daily_avg / 2)))
@@ -332,7 +337,6 @@ def invoke_snanki(parent: Optional[QWidget] = None):
 
     lastplayed = conf["lastplayed"]
     livesleft = conf["livesleft"]
-    day_cutoff = mw.col.sched.dayCutoff
     day_start = day_cutoff - 86400
 
     if lastplayed < day_start:
