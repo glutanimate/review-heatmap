@@ -53,7 +53,7 @@ class HeatmapController:
 
         self._bridge: Optional[HeatmapBridge] = HeatmapBridge(self._mw, self._config)
         self._bridge.register()
-        
+
         self._renderer: Optional[HeatmapRenderer] = None
 
     def render_for_view(
@@ -66,7 +66,6 @@ class HeatmapController:
         col = self._mw.col
         if not col:
             raise CollectionError("Anki collection and/or database is not ready")
-
 
         if not self._renderer:
             reporter = ActivityReporter(col, self._config)
