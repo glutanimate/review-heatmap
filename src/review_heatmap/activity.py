@@ -38,6 +38,7 @@ import time
 from typing import (
     Dict,
     List,
+    Literal,
     Optional,
     Sequence,
     Tuple,
@@ -256,12 +257,24 @@ class ActivityReporter:
     # Collection properties
     #########################################################################
 
+    def _sched_ver(self) -> Literal[1, 2, 3]:
+        try:
+            if self._col.v3_scheduler():
+                return 3
+        except AttributeError:
+            pass
+        try:
+            return self._col.sched_ver()
+        except AttributeError:
+            return self._col.schedVer()
+
     def _get_col_offset(self) -> int:
         """
         Return daily scheduling cutoff time in hours
         """
-        if self._col.schedVer() == 2:
+        if self._sched_ver() >= 2:
             return self._col.conf.get("rollover", 4)
+
         start_date = datetime.datetime.fromtimestamp(self._col.crt)
         return start_date.hour
 
@@ -477,17 +490,16 @@ GROUP BY day ORDER BY day""".format(
         return res
 
     def __debug_cards_due(self, cmd: str, res: List[Sequence[int]]):
-        if self._col.schedVer() == 2:
+        sched_ver = self._sched_ver()
+        if sched_ver >= 2:
             offset = self._col.conf.get("rollover", 4)
-            schedver = 2
         else:
             startDate = datetime.datetime.fromtimestamp(self._col.crt)
             offset = startDate.hour
-            schedver = 1
 
         logger.debug(cmd)
         logger.debug(self._col.sched.today)
-        logger.debug("Scheduler version %s", schedver)
+        logger.debug("Scheduler version %s", sched_ver)
         logger.debug("Day starts at setting: %s hours", offset)
         logger.debug(
             time.strftime(
