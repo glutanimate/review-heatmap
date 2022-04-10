@@ -497,6 +497,11 @@ GROUP BY day ORDER BY day""".format(
             startDate = datetime.datetime.fromtimestamp(self._col.crt)
             offset = startDate.hour
 
+        try:
+            day_cutoff = self._col.sched.day_cutoff
+        except AttributeError:
+            day_cutoff = self._col.sched.dayCutoff
+
         logger.debug(cmd)
         logger.debug(self._col.sched.today)
         logger.debug("Scheduler version %s", sched_ver)
@@ -504,7 +509,7 @@ GROUP BY day ORDER BY day""".format(
         logger.debug(
             time.strftime(
                 "dayCutoff: %Y-%m-%d %H:%M",
-                time.localtime(self._col.sched.dayCutoff),
+                time.localtime(day_cutoff),
             )
         )
         logger.debug(

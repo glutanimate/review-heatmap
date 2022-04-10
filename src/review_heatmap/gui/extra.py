@@ -316,9 +316,9 @@ def invoke_snanki(parent: Optional[QWidget] = None):
     activity_daily_avg = getattr(mw, "_hmActivityDailyAvg", None)
 
     try:
-        day_cutoff = mw.col.sched.day_cutoff()
+        day_cutoff = mw.col.sched.day_cutoff
     except AttributeError:
-        day_cutoff = mw.col.sched.dayCutoff()
+        day_cutoff = mw.col.sched.dayCutoff
 
     done_today = mw.col.db.scalar(
         """select count() from revlog where id > ?""",
