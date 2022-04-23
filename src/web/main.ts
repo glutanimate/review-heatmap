@@ -98,7 +98,7 @@ class ReviewHeatmap {
       displayLegend: false,
       domainLabelFormat: this.options.domLabForm,
       tooltip: true,
-      subDomainTitleFormat: function (isEmpty, fmt, rawData): string {
+      subDomainTitleFormat: (isEmpty, fmt, rawData): string => {
         // format tooltips
         let label: string;
         let tip: string;
@@ -137,7 +137,7 @@ class ReviewHeatmap {
 
         return tip;
       },
-      onClick: function (date, nb) {
+      onClick: (date, nb) => {
         // Click handler that shows cards assigned to a particular date
         // in Anki's card browser
 
