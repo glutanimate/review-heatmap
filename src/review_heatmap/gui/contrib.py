@@ -66,4 +66,4 @@ class RevHmContrib(ContribDialog):
 
 def invoke_contributions_dialog(parent):
     dialog = RevHmContrib(parent)
-    dialog.exec_()
+    dialog.exec()
