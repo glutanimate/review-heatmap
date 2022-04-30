@@ -113,8 +113,6 @@ class ActivityReporter:
     def __init__(self, col: "Collection", config: ConfigManager):
         self._col: "Collection"
         self._db: "DBProxy"
-        self._offset: int
-        self._today: int
 
         self._config: ConfigManager = config
         self.set_collection(col)
@@ -164,8 +162,6 @@ class ActivityReporter:
 
         self._col = col
         self._db = col.db
-        self._offset = self._get_col_offset()
-        self._today = self._get_today(self._offset)
 
     # Activity calculations
     #########################################################################
@@ -209,9 +205,10 @@ class ActivityReporter:
             total += activity
 
         days_learned: int = idx + 1
+        today = self._today
 
         # Stats: current streak
-        if history[-1][0] in (self._today, self._today - 86400):
+        if history[-1][0] in (today, today - 86400):
             # last recorded date today or yesterday?
             streak_cur = streak_last
 
@@ -226,7 +223,7 @@ class ActivityReporter:
         # desirable and motivating than the raw percentage of days learned
         # in the date inclusion period.
 
-        days_total = (self._today - first_day) / 86400 + 1
+        days_total = (today - first_day) / 86400 + 1
 
         if days_total == 1:
             pdays = 100  # review history only extends to yesterday
@@ -235,8 +232,8 @@ class ActivityReporter:
 
         # Compose activity data
         activity_dict: Dict[int, int] = dict(history + forecast)  # type: ignore
-        if history[-1][0] == self._today:  # history takes precedence for today
-            activity_dict[self._today] = history[-1][1]
+        if history[-1][0] == today:  # history takes precedence for today
+            activity_dict[today] = history[-1][1]
 
         # individual cal-heatmap dates need to be in ms:
 
@@ -244,7 +241,7 @@ class ActivityReporter:
             activity=activity_dict,
             start=first_day * 1000 if first_day else None,
             stop=last_day * 1000 if last_day else None,
-            today=self._today * 1000,
+            today=today * 1000,
             offset=self._offset,
             stats=StatsReport(
                 streak_max=StatsEntryStreak(value=streak_max),
@@ -257,6 +254,7 @@ class ActivityReporter:
     # Collection properties
     #########################################################################
 
+    @property
     def _sched_ver(self) -> Literal[1, 2, 3]:
         try:
             if self._col.v3_scheduler():
@@ -268,21 +266,24 @@ class ActivityReporter:
         except AttributeError:
             return self._col.schedVer()
 
-    def _get_col_offset(self) -> int:
+    @property
+    def _offset(self) -> int:
         """
         Return daily scheduling cutoff time in hours
         """
-        if self._sched_ver() >= 2:
-            return self._col.conf.get("rollover", 4)
+        if self._sched_ver >= 2:
+            rollover = self._col.conf.get("rollover", 4)
+            return rollover
 
         start_date = datetime.datetime.fromtimestamp(self._col.crt)
         return start_date.hour
 
-    def _get_today(self, offset: int) -> int:
+    @property
+    def _today(self) -> int:
         """
         Return unix epoch timestamp in seconds for today (00:00 UTC)
         """
-        return daystart_epoch(self._db, "now", is_timestamp=False, offset=offset)
+        return daystart_epoch(self._db, "now", is_timestamp=False, offset=self._offset)
 
     # Time limits
     #########################################################################
@@ -490,7 +491,7 @@ GROUP BY day ORDER BY day""".format(
         return res
 
     def __debug_cards_due(self, cmd: str, res: List[Sequence[int]]):
-        sched_ver = self._sched_ver()
+        sched_ver = self._sched_ver
         if sched_ver >= 2:
             offset = self._col.conf.get("rollover", 4)
         else:
