@@ -33,9 +33,7 @@
 Static web components and templates
 """
 
-import json
-
-from .libaddon.platform import MODULE_ADDON, PLATFORM, is_anki_version_in_range
+from .libaddon.platform import MODULE_ADDON, PLATFORM
 
 CSS_DISABLE_HEATMAP = "rh-disable-heatmap"
 CSS_DISABLE_STATS = "rh-disable-stats"
@@ -52,7 +50,7 @@ HTML_MAIN_ELEMENT: str = f"""
 
 <script>
 var rhPlatform = "{PLATFORM}";
-var rhNewFinderAPI = {json.dumps(is_anki_version_in_range("2.1.41"))};
+var rhNewFinderAPI = false;
 </script>
 
 <div class="rh-container {{classes}}">
