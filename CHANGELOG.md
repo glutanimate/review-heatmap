@@ -36,9 +36,10 @@ You can now download Review Heatmap [directly off of AnkiWeb](https://ankiweb.ne
 
 ### Fixed
 
-- Fixed an isssue where invalid card scheduling could cause the heatmap to disappear
+- Fixed an issue where invalid card scheduling could cause the heatmap to disappear
 - Fixed an issue where config changes could not be written
-- On recent Anki versions: Potentially fixed a number of issues with time-zone handling that could cause mismapping of repetitions to the wrong days. If you are still experiencing issues like this, I would kindly ask you to please [report them here](https://github.com/glutanimate/review-heatmap/issues/151) and help me troubleshoot them. 
+- Fixed an issue where clicking on today's repetitions would not draw up any cards in the browser
+- On recent Anki versions: Potentially fixed a number of issues with time-zone handling that would sometimes cause mismapping of repetitions to the wrong days. If you are still experiencing issues like this, I would kindly ask you to please [report them here](https://github.com/glutanimate/review-heatmap/issues/151) in order to help me troubleshoot them. 
 
 ### Changed
 
