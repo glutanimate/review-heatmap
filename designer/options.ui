@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>437</width>
-    <height>589</height>
+    <width>472</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,12 +21,11 @@
        <property name="font">
         <font>
          <pointsize>16</pointsize>
-         <weight>75</weight>
          <bold>true</bold>
         </font>
        </property>
        <property name="text">
-        <string>Settings</string>
+        <string>Review Heatmap Settings</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -166,7 +165,7 @@
         </font>
        </property>
        <property name="text">
-        <string>{ADDON_NAME} &lt;a href=&quot;action://changelog&quot;&gt;v{ADDON_VERSION}&lt;/a&gt;</string>
+        <string>&lt;a href=&quot;action://changelog&quot;&gt;v{ADDON_VERSION}&lt;/a&gt;</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -229,12 +228,11 @@
              <property name="font">
               <font>
                <pointsize>14</pointsize>
-               <weight>75</weight>
                <bold>true</bold>
               </font>
              </property>
              <property name="text">
-              <string>{ADDON_NAME}?</string>
+              <string>Review Heatmap?</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -261,7 +259,23 @@
            <property name="topMargin">
             <number>5</number>
            </property>
-           <item row="0" column="2">
+           <item row="0" column="0">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Minimum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="3">
             <spacer name="horizontalSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -301,23 +315,20 @@ access to many exclusive add-ons!</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Minimum</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
           </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../resources/icons.qrc">:/review_heatmap/icons/thanks.svg</pixmap>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -453,7 +464,7 @@ access to many exclusive add-ons!</string>
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>40</height>
+           <height>20</height>
           </size>
          </property>
         </spacer>
@@ -742,7 +753,6 @@ access to many exclusive add-ons!</string>
   <tabstop>btnDeckDel</tabstop>
  </tabstops>
  <resources>
-  <include location="../resources/icons.qrc"/>
   <include location="../resources/icons.qrc"/>
  </resources>
  <connections>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>360</width>
-    <height>480</height>
+    <height>408</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -97,7 +97,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hi! &lt;span style=&quot; font-weight:600;&quot;&gt;Glutanimate&lt;/span&gt; here :) Thanks for checking out Review Heatmap and some of my other add-ons. I hope you've been enjoying them! &lt;/p&gt;&lt;p&gt;If &lt;span style=&quot; font-weight:600;&quot;&gt;{ADDON_NAME}&lt;/span&gt; or any of &lt;a href=&quot;action://installed-addons&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;my other projects&lt;/span&gt;&lt;/a&gt; has been a valuable asset in your studies, please do consider &lt;span style=&quot; font-weight:600;&quot;&gt;supporting my work&lt;/span&gt; through one of the methods below:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Hi! &lt;strong&gt;Glutanimate&lt;/strong&gt; here :) Thanks for checking out Review Heatmap and some of my other add-ons. I hope you've been enjoying them! &lt;/p&gt;&lt;p&gt;If &lt;strong&gt;{ADDON_NAME}&lt;/strong&gt; or any of &lt;a href=&quot;action://installed-addons&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;my other projects&lt;/span&gt;&lt;/a&gt; has been a valuable asset in your studies, please do consider &lt;strong&gt;supporting my work&lt;/strong&gt;:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -152,33 +152,6 @@ exclusive add-ons &amp;&amp; other goodies!</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QPushButton" name="btnMail">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>&lt;html&gt;Feel free to send me an email with your idea – be it a new add-on or feature in an existing add-on – and we can work things out.&lt;/html&gt;</string>
-         </property>
-         <property name="text">
-          <string>Hire me to work on
-an add-on for you</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/icons.qrc">
-           <normaloff>:/review_heatmap/icons/email.svg</normaloff>:/review_heatmap/icons/email.svg</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>14</height>
-          </size>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
      <item>
@@ -190,7 +163,7 @@ an add-on for you</string>
         </sizepolicy>
        </property>
        <property name="text">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Each contribution is greatly appreciated and will help me &lt;span style=&quot; font-weight:600;&quot;&gt;update and improve&lt;/span&gt; my add-ons as time goes by! Thank you.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Each contribution is greatly appreciated and will help me &lt;strong&gt;update and improve&lt;/strong&gt; my add-ons as time goes by! Thank you.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
@@ -231,7 +204,6 @@ an add-on for you</string>
  </widget>
  <tabstops>
   <tabstop>btnPatreon</tabstop>
-  <tabstop>btnMail</tabstop>
   <tabstop>btnCredits</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

@@ -7,9 +7,9 @@
     <file>icons/email.svg</file>
     <file>icons/plus.svg</file>
     <file>icons/minus.svg</file>
-    <file alias="icons/coffee.svg">icons/optional/coffee.svg</file>
     <file alias="icons/patreon.svg">icons/optional/patreon.svg</file>
     <file alias="icons/twitter.svg">icons/optional/twitter.svg</file>
     <file alias="icons/youtube.svg">icons/optional/youtube.svg</file>
+    <file alias="icons/thanks.svg">icons/optional/thanks.svg</file>
   </qresource>
 </RCC>

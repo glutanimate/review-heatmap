@@ -59,3 +59,5 @@ Trademark and copyright terms of each respective brand apply.
 The following icons are Copyright (c) 2016-2022 Glutanimate with all rights reserved:
 
 - glutanimate.svg
+- banner.svg
+- thanks.svg
