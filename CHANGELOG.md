@@ -27,16 +27,16 @@ If you are on an earlier Anki release there is no need to worry: Copying the Ank
 
 ### Added
 
-- Added support for Anki 2.1.50 and up. Both Qt6 and Qt5 builds are supported. On Apple silicon the add-on now benefits from the performance improvements that Anki's native Qt6 build provides.
-- Added a number of changes that should improve the rendering performance of the heatmap when switching between Anki screens
-- Added an option to exclude review history entries created by manually rescheduling or forgetting cards. This option is enabled by default, but can be disabled under Settings → Fine Tuning → *Exclude manual reschedules from history*
+- Added support for **Anki 2.1.50 and up**. Both Qt6 and Qt5 builds are supported. On Apple silicon the add-on now benefits from the performance improvements that Anki's native Qt6 build provides.
+- Added an option to **exclude review history entries** created by manually **rescheduling or forgetting** cards. This option is enabled by default, but can be disabled under Settings → Fine Tuning → *Exclude manual reschedules from history*
+- Added a number of changes that should improve the **rendering performance** of the heatmap when switching between Anki screens
 
 
 ### Fixed
 
 - Fixed an issue where invalid card scheduling could cause the heatmap to disappear
-- Fixed an issue where config changes could not be written
 - Fixed an issue where clicking on today's repetitions would not draw up any cards in the browser
+- Fixed an issue where config changes could not be written
 - On recent Anki versions: Potentially fixed a number of issues with time-zone handling that would sometimes cause mismapping of repetitions to the wrong days. If you are still experiencing issues like this, I would kindly ask you to please [report them here](https://github.com/glutanimate/review-heatmap/issues/151) in order to help me troubleshoot them. 
 
 ### Changed
@@ -44,6 +44,7 @@ If you are on an earlier Anki release there is no need to worry: Copying the Ank
 - Completely refactored the add-on codebase and rewrote many parts of it, making Review Heatmap easier to maintain and extend in the future
 - Switched to new canonical add-on APIs where possible, reducing the risk for future breakages as new Anki versions get released
 - Removed heatmap toggle hotkey as it was not particularly discoverable nor particularly useful and caused keymap conflicts with other add-ons
+- Raised the minimum Anki version requirement to 2.1.28. However, only 2.1.49 and up were tested extensively, so your mileage on earlier releases might vary.
 
 ## [1.0.0-beta.2] - 2022-05-15
 
