@@ -258,46 +258,27 @@
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout_3">
+           <property name="topMargin">
+            <number>5</number>
+           </property>
            <item row="0" column="2">
-            <widget class="QPushButton" name="btnCoffee">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
-             <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
+             <property name="sizeType">
+              <enum>QSizePolicy::MinimumExpanding</enum>
              </property>
-             <property name="toolTip">
-              <string>Each coffee helps. Thank you!</string>
-             </property>
-             <property name="text">
-              <string>Fuel my work
-with a coffee</string>
-             </property>
-             <property name="icon">
-              <iconset resource="../resources/icons.qrc">
-               <normaloff>:/review_heatmap/icons/coffee.svg</normaloff>:/review_heatmap/icons/coffee.svg</iconset>
-             </property>
-             <property name="iconSize">
+             <property name="sizeHint" stdset="0">
               <size>
-               <width>32</width>
-               <height>32</height>
+               <width>20</width>
+               <height>20</height>
               </size>
              </property>
-            </widget>
+            </spacer>
            </item>
            <item row="0" column="1">
             <widget class="QPushButton" name="btnPatreon">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <italic>false</italic>
-               <bold>false</bold>
-              </font>
-             </property>
              <property name="focusPolicy">
               <enum>Qt::NoFocus</enum>
              </property>
@@ -305,8 +286,8 @@ with a coffee</string>
               <string>Perks include access to Patron-only add-ons, &lt;br&gt;exclusive blog posts, mentions in the credits, and more!</string>
              </property>
              <property name="text">
-              <string>Become a Patron
-&amp;&amp; receive cool perks!</string>
+              <string>Support my work &amp;&amp;
+receive cool add-on perks!</string>
              </property>
              <property name="icon">
               <iconset resource="../resources/icons.qrc">
@@ -320,29 +301,13 @@ with a coffee</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="3">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Minimum</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
            <item row="0" column="0">
             <spacer name="horizontalSpacer_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeType">
-              <enum>QSizePolicy::Minimum</enum>
+              <enum>QSizePolicy::MinimumExpanding</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -761,7 +726,6 @@ with a coffee</string>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>btnPatreon</tabstop>
-  <tabstop>btnCoffee</tabstop>
   <tabstop>selHmColor</tabstop>
   <tabstop>selHmCalMode</tabstop>
   <tabstop>cbHmMain</tabstop>
