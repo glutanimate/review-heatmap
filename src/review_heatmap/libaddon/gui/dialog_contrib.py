@@ -65,7 +65,7 @@ class ContribDialog(BasicDialog):
             form_module {PyQt form module} -- PyQt dialog form outlining the UI
 
         Provided Qt form should contain the following widgets:
-            QPushButton: btnMail, btnCoffee, btnPatreon, btnCredits
+            QPushButton: btnMail, btnPatreon, btnCredits
 
         Keyword Arguments:
             parent {QWidget} -- Parent Qt widget (default: {None})
@@ -84,8 +84,6 @@ class ContribDialog(BasicDialog):
         mail_string = "mailto:{}".format(ADDON.AUTHOR_MAIL)
         self.form.btnMail.clicked.connect(
             lambda: openLink(mail_string))
-        self.form.btnCoffee.clicked.connect(
-            lambda: openLink(ADDON.LINKS["coffee"]))
         self.form.btnPatreon.clicked.connect(
             lambda: openLink(ADDON.LINKS["patreon"]))
         self.form.btnCredits.clicked.connect(
