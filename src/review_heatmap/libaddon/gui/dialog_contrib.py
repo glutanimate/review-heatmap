@@ -100,4 +100,4 @@ class ContribDialog(BasicDialog):
             return openLink(url)
         protocol, cmd = url.split("://")
         if cmd == "installed-addons":
-            print("invoking installed addons dialog")
+            openLink("https://ankiweb.net/shared/byauthor/1771074083")
