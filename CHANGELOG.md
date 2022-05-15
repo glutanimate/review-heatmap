@@ -50,9 +50,7 @@ If you are on an earlier Anki release there is no need to worry: Copying the Ank
 - Removed heatmap toggle hotkey as it was not particularly discoverable nor particularly useful and caused keymap conflicts with other add-ons
 - Raised the minimum Anki version requirement to 2.1.28. However, only 2.1.49 and up were tested extensively, so your mileage on earlier releases might vary.
 
-## [1.0.0-beta.2] - 2022-05-15
-
-### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v1.0.0-beta.2)
+## 1.0.0-beta.2 - 2022-05-15
 
 Temporary test release. Changelog entry merged into v1.0.0 changes.
 
@@ -196,8 +194,7 @@ Temporary test release. Changelog entry merged into v1.0.0 changes.
 First release of Review Heatmap.
 
 [Unreleased]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0-beta.2...v1.0.0
-[1.0.0-beta.2]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0-beta.1...v1.0.0-beta.2
+[1.0.0]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0-beta.1...v1.0.0
 [1.0.0-beta.1]: https://github.com/glutanimate/review-heatmap/compare/v0.7.0-beta.1...v1.0.0-beta.1
 [0.7.0-beta.1]: https://github.com/glutanimate/review-heatmap/compare/v0.6.1-anki21-alpha...v0.7.0-beta.1
 [0.6.1-anki21-alpha]: https://github.com/glutanimate/review-heatmap/compare/v0.6.0...v0.6.1-anki21-alpha
