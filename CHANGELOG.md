@@ -20,12 +20,10 @@ You can now download Review Heatmap [directly off of AnkiWeb](https://ankiweb.ne
 
 ## [Unreleased]
 
-## [1.0.0-beta.2] - 2022-05-15
 
-### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v1.0.0-beta.2)
+**IMPORTANT**: While likely compatible with earlier versions, this add-on release has only been extensively tested with Anki 2.1.49 and up. The AnkiWeb upload is therefore limited to Anki 2.1.49+ for the time being (but might be expanded to earlier releases in the future).
 
-
-**IMPORTANT**: While likely compatible with earlier versions, this add-on release has only been extensively tested with Anki 2.1.50 and up. The AnkiWeb upload is therefore limited to Anki 2.1.50+ for the time being (but likely to be expanded to earlier releases soon). If you are on an earlier Anki release there is no need to worry: Copying the AnkiWeb add-on code into the app will automatically download a compatible version of the add-on for you. However, please be aware that it will not include the latest changes below.
+If you are on an earlier Anki release there is no need to worry: Copying the AnkiWeb add-on code into the app will automatically download a compatible version of the add-on for you. However, please be aware that it will not include the latest changes below.
 
 ### Added
 
@@ -46,6 +44,12 @@ You can now download Review Heatmap [directly off of AnkiWeb](https://ankiweb.ne
 - Completely refactored the add-on codebase and rewrote many parts of it, making Review Heatmap easier to maintain and extend in the future
 - Switched to new canonical add-on APIs where possible, reducing the risk for future breakages as new Anki versions get released
 - Removed heatmap toggle hotkey as it was not particularly discoverable nor particularly useful and caused keymap conflicts with other add-ons
+
+## [1.0.0-beta.2] - 2022-05-15
+
+### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v1.0.0-beta.2)
+
+Temporary test release. Changelog entry merged into v1.0.0 changes.
 
 ## [1.0.0-beta.1] - 2020-04-30
 
