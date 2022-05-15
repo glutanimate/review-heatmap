@@ -267,7 +267,7 @@
               <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeType">
-              <enum>QSizePolicy::MinimumExpanding</enum>
+              <enum>QSizePolicy::Minimum</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -286,8 +286,8 @@
               <string>Perks include access to Patron-only add-ons, &lt;br&gt;exclusive blog posts, mentions in the credits, and more!</string>
              </property>
              <property name="text">
-              <string>Support my work &amp;&amp;
-receive cool add-on perks!</string>
+              <string>Support my work and receive
+access to many exclusive add-ons!</string>
              </property>
              <property name="icon">
               <iconset resource="../resources/icons.qrc">
@@ -307,7 +307,7 @@ receive cool add-on perks!</string>
               <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeType">
-              <enum>QSizePolicy::MinimumExpanding</enum>
+              <enum>QSizePolicy::Minimum</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
