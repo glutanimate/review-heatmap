@@ -65,11 +65,11 @@ html_template = """\
 </head>
 <body>
     {title}
-    <p><span style="font-weight:600;">Credits</span></p>
+    <p><h3>Credits</h3></p>
     {authors_string}
     {libs_string}
     
-    <p><img src="qrc:/{qrc_prefix}/icons/heart_small.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
+    <p><img src="{qrc_prefix}:icons/heart_small.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
     <p>My heartfelt thanks go out to everyone who has <b>supported</b> this add-on through their tips,
         contributions, or any other means. You guys rock!</p>
     <p>In particular I would like to thank all of the awesome people who support me
@@ -80,7 +80,7 @@ html_template = """\
         to receive all kinds of exclusive goodies!
     </i></p>
     
-    <p><span style="font-weight:600;">License</span></p>
+    <p><h3>License</h3></p>
     <p><i>{display_name}</i> is <b>free and open-source</b> software. The add-on code that runs within
         Anki is released under the {license} license, extended by a number of additional terms.
         For more information please see the license file that accompanied this program.</p>
@@ -93,7 +93,7 @@ html_template = """\
 """
 
 debugging_template = """\
-<p><span style="font-weight:600;">Debugging</span></p>
+<p><h3>Debugging</h3></p>
 <p>Please don't use any of the following features unless instructed to:</p>
 <ul>
     <li><a href="action://debug-toggle">Toggle debugging</a></li>
