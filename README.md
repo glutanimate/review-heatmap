@@ -20,6 +20,7 @@ Adds a **heatmap graph** to [Anki](https://apps.ankiweb.net/)'s main window whic
 
 - [Video Demonstration](#video-demonstration)
 - [Installation](#installation)
+  - [AnkiWeb](#ankiweb)
 - [Documentation](#documentation)
 - [Building](#building)
 - [Contributing](#contributing)
@@ -37,44 +38,15 @@ General Overview | Customization
 
 ### Installation
 
-<!-- #### AnkiWeb --><!-- omit in toc -->
+#### AnkiWeb
 
-<!-- The easiest way to install Review Heatmap is through [AnkiWeb](https://ankiweb.net/shared/info/1771074083). -->
+The easiest way to install Review Heatmap is through [AnkiWeb](https://ankiweb.net/shared/info/1771074083).
 
 #### Manual installation <!-- omit in toc -->
-
-Please click on the entry corresponding to your Anki version:
-
-<details>
-
-<summary><i>Recent Anki 2.1 versions</i></summary>
-
-<br>
-
-*Note: These instructions only work on Anki 2.1.17 and up. For older Anki releases please see the next section.*
 
 1. Download the latest `.ankiaddon` file from the [releases tab](https://github.com/glutanimate/review-heatmap/releases) (you might need to click on *Assets* below the description to reveal the download links)
 2. Open the folder where your downloads are located and double-click on the downloaded `.ankiaddon` file.
 3. Follow the installation prompt and restart Anki if it asks you to
-
-</details>
-
-<details>
-
-<summary><i>Older Anki 2.1 versions</i></summary>
-
-1. Make sure you are [using at least Anki 2.1.10](https://apps.ankiweb.net/#download). Earlier releases (e.g. found in various Linux distros) do not support `.ankiaddon` packages.
-2. Download the latest `.ankiaddon` package from the [releases tab](https://github.com/glutanimate/review-heatmap/releases) (you might need to click on *Assets* below the description to reveal the download links)
-3. From Anki's main window, head to *Tools* → *Add-ons*
-4. Drag-and-drop the `.ankiaddon` package onto the add-ons list
-5. Restart Anki
-
-Video summary:
-
-<img src="https://raw.githubusercontent.com/glutanimate/docs/master/anki/add-ons/media/ankiaddon-installation-macos.gif" width=640>
-
-</details>
-
 
 ### Documentation
 
@@ -82,13 +54,7 @@ The use of the add-on is documented in the [Wiki section](https://github.com/Glu
 
 ### Building
 
-With [Anki add-on builder](https://github.com/glutanimate/anki-addon-builder/) installed:
-
-    git clone https://github.com/glutanimate/review-heatmap.git
-    cd review-heatmap
-    aab build
-
-For more information on the build process please refer to [`aab`'s documentation](https://github.com/glutanimate/anki-addon-builder/#usage).
+Review Heatmap's build system recently underwent a number of changes. Updated build instructions will soon be added here. Please stand by.
 
 ### Contributing
 
@@ -100,7 +66,7 @@ Contributions are welcome! Please review the [contribution guidelines](./CONTRIB
 
 ### License and Credits
 
-*Review Heatmap* is *Copyright © 2016-2020 [Aristotelis P.](https://glutanimate.com/) (Glutanimate)*
+*Review Heatmap* is *Copyright © 2016-2022 [Aristotelis P.](https://glutanimate.com/) (Glutanimate)*
 
 Inspired by GitHub's contribution calendar and *Forecast graph on Overview page* by Steve AW.
 
