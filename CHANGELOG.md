@@ -20,6 +20,10 @@ You can now download Review Heatmap [directly off of AnkiWeb](https://ankiweb.ne
 
 ## [Unreleased]
 
+## [1.0.0-beta.2] - 2022-05-15
+
+### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v1.0.0-beta.2)
+
 
 **IMPORTANT**: While likely compatible with earlier versions, this add-on release has only been extensively tested with Anki 2.1.50 and up. The AnkiWeb upload is therefore limited to Anki 2.1.50+ for the time being (but likely to be expanded to earlier releases soon). If you are on an earlier Anki release there is no need to worry: Copying the AnkiWeb add-on code into the app will automatically download a compatible version of the add-on for you. However, please be aware that it will not include the latest changes below.
 
@@ -181,7 +185,8 @@ You can now download Review Heatmap [directly off of AnkiWeb](https://ankiweb.ne
 
 First release of Review Heatmap.
 
-[Unreleased]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0-beta.1...HEAD
+[Unreleased]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0-beta.2...HEAD
+[1.0.0-beta.2]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0-beta.1...v1.0.0-beta.2
 [1.0.0-beta.1]: https://github.com/glutanimate/review-heatmap/compare/v0.7.0-beta.1...v1.0.0-beta.1
 [0.7.0-beta.1]: https://github.com/glutanimate/review-heatmap/compare/v0.6.1-anki21-alpha...v0.7.0-beta.1
 [0.6.1-anki21-alpha]: https://github.com/glutanimate/review-heatmap/compare/v0.6.0...v0.6.1-anki21-alpha
