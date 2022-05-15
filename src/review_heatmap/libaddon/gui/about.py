@@ -69,7 +69,7 @@ html_template = """\
     {authors_string}
     {libs_string}
     
-    <p><img src="{qrc_prefix}:icons/heart_small.svg"/><span style=" font-weight:600;"> Thank you!</span></p>
+    <p><img src="{qrc_prefix}:icons/heart_small.svg"/><strong> Thank you!</strong></p>
     <p>My heartfelt thanks go out to everyone who has <b>supported</b> this add-on through their tips,
         contributions, or any other means. You guys rock!</p>
     <p>In particular I would like to thank all of the awesome people who support me
