@@ -56,6 +56,6 @@ Trademark and copyright terms of each respective brand apply.
 
 #### Glutanimate Logos
 
-The following icons are Copyright (c) 2016-2020 Glutanimate with all rights reserved:
+The following icons are Copyright (c) 2016-2022 Glutanimate with all rights reserved:
 
 - glutanimate.svg
