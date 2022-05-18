@@ -1,10 +1,10 @@
-<p align="center"><img src="https://github.com/glutanimate/review-heatmap/raw/master/screenshots/0.7.0_regular_year.png"></p>
+<p align="center"><img src="https://github.com/glutanimate/review-heatmap/raw/main/screenshots/0.7.0_regular_year.png"></p>
 
 <h2 align="center">Review Heatmap for Anki</h2>
 
 <p align="center">
 <a title="Latest (pre-)release" href="https://github.com/glutanimate/review-heatmap/releases"><img src ="https://img.shields.io/github/release-pre/glutanimate/review-heatmap.svg?colorB=brightgreen"></a>
-<a title="License: GNU AGPLv3" href="https://github.com/glutanimate/review-heatmap/blob/master/LICENSE"><img  src="https://img.shields.io/badge/license-GNU AGPLv3-green.svg"></a>
+<a title="License: GNU AGPLv3" href="https://github.com/glutanimate/review-heatmap/blob/main/LICENSE"><img  src="https://img.shields.io/badge/license-GNU AGPLv3-green.svg"></a>
 <a title="Rate on AnkiWeb" href="https://ankiweb.net/shared/info/1771074083"><img src="https://glutanimate.com/logos/ankiweb-rate.svg"></a>
 <br>
 <a title="Buy me a coffee :)" href="https://ko-fi.com/X8X0L4YV"><img src="https://img.shields.io/badge/ko--fi-contribute-%23579ebd.svg"></a>
@@ -75,7 +75,7 @@ Ships with the following javascript libraries:
 - [d3.js](https://d3js.org/) (v3.5.17), (c) Mike Bostock, BSD license
 - [cal-heatmap](https://cal-heatmap.com/) (v3.6.2), (c) Wan Qi Chen, MIT license
 
-Review Heatmap is free and open-source software. The add-on code that runs within Anki is released under the GNU AGPLv3 license, extended by a number of additional terms. For more information please see the [LICENSE](https://github.com/glutanimate/review-heatmap/blob/master/LICENSE) file that accompanied this program.
+Review Heatmap is free and open-source software. The add-on code that runs within Anki is released under the GNU AGPLv3 license, extended by a number of additional terms. For more information please see the [LICENSE](https://github.com/glutanimate/review-heatmap/blob/main/LICENSE) file that accompanied this program.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
 

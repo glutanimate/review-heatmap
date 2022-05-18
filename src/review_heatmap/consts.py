@@ -93,7 +93,7 @@ class ADDON:
         "twitter": "https://twitter.com/glutanimate",
         "youtube": "https://www.youtube.com/c/glutanimate",
         "changelog": (
-            "https://github.com/glutanimate/{repo}/blob/master/CHANGELOG.md".format(
+            "https://github.com/glutanimate/{repo}/blob/main/CHANGELOG.md".format(
                 repo=REPO
             )
         ),

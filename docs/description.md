@@ -2,7 +2,7 @@
 
 Adds a **heatmap graph** to Anki's main window which visualizes past and future card review activity, similar to the contribution view on GitHub. Information on the **current streak** is displayed alongside the heatmap. Clicking on an item shows the cards reviewed or due on that day.
 
-<img src="https://raw.githubusercontent.com/glutanimate/review-heatmap/master/screenshots/review-heatmap-1.png">   <img src="https://raw.githubusercontent.com/glutanimate/review-heatmap/master/screenshots/review-heatmap-2.png">
+<img src="https://raw.githubusercontent.com/glutanimate/review-heatmap/main/screenshots/review-heatmap-1.png">   <img src="https://raw.githubusercontent.com/glutanimate/review-heatmap/main/screenshots/review-heatmap-2.png">
 
 ### FEATURES
 
@@ -32,7 +32,7 @@ Inspired by GitHub's contribution calendar and *Forecast graph on Overview page*
 - d3.js (v3.5.17), (c) Mike Bostock, BSD license
 - cal-heatmap (v3.6.2), (c) Wan Qi Chen, MIT license
 
-Licensed under the _GNU AGPLv3_, extended by a number of additional terms. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. For more information on the license please see the [LICENSE file](https://github.com/glutanimate/review-heatmap/blob/master/LICENSE) accompanying this add-on. The source code is available on [![GitHub icon](https://glutanimate.com/logos/github.svg) GitHub](https://github.com/glutanimate/review-heatmap). Pull requests and other contributions are welcome!
+Licensed under the _GNU AGPLv3_, extended by a number of additional terms. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. For more information on the license please see the [LICENSE file](https://github.com/glutanimate/review-heatmap/blob/main/LICENSE) accompanying this add-on. The source code is available on [![GitHub icon](https://glutanimate.com/logos/github.svg) GitHub](https://github.com/glutanimate/review-heatmap). Pull requests and other contributions are welcome!
 
 <!-- RESOURCES -->
 
