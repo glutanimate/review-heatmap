@@ -615,7 +615,7 @@ class ConfigManager(object):
         default_dict = self._storages[name]["default"]
 
         # Initialize config
-        if conf_key not in storage_obj:
+        if conf_key not in storage_obj or storage_obj[conf_key] is None:
             storage_obj[conf_key] = default_dict
         
         storage_dict = storage_obj[conf_key]
