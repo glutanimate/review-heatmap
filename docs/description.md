@@ -4,14 +4,16 @@ Adds a **heatmap graph** to Anki's main window which visualizes past and future 
 
 <img src="https://raw.githubusercontent.com/glutanimate/review-heatmap/main/screenshots/review-heatmap-1.png">   <img src="https://raw.githubusercontent.com/glutanimate/review-heatmap/main/screenshots/review-heatmap-2.png">
 
+**IMPORTANT**: You can now install Review Heatmap by simply copying the add-on code below into Anki (under *Tools* → *Add-ons* → *Get Add-ons*). You no longer need to download anything manually!
+
+<!-- CHANGELOG -->
+
 ### FEATURES
 
 - **Color-coded** summary of **review activity**: Hues of green for past reviews, shades of grey for pending reviews
 - Additional stats: **Review streaks**, daily averages, and days learned
 - **Interactive controls**: Clicking on a day will draw up the corresponding cards in the browser
 - **Highly configurable**: 5 different color schemes, 2 different calendar modes, etc.
-
-<!-- CHANGELOG -->
 
 ### USAGE
 
