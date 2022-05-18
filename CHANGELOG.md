@@ -22,8 +22,9 @@ If you enjoy Review Heatmap, please consider **supporting my work on Patreon**:
 
 ## [1.0.0] - 2022-05-15
 
-### [Download from AnkiWeb](https://ankiweb.net/shared/info/1771074083)
+<center><img src="screenshots/1.0.0_logo.png"></center>
 
+### [Download from AnkiWeb](https://ankiweb.net/shared/info/1771074083)
 
 **IMPORTANT**: While likely compatible with earlier versions, this add-on release has only been extensively tested with Anki 2.1.49 and up. The AnkiWeb upload is therefore limited to Anki 2.1.49+ for the time being (but might be expanded to earlier releases in the future).
 
