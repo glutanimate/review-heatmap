@@ -325,7 +325,14 @@ class ActivityReporter:
 
         limit_date = daystart_epoch(self._db, str(limit_date)) if limit_date else None
 
-        if not limit_date or limit_date == daystart_epoch(self._db, self._col.crt):
+        # be defensive as col.crt can transiently be None (e.g. when importing colpkgs)
+        creation_time = getattr(self._col, "crt", None)
+
+        if (
+            not limit_date
+            or not creation_time
+            or limit_date == daystart_epoch(self._db, creation_time)
+        ):
             # ignore zero value or default value
             limit_date = 0
         else:
