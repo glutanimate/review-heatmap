@@ -36,6 +36,18 @@ import { CalHeatMap } from "./_vendor/cal-heatmap.js";
 import { ReviewHeatmapOptions, ReviewHeatmapData } from "./types";
 import { bridgeCommand } from "./bridge";
 
+interface CalHeatmapFormatData {
+  count: string | undefined;
+  name: string;
+  connector: string;
+  date: Date;
+}
+
+interface CalHeatmapCellData {
+  v: number; // count
+  t: number; // timestamp
+}
+
 class ReviewHeatmap {
   private heatmap: CalHeatMap | null;
 
@@ -98,44 +110,31 @@ class ReviewHeatmap {
       displayLegend: false,
       domainLabelFormat: this.options.domLabForm,
       tooltip: true,
-      subDomainTitleFormat: (isEmpty, fmt, rawData): string => {
+      subDomainTitleFormat: (
+        isEmpty: boolean,
+        formatData: CalHeatmapFormatData,
+        cellData: CalHeatmapCellData
+      ): string => {
         // format tooltips
-        let label: string;
-        let tip: string;
-        let count: number;
-        let action: string;
-        let timeNow = Date.now();
+        let tooltip: string;
 
-        if (isEmpty) {
-          if (timeNow < rawData.t) {
-            label = "cards due";
-          } else {
-            label = "reviews";
-          }
-          tip = "<b>No</b> " + label + " on " + fmt.date;
-        } else {
-          if (rawData.v < 0) {
-            count = -1 * fmt.count;
-            action = "due";
-          } else {
-            count = fmt.count;
-            action = "reviewed";
-          }
-          label = Math.abs(rawData.v) == 1 ? "card" : "cards";
-          tip =
-            "<b>" +
-            count +
-            "</b> " +
-            label +
-            " <b>" +
-            action +
-            "</b> " +
-            fmt.connector +
-            " " +
-            fmt.date;
+        let count = formatData.count;
+        if (count !== undefined && count.startsWith("-")) {
+          count = count.substring(1);
         }
 
-        return tip;
+        if (isEmpty) {
+          tooltip = `<b>No</b> ${
+            Date.now() < cellData.t ? "cards due" : "reviews"
+          } on ${formatData.date}`;
+        } else {
+          const label = Math.abs(cellData.v) == 1 ? "card" : "cards";
+          tooltip = `<b>${count}</b> ${label} <b>${
+            cellData.v < 0 ? "due" : "reviewed"
+          }</b> ${formatData.connector} ${formatData.date}`;
+        }
+
+        return tooltip;
       },
       onClick: (date, nb) => {
         // Click handler that shows cards assigned to a particular date
