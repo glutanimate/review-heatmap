@@ -56,6 +56,11 @@ if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import DBProxy
 
+try:
+    from anki.decks import DeckId
+except (ImportError, ModuleNotFoundError):
+    DeckId = int  # type: ignore[misc, assignment]
+
 from .times import daystart_epoch
 from .errors import CollectionError
 
@@ -370,7 +375,7 @@ class ActivityReporter:
             else:
                 dids = [d["id"] for d in self._col.decks.all()]
         else:
-            dids = self._col.decks.active()
+            dids = self.__get_active_deck_ids()
         return ids2str(dids)
 
     def _revlog_limit(self, current_deck_only: bool) -> str:
@@ -387,8 +392,17 @@ class ActivityReporter:
             else:
                 return ""
         else:
-            dids = self._col.decks.active()
+            dids = self.__get_active_deck_ids()
         return "cid IN (SELECT id FROM cards WHERE did IN %s)" % ids2str(dids)
+
+    def __get_active_deck_ids(self) -> List["DeckId"]:
+        deck_manager = self._col.decks
+        try:
+            selected_deck = deck_manager.get_current_id()
+        except AttributeError:
+            selected_deck = deck_manager.selected()
+        active_deck_ids = deck_manager.deck_and_child_ids(selected_deck)
+        return active_deck_ids
 
     # Other settings affecting included revlog entries
     #########################################################################
