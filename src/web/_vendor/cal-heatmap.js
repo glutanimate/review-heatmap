@@ -8,7 +8,7 @@
  *  Contributors: gakada, Srdjan Prpa
   */
 
-var d3 = typeof require === "function" ? require("d3") : window.d3;
+var d3 = window.d3;
 
 export var CalHeatMap = function() {
 	"use strict";
