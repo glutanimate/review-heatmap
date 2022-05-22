@@ -35,34 +35,29 @@ Components related to gathering and analyzing user activity
 
 import datetime
 import time
+from enum import Enum
 from typing import (
+    TYPE_CHECKING,
     Dict,
     List,
     Literal,
+    NamedTuple,
     Optional,
     Sequence,
     Tuple,
-    NamedTuple,
-    TYPE_CHECKING,
 )
-from enum import Enum
 
 from anki.utils import ids2str
-
-from .libaddon.debug import isDebuggingOn, logger
-from .libaddon.anki.configmanager import ConfigManager
 
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import DBProxy
 
-try:
-    from anki.decks import DeckId
-except (ImportError, ModuleNotFoundError):
-    DeckId = int  # type: ignore[misc, assignment]
-
-from .times import daystart_epoch
 from .errors import CollectionError
+from .libaddon.anki.configmanager import ConfigManager
+from .libaddon.debug import isDebuggingOn, logger
+from .times import daystart_epoch
+from .types import DeckId
 
 # limit max forecast to 200 years to protect against invalid due dates
 MAX_FORECAST_DAYS = 73000
@@ -356,7 +351,7 @@ class ActivityReporter:
     # Deck limits
     #########################################################################
 
-    def _valid_decks(self, excluded: List[int]) -> List[int]:
+    def _valid_decks(self, excluded: List[DeckId]) -> List[DeckId]:
         all_excluded = []
 
         for did in excluded:
@@ -368,7 +363,7 @@ class ActivityReporter:
         return [d["id"] for d in self._col.decks.all() if d["id"] not in all_excluded]
 
     def _did_limit(self, current_deck_only: bool) -> str:
-        excluded_dids = self._config["synced"]["limdecks"]
+        excluded_dids: List[DeckId] = self._config["synced"]["limdecks"]
         if not current_deck_only:
             if excluded_dids:
                 dids = self._valid_decks(excluded_dids)
