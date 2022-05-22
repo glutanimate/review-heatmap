@@ -189,7 +189,10 @@ class RevHmOptions(OptionsDialog):
     def _setListDecksValue(self, dids):
         item_tuples = []
         for did in dids:
-            name = self.mw.col.decks.nameOrNone(did)
+            try:
+                name = self.mw.col.decks.name_if_exists(did)
+            except AttributeError:
+                name = self.mw.col.decks.nameOrNone(did)
             if not name:
                 continue
             item_tuples.append((name, did))

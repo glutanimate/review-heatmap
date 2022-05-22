@@ -48,6 +48,7 @@ from typing import (
 )
 
 from anki.utils import ids2str
+from anki.errors import NotFoundError
 
 if TYPE_CHECKING:
     from anki.collection import Collection
@@ -352,10 +353,14 @@ class ActivityReporter:
     #########################################################################
 
     def _valid_decks(self, excluded: List[DeckId]) -> List[DeckId]:
+        deck_manager = self._col.decks
         all_excluded = []
 
         for did in excluded:
-            children = [d[1] for d in self._col.decks.children(did)]
+            try:
+                children = [d[1] for d in deck_manager.children(did)]
+            except NotFoundError:  # 2.1.28+
+                continue
             all_excluded.extend(children)
 
         all_excluded.extend(excluded)
