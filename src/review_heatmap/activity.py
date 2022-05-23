@@ -35,30 +35,30 @@ Components related to gathering and analyzing user activity
 
 import datetime
 import time
+from enum import Enum
 from typing import (
+    TYPE_CHECKING,
     Dict,
     List,
     Literal,
+    NamedTuple,
     Optional,
     Sequence,
     Tuple,
-    NamedTuple,
-    TYPE_CHECKING,
 )
-from enum import Enum
 
 from anki.utils import ids2str
 from anki.errors import NotFoundError
-
-from .libaddon.debug import isDebuggingOn, logger
-from .libaddon.anki.configmanager import ConfigManager
 
 if TYPE_CHECKING:
     from anki.collection import Collection
     from anki.dbproxy import DBProxy
 
-from .times import daystart_epoch
 from .errors import CollectionError
+from .libaddon.anki.configmanager import ConfigManager
+from .libaddon.debug import isDebuggingOn, logger
+from .times import daystart_epoch
+from .types import DeckId
 
 # limit max forecast to 200 years to protect against invalid due dates
 MAX_FORECAST_DAYS = 73000
@@ -352,7 +352,7 @@ class ActivityReporter:
     # Deck limits
     #########################################################################
 
-    def _valid_decks(self, excluded: List[int]) -> List[int]:
+    def _valid_decks(self, excluded: List[DeckId]) -> List[DeckId]:
         deck_manager = self._col.decks
         all_excluded = []
 
@@ -368,14 +368,14 @@ class ActivityReporter:
         return [d["id"] for d in self._col.decks.all() if d["id"] not in all_excluded]
 
     def _did_limit(self, current_deck_only: bool) -> str:
-        excluded_dids = self._config["synced"]["limdecks"]
+        excluded_dids: List[DeckId] = self._config["synced"]["limdecks"]
         if not current_deck_only:
             if excluded_dids:
                 dids = self._valid_decks(excluded_dids)
             else:
                 dids = [d["id"] for d in self._col.decks.all()]
         else:
-            dids = self._col.decks.active()
+            dids = self.__get_active_deck_ids()
         return ids2str(dids)
 
     def _revlog_limit(self, current_deck_only: bool) -> str:
@@ -392,8 +392,17 @@ class ActivityReporter:
             else:
                 return ""
         else:
-            dids = self._col.decks.active()
+            dids = self.__get_active_deck_ids()
         return "cid IN (SELECT id FROM cards WHERE did IN %s)" % ids2str(dids)
+
+    def __get_active_deck_ids(self) -> List["DeckId"]:
+        deck_manager = self._col.decks
+        try:
+            selected_deck = deck_manager.get_current_id()
+        except AttributeError:
+            selected_deck = deck_manager.selected()
+        active_deck_ids = deck_manager.deck_and_child_ids(selected_deck)
+        return active_deck_ids
 
     # Other settings affecting included revlog entries
     #########################################################################
