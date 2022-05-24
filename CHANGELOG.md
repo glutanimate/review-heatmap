@@ -4,9 +4,7 @@ All notable changes to [Review Heatmap](https://ankiweb.net/shared/info/17710740
 
 If you enjoy Review Heatmap, please consider **supporting my work on Patreon**:
 
-<center><a href="https://patreon.com/glutanimate"><img src="https://glutanimate.com/logos/patreon_button.svg" height="48px"></a></center>
-
-&nbsp;
+<p align="center"><a href="https://patreon.com/glutanimate"><img src="https://glutanimate.com/logos/patreon_button.svg" height="48px"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="https://glutanimate.com/logos/thanks.svg" height="48px"></a></p>
 
 :heart: My heartfelt thanks goes out to everyone who has supported this add-on through their tips, contributions, or any other means (you know who you are!). All of the recent additions would not have been possible without you. **Thank you** for being awesome!
 
