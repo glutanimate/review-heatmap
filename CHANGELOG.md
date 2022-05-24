@@ -22,6 +22,10 @@ If you are on an earlier Anki release there is no need to worry: Copying the Ank
 
 ## [Unreleased]
 
+## [1.0.1] - 2022-05-24
+
+### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v1.0.1)
+
 ### Fixed
 
 - Fixed due counts showing NaN for counts >1000 *(thanks to @chkmte for the report)*
@@ -204,7 +208,8 @@ Temporary test release. Changelog entry merged into v1.0.0 changes.
 
 First release of Review Heatmap.
 
-[Unreleased]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/glutanimate/review-heatmap/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/glutanimate/review-heatmap/compare/v1.0.0-beta.1...v1.0.0
 [1.0.0-beta.1]: https://github.com/glutanimate/review-heatmap/compare/v0.7.0-beta.1...v1.0.0-beta.1
 [0.7.0-beta.1]: https://github.com/glutanimate/review-heatmap/compare/v0.6.1-anki21-alpha...v0.7.0-beta.1
