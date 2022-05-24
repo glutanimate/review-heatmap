@@ -24,7 +24,7 @@ If you are on an earlier Anki release there is no need to worry: Copying the Ank
 
 ## [1.0.1] - 2022-05-24
 
-### [Download](https://github.com/glutanimate/review-heatmap/releases/tag/v1.0.1)
+### [Download](https://ankiweb.net/shared/info/1771074083)
 
 ### Fixed
 
@@ -38,7 +38,7 @@ If you are on an earlier Anki release there is no need to worry: Copying the Ank
 
 <center><img src="screenshots/1.0.0_logo.png"></center>
 
-### [Download from AnkiWeb](https://ankiweb.net/shared/info/1771074083)
+### [Download](https://ankiweb.net/shared/info/1771074083)
 
 **IMPORTANT**: While likely compatible with earlier versions, this add-on release has only been extensively tested with Anki 2.1.49 and up. The AnkiWeb upload is therefore limited to Anki 2.1.49+ for the time being (but might be expanded to earlier releases in the future).
 
