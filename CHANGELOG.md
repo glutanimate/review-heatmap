@@ -26,11 +26,11 @@ If you are on an earlier Anki release there is no need to worry: Copying the Ank
 
 ### Fixed
 
-- Fixed due counts showing NaN for counts >1000 (thanks to @chkmte for the report)
-- Fixed an error that could appear when deleting an ignored deck (thanks to /u/GabiGrice_FalcoBraun & @purequant for the report)
-- Fixed an error that could appear when switching profiles (thanks to @rafaelcdepaula for the report)
+- Fixed due counts showing NaN for counts >1000 *(thanks to @chkmte for the report)*
+- Fixed an error that could appear when deleting an ignored deck *(thanks to /u/GabiGrice_FalcoBraun & @purequant for the report)*
+- Fixed an error that could appear when switching profiles *(thanks to @rafaelcdepaula for the report)*
 - Fixed an issue that could cause the add-on to raise an error when importing colpkg files
-- Added a workaround to enable compatibility with the Stats Plus add-on (thanks to @MickyAnne, @kguy18, @swerage, and @agentca for the reports and testing)
+- Added a workaround to enable compatibility with the Stats Plus add-on *(thanks to @MickyAnne, @kguy18, @swerage, and @agentca for the reports and testing)*
 
 ## [1.0.0] - 2022-05-15
 
