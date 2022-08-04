@@ -242,7 +242,7 @@ class ActivityReporter:
                 previous_avg_cur_ema = avg_cur_ema
                 avg_cur_ema = MULTIPLIER * previous_avg_cur_ema
 
-        habit = round(habit_ema)
+        habit = round(habit_ema * 100)
         avg_cur = round(avg_cur_ema)
 
 
