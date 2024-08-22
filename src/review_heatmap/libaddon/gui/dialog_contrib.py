@@ -97,4 +97,4 @@ class ContribDialog(BasicDialog):
             return openLink(url)
         protocol, cmd = url.split("://")
         if cmd == "installed-addons":
-            openLink("https://ankiweb.net/shared/byauthor/1771074083")
+            openLink("https://ankiweb.net/shared/by-author/1771074083")
