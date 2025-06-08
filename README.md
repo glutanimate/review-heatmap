@@ -54,7 +54,28 @@ The use of the add-on is documented in the [Wiki section](https://github.com/Glu
 
 ### Building
 
-Review Heatmap's build system recently underwent a number of changes. Updated build instructions will soon be added here. Please stand by.
+#### Manual
+
+Requirements:
+
+- nodejs
+- [anki-addon-builder](https://github.com/glutanimate/anki-addon-builder)
+
+Install dependencies:
+
+```shellSession
+npm install
+```
+
+Build the addon:
+
+```shellSession
+$ aab build
+$ npm run build
+$ aab package_dist
+```
+
+You will find the ankiaddon file under the `build/` directory.
 
 ### Contributing
 

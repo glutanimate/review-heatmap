@@ -1,0 +1,14 @@
+{
+    "name": "anki-review-heatmap",
+    "version": "1.0.1",
+    "main": "main.ts",
+    "scripts": {
+        "build": "esbuild src/web/main.ts --bundle --minify --outfile=${ANKI_REVIEW_HEATMAP_OUTFILE:-build/dist/src/review_heatmap/web/anki-review-heatmap.js} --target=es2015 --loader:.css=text"
+    },
+    "author": "",
+    "license": "AGPL-3.0",
+    "description": "",
+    "dependencies": {
+        "esbuild": "^0.25.5"
+    }
+}

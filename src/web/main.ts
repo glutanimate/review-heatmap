@@ -29,8 +29,12 @@ listed here: <https://glutanimate.com/contact/>.
 Any modifications to this file must keep this entire header intact.
 */
 
-import "./_vendor/cal-heatmap.css";
-import "./css/review-heatmap.css";
+import calHeatmapCss from "./_vendor/cal-heatmap.css";
+import reviewHeatmapCss from "./css/review-heatmap.css";
+
+var __vite_style__ = document.createElement('style');
+__vite_style__.textContent = calHeatmapCss + "\n" + reviewHeatmapCss;
+document.head.appendChild(__vite_style__);
 
 import { CalHeatMap } from "./_vendor/cal-heatmap.js";
 import { ReviewHeatmapOptions, ReviewHeatmapData } from "./types";
