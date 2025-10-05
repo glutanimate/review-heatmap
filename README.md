@@ -23,6 +23,7 @@ Adds a **heatmap graph** to [Anki](https://apps.ankiweb.net/)'s main window whic
   - [AnkiWeb](#ankiweb)
 - [Documentation](#documentation)
 - [Building](#building)
+  - [Manual](#manual)
 - [Contributing](#contributing)
 - [License and Credits](#license-and-credits)
 
@@ -30,9 +31,9 @@ Adds a **heatmap graph** to [Anki](https://apps.ankiweb.net/)'s main window whic
 
 ### Video Demonstration
 
-General Overview | Customization  
----------|----------
-[![YouTube: Anki add-on: Review Heatmap](https://i.ytimg.com/vi/3Hk5TYdvKnM/mqdefault.jpg)](https://youtu.be/3Hk5TYdvKnM) | [![YouTube: Add-on Update: Review Heatmap](https://i.ytimg.com/vi/2u8p0N47eUg/mqdefault.jpg)](https://youtu.be/2u8p0N47eUg)
+| General Overview                                                                                                          | Customization                                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| [![YouTube: Anki add-on: Review Heatmap](https://i.ytimg.com/vi/3Hk5TYdvKnM/mqdefault.jpg)](https://youtu.be/3Hk5TYdvKnM) | [![YouTube: Add-on Update: Review Heatmap](https://i.ytimg.com/vi/2u8p0N47eUg/mqdefault.jpg)](https://youtu.be/2u8p0N47eUg) |
 
 (Make sure to enable closed-captions for comments on the demonstrated features)
 
@@ -54,7 +55,28 @@ The use of the add-on is documented in the [Wiki section](https://github.com/Glu
 
 ### Building
 
-Review Heatmap's build system recently underwent a number of changes. Updated build instructions will soon be added here. Please stand by.
+#### Manual
+
+Requirements:
+
+- nodejs
+- [anki-addon-builder](https://github.com/glutanimate/anki-addon-builder)
+
+Install dependencies:
+
+```shellSession
+npm install
+```
+
+Build the addon:
+
+```shellSession
+$ uvx --from "git+https://github.com/glutanimate/anki-addon-builder.git#egg=aab[qt5,qt6]" aab build
+$ npm run build
+$ uvx --from "git+https://github.com/glutanimate/anki-addon-builder.git#egg=aab[qt5,qt6]" aab package_dist
+```
+
+You will find the ankiaddon file under the `build/` directory.
 
 ### Contributing
 

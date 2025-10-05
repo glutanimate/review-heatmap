@@ -16,6 +16,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.DS_Store
+
 # Javascript
 node_modules
 # IDEs

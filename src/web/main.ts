@@ -29,8 +29,12 @@ listed here: <https://glutanimate.com/contact/>.
 Any modifications to this file must keep this entire header intact.
 */
 
-import "./_vendor/cal-heatmap.css";
-import "./css/review-heatmap.css";
+import calHeatmapCss from "./_vendor/cal-heatmap.css";
+import reviewHeatmapCss from "./css/review-heatmap.css";
+
+var __vite_style__ = document.createElement('style');
+__vite_style__.textContent = calHeatmapCss + "\n" + reviewHeatmapCss;
+document.head.appendChild(__vite_style__);
 
 import { CalHeatMap } from "./_vendor/cal-heatmap.js";
 import { ReviewHeatmapOptions, ReviewHeatmapData } from "./types";
@@ -124,14 +128,12 @@ class ReviewHeatmap {
         }
 
         if (isEmpty) {
-          tooltip = `<b>No</b> ${
-            Date.now() < cellData.t ? "cards due" : "reviews"
-          } on ${formatData.date}`;
+          tooltip = `<b>No</b> ${Date.now() < cellData.t ? "cards due" : "reviews"
+            } on ${formatData.date}`;
         } else {
           const label = Math.abs(cellData.v) == 1 ? "card" : "cards";
-          tooltip = `<b>${count}</b> ${label} <b>${
-            cellData.v < 0 ? "due" : "reviewed"
-          }</b> ${formatData.connector} ${formatData.date}`;
+          tooltip = `<b>${count}</b> ${label} <b>${cellData.v < 0 ? "due" : "reviewed"
+            }</b> ${formatData.connector} ${formatData.date}`;
         }
 
         return tooltip;
@@ -202,10 +204,24 @@ class ReviewHeatmap {
         //      https://github.com/wa0x6e/cal-heatmap/issues/126
         let results = {};
         for (let timestamp_string in timestamps) {
+          // `value` is in ms
           let value = timestamps[timestamp_string];
-          let timestamp = parseInt(timestamp_string, 10);
-          results[timestamp + tzOffsetByTimestamp(timestamp)] = value;
+          let epochSeconds = parseInt(timestamp_string, 10) * 1000;
+
+          // interpret the timestamp as a Unix timestamp at 00:00:00 UTC on
+          // the given date
+          const utcDate = new Date(epochSeconds)
+          const year = utcDate.getUTCFullYear()
+          const month = utcDate.getUTCMonth()
+          const day = utcDate.getUTCDate()
+
+          // convert to local date at 00:00:00 for CalHeatMap()
+          const date = new Date(year, month, day, 0, 0, 0, 0);
+          const localSeconds = Math.floor(date.getTime() / 1000)
+
+          results[localSeconds] = value;
         }
+
         return results;
       },
       data: data,
@@ -263,12 +279,6 @@ class ReviewHeatmap {
 // in cal-heatmap)
 function applyDateOffset(date: Date): Date {
   return new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000);
-}
-
-// return local timezone offset in seconds at given unix timestamp
-function tzOffsetByTimestamp(timestamp: number): number {
-  let date = new Date(timestamp * 1000);
-  return date.getTimezoneOffset() * 60;
 }
 
 globalThis.ReviewHeatmap = ReviewHeatmap;
