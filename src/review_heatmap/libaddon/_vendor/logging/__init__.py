@@ -24,6 +24,10 @@ To use, simply 'import logging' and log away!
 """
 
 import sys, os, time, io, traceback, warnings, weakref, collections
+try:
+    from collections.abc import Mapping as _Mapping
+except ImportError:
+    from collections import Mapping as _Mapping
 
 from string import Template
 
@@ -274,7 +278,7 @@ class LogRecord(object):
         # formatting still seem to suggest a mapping object is required.
         # Thus, while not removing the isinstance check, it does now look
         # for collections.Mapping rather than, as before, dict.
-        if (args and len(args) == 1 and isinstance(args[0], collections.Mapping)
+        if (args and len(args) == 1 and isinstance(args[0], _Mapping)
             and args[0]):
             args = args[0]
         self.args = args
