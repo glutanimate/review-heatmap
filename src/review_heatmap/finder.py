@@ -57,10 +57,19 @@ def _find_cards_reviewed_between(start_date: int, end_date: int) -> List[int]:
     )
 
 
+def _find_notes_reviewed_between(start_date: int, end_date: int) -> List[int]:
+    return mw.col.db.list(  # type: ignore
+        "SELECT DISTINCT nid FROM cards where id in "
+        "(SELECT cid FROM revlog where id between ? and ?)",
+        start_date,
+        end_date,
+    )
+
+
 _re_rid = re.compile(r"^rid:([0-9]+):([0-9]+)$")
 
 
-def find_rid(search: str) -> Optional[List[int]]:
+def find_rid(search: str, notes_mode: bool = False) -> Optional[List[int]]:
     match = _re_rid.match(search)
 
     if not match:
@@ -69,13 +78,24 @@ def find_rid(search: str) -> Optional[List[int]]:
     start_date = int(match[1])
     end_date = int(match[2])
 
+    if notes_mode:
+        return _find_notes_reviewed_between(start_date, end_date)
     return _find_cards_reviewed_between(start_date, end_date)
+
+
+def _is_notes_mode(search_context: "SearchContext") -> bool:
+    browser = getattr(search_context, "browser", None)
+    table = getattr(browser, "table", None)
+    if table is not None and hasattr(table, "is_notes_mode"):
+        return bool(table.is_notes_mode())
+    return False
 
 
 def on_browser_will_search(search_context: "SearchContext"):
     search = search_context.search
     if search.startswith("rid"):
-        found_ids = find_rid(search)
+        notes_mode = not hasattr(search_context, "card_ids") and _is_notes_mode(search_context)
+        found_ids = find_rid(search, notes_mode=notes_mode)
     else:
         return
 
